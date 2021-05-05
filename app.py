@@ -15,6 +15,7 @@ from oauthlib.oauth2 import WebApplicationClient
 
 # Configure Keyrock as the IDM
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
+print(KEYROCK_CLIENT_ID)
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
 KEYROCK_DISCOVERY_URL = (
     "https://account.lab.fiware.org"
@@ -74,17 +75,18 @@ def login():
 
 @app.route("/login/callback")
 def callback():
-    # Get authorization code Google sent back to you
+    # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
-    # print(code)
+    #print("Code:", code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
+    print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
         redirect_url=request.base_url,
         code=code
     )
-    # print("Token_url:", token_url)
+    print("Token_url:", token_url, "headers:", headers)
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -92,23 +94,27 @@ def callback():
         auth=(KEYROCK_CLIENT_ID, KEYROCK_CLIENT_SECRET)
     )
     # Parse the tokens!
-    print("TOKENS:", client.parse_request_body_response(json.dumps(token_response.json())))
-    return redirect(url_for("get_user_info"))
+    print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
+    #return redirect(url_for("get_user_info"))
 
-@app.route("/user_info")
-def get_user_info():
+#@app.route("/user_info")
+#def get_user_info():
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
-    print(uri, headers, body)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
-    # print("HERE:", userinfo_response.json())
+    #print("AUTA:", uri, headers, body)
+
+    token = headers['Authorization'].split(' ')[1]
+    #print("Token:", token)
+    uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
+    #print("uri2=", uri2)
+    userinfo_response = requests.get(uri2)
+    print("HERE:", userinfo_response.json())
+
     # unique_id = userinfo_response.json()["sub"]
     users_email = userinfo_response.json()["email"]
-    users_name = userinfo_response.json()["given_name"]
-    user = User(
-        name=users_name, email=users_email
-    )
-    login_user(user)
+    users_name = userinfo_response.json()["displayName"]
+
+    #login_user(user)
     return redirect(url_for("index"))
 
 @app.route("/logout")
