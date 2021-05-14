@@ -1,0 +1,5 @@
+.\env\Scripts\activate
+
+#fiware central
+set KEYROCK_CLIENT_ID=32f0b8fe995d4c46b49bf36eb195efd6
+set KEYROCK_CLIENT_SECRET=f73e34836bd34ca2b5388226f12212e0

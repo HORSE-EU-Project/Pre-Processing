@@ -17,15 +17,20 @@ from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
+#import socket
 
 # Configure Keyrock as the IDM
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
-print(KEYROCK_CLIENT_ID)
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
 KEYROCK_DISCOVERY_URL = (
-    "https://account.lab.fiware.org"
-    #"http://192.168.56.102:3443/idm"
+    #"https://account.lab.fiware.org"
+    "https://10.0.20.226:443"
 )
+
+''' hostname = socket.gethostname()
+local_ip = socket.gethostbyname(hostname)
+
+print(local_ip) '''
 
 # Referencing the file __name__
 
@@ -85,14 +90,18 @@ def upload_file():
 @app.route('/login')
 def login():
     # Find out what URL to hit for Google login
-    authorization_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/authorize'
+    print("hello1")
+    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
+    print("hello2")
     #print(request.base_url+ "/callback")
     # Use library to construct the request for Google login and provide
     # scopes that let you retrieve user's profile from Google
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=request.base_url + "/callback",
+        state="xyz",
         scope=["openid", "email", "profile"],
+        verify=False,
     )
     #print(request_uri)
     return redirect(request_uri)
@@ -100,8 +109,9 @@ def login():
 @app.route("/login/callback")
 def callback():
     # Get authorization code Keyrock sent back to you
+    print("HELLo!")
     code = request.args.get("code")
-    #print("Code:", code)
+    print("Code:", code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
     #print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
@@ -115,7 +125,8 @@ def callback():
         token_url,
         headers=headers,
         data=body,
-        auth=(KEYROCK_CLIENT_ID, KEYROCK_CLIENT_SECRET)
+        auth=(KEYROCK_CLIENT_ID, KEYROCK_CLIENT_SECRET),
+        verify=False
     )
     # Parse the tokens!
     #print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
@@ -130,14 +141,15 @@ def get_user_info():
 
     token = headers['Authorization'].split(' ')[1]
     #print("Token:", token)
-    uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
+    #uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
+    uri2 = "https://10.0.20.226:443/user?access_token=" + token
     #print("uri2=", uri2)
-    userinfo_response = requests.get(uri2)
-    #print("HERE:", userinfo_response.json())
-
+    userinfo_response = requests.get(uri2, verify=False)
+    print("HERE:", userinfo_response.json())
+    #print("HEY YOU!")
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
-    user_name = userinfo_response.json()["displayName"]
+    user_name = userinfo_response.json()["username"]
 
     user = User(
     id_=unique_id, name=user_name, email=user_email
@@ -159,4 +171,4 @@ def logout():
 
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, ssl_context="adhoc")
+    app.run(debug=True, ssl_context="adhoc", host="172.20.23.207")
