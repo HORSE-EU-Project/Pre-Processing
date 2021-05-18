@@ -32,3 +32,12 @@ class User(UserMixin):
             (id_, name, email),
         )
         db.commit()
+
+    def delete_all():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM user")
+        entries = cursor.fetchall()
+
+        return print(entries)
+       

@@ -3,15 +3,24 @@
 
 {% block content %}
 
-<p>Hello, {{name}}! You're logged in! Email: {{email}}</p>
+<p><h1 style="color:green;text-align:center;">Hello, {{name}}! You're logged in! Email: {{email}}</h1></p>
 
 <p>
-    <b>Uploade a JSON file </b>
-    <form method= "POST" enctype="multipart/form-data" >
-        <p><input type="file" name="jsonFile"></p>
-          <p><input type="submit" value="Submit"></p>
-    </form>
+    <h2 style="color:rgb(10, 10, 1);text-align:center;">Upload a JSON file</h2>
+    <div class="row margin-bottom-10 d-grid gap-3">
+        <div class="text-center">
+            <form method= "POST" enctype="multipart/form-data" >
+                <p><input type="file" name="jsonFile"></p>
+                <p><input type="submit" value="Submit"></p>
+            </form>
+        </div>
+    </div>
 </p>
 
-<a class="button" href="/logout">Logout</a>
+<div class="row margin-bottom-10">
+    <div class="text-center">
+        <a class="btn btn-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/logout"'>Logout</a>
+    </div>
+</div>
+<!--<a class="button" href="/logout">Logout</a>-->
 {% endblock %}

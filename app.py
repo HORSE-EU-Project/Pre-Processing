@@ -68,31 +68,16 @@ def index():
     if current_user.is_authenticated:
         #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
         #print("I'm here:", current_user.name, current_user.email)
-        #upload_file()
+        print("HEY", current_user.name)
         return render_template('upload.html', name = current_user.name, email = current_user.email)
     else:
         return render_template('index.html')
         #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'
 
-'''@app.route('/upload', methods= ['POST'])
-def upload_file():
-    return render_template('upload_jsonfile.html')'''
-
-"""def upload_file():
-    if request.method == "POST":
-        file1 = request.files["jsonFile"]
-        filename = secure_filename(file1.filename)
-        file1.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template('displayJson.html')
-    else:
-        return render_template('upload_jsonfile.html')"""
-
 @app.route('/login')
 def login():
     # Find out what URL to hit for Google login
-    print("hello1")
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
-    print("hello2")
     #print(request.base_url+ "/callback")
     # Use library to construct the request for Google login and provide
     # scopes that let you retrieve user's profile from Google
@@ -109,9 +94,7 @@ def login():
 @app.route("/login/callback")
 def callback():
     # Get authorization code Keyrock sent back to you
-    print("HELLo!")
     code = request.args.get("code")
-    print("Code:", code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
     #print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
@@ -145,7 +128,7 @@ def get_user_info():
     uri2 = "https://10.0.20.226:443/user?access_token=" + token
     #print("uri2=", uri2)
     userinfo_response = requests.get(uri2, verify=False)
-    print("HERE:", userinfo_response.json())
+    #print("HERE:", userinfo_response.json())
     #print("HEY YOU!")
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
@@ -159,7 +142,7 @@ def get_user_info():
     if not User.get(unique_id):
         User.create(unique_id, user_name, user_email)
 
-    print("The user:", user)
+    #print("The user:", user)
     login_user(user)
     return redirect(url_for("index"))
 
@@ -167,8 +150,10 @@ def get_user_info():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    #requests.post(KEYROCK_DISCOVERY_URL+"/oauth2/logout?client_id="+KEYROCK_CLIENT_ID, verify=False)
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, ssl_context="adhoc", host="172.20.23.207")
+    app.run(debug=True, ssl_context="adhoc", host="172.22.208.1")
+    #"172.20.23.207"
