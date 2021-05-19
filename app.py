@@ -17,7 +17,7 @@ from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
-from consumer import consumer
+
 #import socket
 
 # Configure Keyrock as the IDM
@@ -33,8 +33,10 @@ local_ip = socket.gethostbyname(hostname)
 
 print(local_ip) '''
 
-# Referencing the file __name__
+app = Blueprint('app', __name__, template_folder='templates')
 
+# Referencing the file __name__
+from consumer import consumer
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(consumer)
