@@ -33,11 +33,11 @@ class User(UserMixin):
         )
         db.commit()
 
-    def delete_all():
+    '''def delete_all():
         db = get_db()
         cursor = db.cursor()
         cursor.execute("DELETE FROM user")
         entries = cursor.fetchall()
 
-        return print(entries)
+        return print(entries)'''
        

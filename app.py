@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import os
 import requests
 import json
@@ -17,6 +17,7 @@ from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
+from consumer import consumer
 #import socket
 
 # Configure Keyrock as the IDM
@@ -36,6 +37,7 @@ print(local_ip) '''
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+app.register_blueprint(consumer)
 
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
@@ -68,7 +70,7 @@ def index():
     if current_user.is_authenticated:
         #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
         #print("I'm here:", current_user.name, current_user.email)
-        print("HEY", current_user.name)
+        #print("HEY", current_user.name)
         return render_template('upload.html', name = current_user.name, email = current_user.email)
     else:
         return render_template('index.html')
@@ -86,6 +88,7 @@ def login():
         redirect_uri=request.base_url + "/callback",
         state="xyz",
         scope=["openid", "email", "profile"],
+        #prompt='login',
         verify=False,
     )
     #print(request_uri)
@@ -101,6 +104,7 @@ def callback():
         token_endpoint,
         authorization_response=request.url,
         redirect_url=request.base_url,
+        #prompt='login',
         code=code
     )
     #print("Token_url:", token_url, "headers:", headers)
@@ -112,7 +116,7 @@ def callback():
         verify=False
     )
     # Parse the tokens!
-    #print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
+    print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -155,5 +159,5 @@ def logout():
 
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, ssl_context="adhoc", host="172.22.208.1")
-    #"172.20.23.207"
+    app.run(debug=True, ssl_context="adhoc", host="172.20.23.207")
+    #"172.22.208.1"
