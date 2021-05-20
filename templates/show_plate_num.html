@@ -3,15 +3,9 @@
 
 {% block content %}
 
-<h1 style="color:green;text-align:center;">Results of the example web request to Fiware's QuantumLeap</h1>
-<div id="chart" class="chart"></div>
+<h1 style="color:green;text-align:center;">Results of the example web request to Fiware's Orion proving Kurento's integration</h1>
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script type="text/javascript">
-    var graphs = {{ graphJSON | safe }};
-    Plotly.plot("chart",graphs,{});
-</script>
-
+<p><h2 style="color:green;text-align:center;">The plate number is: {{number}}.</h2></p>
 <div class="row margin-bottom-10">
     <div class="text-center">
         <button class="btn btn-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/consumer"'>Make Another Request</button>
@@ -19,4 +13,3 @@
 </div>
 
 {% endblock %}
-

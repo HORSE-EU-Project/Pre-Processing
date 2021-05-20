@@ -1,7 +1,5 @@
+from types import MethodType
 from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
-from bokeh.plotting import figure, show, output_file, output_notebook
-from bokeh.palettes import Spectral11, colorblind, Inferno, BuGn, brewer
-from bokeh.models import HoverTool, value, LabelSet, Legend, ColumnDataSource,LinearColorMapper,BasicTicker, PrintfTickFormatter, ColorBar, DatetimeTickFormatter
 import os
 from flask.globals import current_app
 import requests
@@ -16,10 +14,11 @@ from flask_login import (
     logout_user,
     UserMixin
 )
-#from app import app
+import plotly.express as px
+import plotly
+import pandas as pd
 
 consumer = Blueprint('consumer', __name__, template_folder='templates')
-#consumer.register_blueprint(app)
 
 @consumer.route('/consumer')
 def consume():
@@ -40,36 +39,39 @@ def send_request():
     payload=json.loads(x.text)
     #print(payload)
     length = len(payload["index"])
-    timestamp_data = []
-    '''for i in range(length):
-        temp = payload["index"][i].replace('T', ' ')
-        timestamp_data.append(re.findall('(.*?)(?=\+)', temp)[0])'''
-
-    '''for t in timestamp_data:
-        print(t)'''
-    #print(timestamp_data)
     timestamp = []
     for i in range(length):
-        timestamp.append(re.findall('(?<=T)(.*?)(?=\+)', payload["index"][i])[0])
-    print(timestamp) #x
+        temp = payload["index"][i].replace('T', ' ')
+        timestamp.append(re.findall('(.*?)(?=\+)', temp)[0])
+    
+    '''timestamp = []
+    for i in range(length):
+        timestamp.append(re.findall('(?<=T)(.*?)(?=\+)', payload["index"][i])[0])'''
+
+    #print(timestamp) #x
     values = payload["values"] #y
     #print(values)
-    output_file('plot_results.html')
-    # create a new plot with a datetime axis type
-    TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom,tap"
+
+    #create a pandas DataFrame
+    data_tuples = list(zip(timestamp,values))
+    data = pd.DataFrame(data_tuples, columns=['timestamp', 'value'])
+    #print(data)
+    data['timestamp'] = pd.to_datetime(data['timestamp'], format='%Y-%m-%d %H:%M:%S')
+    print(data)
     
-    p = figure(width=800, height=250, x_axis_type="datetime", title="Last 10 Jetson measurements",
-    tools=TOOLS,
-    toolbar_location='above')
+    fig = px.line(data, x='timestamp', y="value")
     
-    p.select_one(HoverTool).tooltips = [
-        ('timestamp', '@x'),
-        ('measurement', '@y')]
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    ex = [1,2,3,4,5,6,7,8,9,10]
-    p.line(timestamp, values, color='navy', alpha=0.5)
-    p.xaxis.formatter = DatetimeTickFormatter(hours="%H:%M:%S", minutes="%H:%M:%S", seconds="%H:%M:%S")
+    return render_template("plot_results.html", graphJSON=graphJSON)
 
-    show(p)
-
-    return render_template('plot_results.html')
+@consumer.route('/plate')
+def show_plate_num():
+    x = requests.get('http://10.0.20.226:1026/v2/entities/plateDetectedIdxxx?options=keyValues')
+    print(x.status_code)
+    if x.status_code != 200:
+        flash("Request was not succesfully executed.")
+        return redirect(url_for('index'))
+    payload=json.loads(x.text)
+    num = payload["plate"][2:]
+    return render_template("show_plate_num.html", number=num)
