@@ -37,9 +37,12 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 from consumer import consumer
+from registerb import registerb
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(consumer)
+app.register_blueprint(registerb)
 
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
@@ -63,8 +66,6 @@ def load_user(user_id):
 
 # Upload folder
 UPLOAD_FOLDER = 'static/json'
-#LLOWED_EXTENSIONS = {'json', 'csv'}
-
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 @app.route('/', methods= ["GET", "POST"])
@@ -73,7 +74,7 @@ def index():
         #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
         #print("I'm here:", current_user.name, current_user.email)
         #print("HEY", current_user.name)
-        return render_template('upload.html', name = current_user.name, email = current_user.email)
+        return render_template('main.html', name = current_user.name, email = current_user.email)
     else:
         return render_template('index.html')
         #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %} Main Screen {% endblock %}
+
+{% block content %}
+
+<p><h1 style="color:green;text-align:center;">Hello, {{name}}! You're logged in! Email: {{email}}</h1></p>
+
+<div class="row margin-bottom-10"></div>
+    <div class="text-center">
+        <form action=/register method= "POST" enctype="multipart/form-data" >
+            <!--<p><input type="submit" name="RegisterButton" value="Register"></p>-->
+            <a class="btn btn-outline-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/register"'>Register</a>
+        </form>
+
+        <form action=/consume method= "POST" enctype="multipart/form-data" >
+            <!--<p><input type="submit" name="ConsumeButton"  value="Consume"></p>-->
+            <a class="btn btn-outline-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/consumer"'>Consume</a>
+        </form>
+
+        <a class="btn btn-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/logout"'>Logout</a>
+    </div>
+</div>
+
+{% endblock %}
