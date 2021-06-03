@@ -30,11 +30,11 @@ def consume():
 
 @consumer.route('/request')
 def send_request():
-    x = requests.get('http://10.0.20.226:8668/v2/entities/urn:ngsi-ld:jetson/attrs/eco2name?lastN=10', headers = {'Accept': 'text/plain', 'Fiware-Service': 'myOpenIoT', 'Fiware-ServicePath': '/'}, data = '')
+    x = requests.get('http://10.0.20.226:8668/v2/entities/urn:ngsi-ld:jetson1/attrs/eco2name?lastN=20', headers = {'Accept': 'text/plain', 'Fiware-Service': 'myOpenIoT', 'Fiware-ServicePath': '/'}, data = '')
     print(x.status_code)
     if x.status_code != 200:
-        flash("Request was not succesfully executed.")
-        return redirect(url_for('index'))
+        flash("Request was not succesfully executed.", "error")
+        return render_template("index.html")
     #print(x.text)
     payload=json.loads(x.text)
     #print(payload)
@@ -70,7 +70,7 @@ def show_plate_num():
     x = requests.get('http://10.0.20.226:1026/v2/entities/plateDetectedIdxxx?options=keyValues')
     print(x.status_code)
     if x.status_code != 200:
-        flash("Request was not succesfully executed.")
+        flash("Request was not succesfully executed.", "error")
         return redirect(url_for('index'))
     payload=json.loads(x.text)
     num = payload["plate"][2:]
