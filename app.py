@@ -79,6 +79,7 @@ def index():
         return render_template('index.html')
         #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'
 
+
 @app.route('/login')
 def login():
     # Find out what URL to hit for Google login
@@ -162,5 +163,5 @@ def logout():
 
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, ssl_context="adhoc", host="172.20.23.207")
-    #"172.22.208.1"
+    app.run(debug=True, ssl_context="adhoc", host="172.22.208.1")
+    #"172.20.23.207"
