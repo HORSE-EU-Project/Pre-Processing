@@ -44,6 +44,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(consumer)
 app.register_blueprint(registerb)
+app.register_blueprint(subscription)
+
 
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
