@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} Upload a Subscription {% endblock %}
+
+{% block content %}
+
+<form method=post enctype=multipart/form-data>
+    <input type="file" id="myFile" name="uploadedSubscription">
+    <input type="submit">
+</form>
+
+{% endblock %}
