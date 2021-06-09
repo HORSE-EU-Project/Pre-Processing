@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, Blueprint
+import socket
 import os
 import requests
 import json
@@ -163,5 +164,6 @@ def logout():
 
 if __name__ == "__main__":
     # app.run(debug=True)
-    app.run(debug=True, ssl_context="adhoc", host="172.22.208.1")
+    ipV4IP = socket.gethostbyname(socket.gethostname())
+    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
     #"172.20.23.207"
