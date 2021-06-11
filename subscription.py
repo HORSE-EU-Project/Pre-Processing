@@ -1,5 +1,6 @@
 
 from io import StringIO
+import random
 from logging import exception
 from flask import Flask, render_template, request, redirect, url_for , jsonify, flash, Blueprint, current_app
 import os
@@ -12,37 +13,63 @@ import socket
 #import fi
 import re
 import requests
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+    UserMixin
+)
+
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
-ALLOWED_EXTENSIONS = {'json','txt'}
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+#from app import app
 
 
-@subscription.route("/subscribe", methods= ['GET', 'POST'])
+@subscription.route('/consumer', methods=['GET', 'POST'])
 def subscribe():
-    if request.method == 'POST':
-        if 'uploadedSubscription' not in request.files:
-            #flash('Please upload your file','error')
-            return redirect(request.url)
-        file = request.files['uploadedSubscription']
-        if file.filename == '':
-            flash('The name of the file is no defined','error')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'+'\subscriptions'], filename))
-            #parsing the file & making the request
-            flash('File uploaded successfully','success')
-            makeSubscription(filename)
-            return redirect(request.url)    
+    if request.method == 'GET':
+        if current_user.is_authenticated:
+            return render_template('subscription.html')
         else:
-            flash('Incorrect file is uploaded','error')
-            return redirect(request.url)    
+            flash('You should login first!', 'error')
+            return redirect(url_for('index'))
     else:
-        return render_template('subscription.html')
+        '''
+        if request.form.get('fr'):
+            #ALEX make request to FR
+            #check request response -  produce flash messages to demonstrate success or fail in consumer.html
+        if request.form.get('xb'):
+            #ALEX make request to XBello
+        if request.form.get('tr'):
+            #ALEX make request to TRiage
+        if request.form.get('ai'):
+            #ALEX make request to Air
+        if request.form.get('si'):
+            #ALEX make request to Sivi
+        '''
+        return render_template('consumer.html')
+'''
+def systems():
+#create dictionary of systems available in our DB
+    rands = random.sample(range(1, 1000), 5)
+    global systems_dict 
+    systems_dict = {
+        "Fr": rands[0],
+        "Xb": rands[1],
+        "Tr": rands[2],
+        "Ai": rands[3],
+        "Si": rands[4]
+    }
+    for item in systems_dict.items():
+        print(item)
+    return render_template('subscription.html', **systems_dict)
+'''
+@subscription.route('/consumer/subscription')
+def createSubscription():
+    #if request.args.get('system') == 'Fr':
+    return render_template('subscription.html')
 
 #Parsing the uploaded registration file
 def makeSubscription(filename):

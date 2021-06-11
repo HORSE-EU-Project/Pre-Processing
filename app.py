@@ -37,15 +37,15 @@ print(local_ip) '''
 app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
-from consumer import consumer
+#from consumer import consumer
 from registerb import registerb
+from subscription import subscription
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
-app.register_blueprint(consumer)
+#app.register_blueprint(consumer)
 app.register_blueprint(registerb)
 app.register_blueprint(subscription)
-
 
 # User session management setup
 # https://flask-login.readthedocs.io/en/latest
@@ -167,5 +167,6 @@ def logout():
 if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
+    print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
     #"172.20.23.207"

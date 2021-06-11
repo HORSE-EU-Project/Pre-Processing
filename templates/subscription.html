@@ -1,11 +1,68 @@
 {% extends "base.html" %}
-{% block title %} Upload a Subscription {% endblock %}
+{% block title %} Create Subscription {% endblock %}
 
 {% block content %}
-
-<form method=post enctype=multipart/form-data>
-    <input type="file" id="myFile" name="uploadedSubscription">
-    <input type="submit">
+<h2 style="color:rgb(10, 10, 1);text-align:center;">Select the System to which you want to subscribe for changes</h2>
+<!--
+<div class="dropdown">
+    <div class= "text-center">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Systems
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href= "/consumer/subscription?system='Fr'">Fr Sensors platform</a>
+            <a class="dropdown-item" href="/consumer/subscription?system='Xb'">XBELLO</a>
+            <a class="dropdown-item" href="/consumer/subscription?system='Tr'">Triage platform</a>
+            <a class="dropdown-item" href="/consumer/subscription?system='Ai'">AirflowMCC</a>
+            <a class="dropdown-item" href="/consumer/subscription?system='Si'">Sivi</a>
+        </div>
+    </div>
+  </div>
+-->
+<form method=post action="/consumer">
+    <div class="text-center">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+            <!-- Default checked -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name=fr id="fr">
+                <label class="custom-control-label" for="check1">Fr Sensors platform</label>
+            </div>
+            </li>
+            <li class="list-group-item">
+            <!-- Default checked -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name=xb id="xb">
+                <label class="custom-control-label" for="check2">XBELLO</label>
+            </div>
+            </li>
+            <li class="list-group-item">
+            <!-- Default checked -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name=tr id="tr">
+                <label class="custom-control-label" for="check3">Triage platform</label>
+            </div>
+            </li>
+            <li class="list-group-item">
+            <!-- Default checked -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name=ai id="ai">
+                <label class="custom-control-label" for="check4">AirflowMCC</label>
+            </div>
+            </li>
+            <li class="list-group-item">
+            <!-- Default checked -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name=si id="si">
+                <label class="custom-control-label" for="check5">Sivi</label>
+            </div>
+            </li>
+        </ul>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    
 </form>
 
 {% endblock %}
+
+<!-- onclick='window.location.href="/consumer"'-->
