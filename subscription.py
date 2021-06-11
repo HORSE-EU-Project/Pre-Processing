@@ -36,19 +36,24 @@ def subscribe():
             flash('You should login first!', 'error')
             return redirect(url_for('index'))
     else:
-        '''
+
         if request.form.get('fr'):
+            urlfr = request.form.get('url-fr')
             #ALEX make request to FR
             #check request response -  produce flash messages to demonstrate success or fail in consumer.html
         if request.form.get('xb'):
+            urlxb = request.form.get('url-xb')
             #ALEX make request to XBello
         if request.form.get('tr'):
+            urltr = request.form.get('url-tr')
             #ALEX make request to TRiage
         if request.form.get('ai'):
+            urlai = request.form.get('url-ai')
             #ALEX make request to Air
         if request.form.get('si'):
+            urlsi = request.form.get('url-si')
             #ALEX make request to Sivi
-        '''
+  
         return render_template('consumer.html')
 '''
 def systems():

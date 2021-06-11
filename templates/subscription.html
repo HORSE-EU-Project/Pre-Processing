@@ -19,6 +19,7 @@
     </div>
   </div>
 -->
+
 <form method=post action="/consumer">
     <div class="text-center">
         <ul class="list-group list-group-flush">
@@ -27,13 +28,21 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name=fr id="fr">
                 <label class="custom-control-label" for="check1">Fr Sensors platform</label>
+                <div class="reveal-if-active">
+                    <label for="url-fr">Please enter the url for notifications:</label>
+                    <input class="require-if-active" type="url" id="url-fr" name="url-fr" data-require-pair="#fr">
+                </div>
             </div>
             </li>
             <li class="list-group-item">
             <!-- Default checked -->
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name=xb id="xb">
-                <label class="custom-control-label" for="check2">XBELLO</label>
+                <label class="custom-control-label" for="check2">XBELLO</label> 
+                <div class="reveal-if-active">
+                    <label for="url-xb">Please enter the url for notifications:</label>
+                    <input class="require-if-active" type="url" id="url-xb" name="url-xb" data-require-pair="#xb">
+                </div>
             </div>
             </li>
             <li class="list-group-item">
@@ -41,6 +50,10 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name=tr id="tr">
                 <label class="custom-control-label" for="check3">Triage platform</label>
+                <div class="reveal-if-active">
+                    <label for="url-tr">Please enter the url for notifications:</label>
+                    <input class="require-if-active" type="url" id="url-tr" name="url-tr" data-require-pair="#tr">
+                </div>
             </div>
             </li>
             <li class="list-group-item">
@@ -48,6 +61,10 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name=ai id="ai">
                 <label class="custom-control-label" for="check4">AirflowMCC</label>
+                <div class="reveal-if-active">
+                    <label for="url-ai">Please enter the url for notifications:</label>
+                    <input class="require-if-active" type="url" id="url-ai" name="url-ai" data-require-pair="#ai">
+                </div>
             </div>
             </li>
             <li class="list-group-item">
@@ -55,6 +72,10 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" name=si id="si">
                 <label class="custom-control-label" for="check5">Sivi</label>
+                <div class="reveal-if-active">
+                    <label for="url-si">Please enter the url for notifications:</label>
+                    <input class="require-if-active" type="url" id="url-si" name="url-si" data-require-pair="#si">
+                </div>
             </div>
             </li>
         </ul>
