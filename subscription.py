@@ -13,6 +13,7 @@ import socket
 #import fi
 import re
 import requests
+import json
 from flask_login import (
     LoginManager,
     current_user,
@@ -24,10 +25,54 @@ from flask_login import (
 
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
-#from app import app
-
-
 @subscription.route('/consumer', methods=['GET', 'POST'])
+def showHtml():
+    if request.method == 'POST':
+        if request.form.get('fr'):
+            dbname = 'FrSensorsPlatform'
+            createRequest(dbname,request.form.get('url-fr'))
+            #ALEX make request to FR
+            #check request response -  produce flash messages to demonstrate success or fail in consumer.html
+        if request.form.get('xb'):
+            dbname = 'XBELLO'
+            createRequest(dbname,request.form.get('url-xb'))
+            #ALEX make request to XBello
+        if request.form.get('tr'):
+            dbname = 'Triage Platform'
+            createRequest(dbname,request.form.get('url-tr'))
+            #ALEX make request to TRiage
+        if request.form.get('ai'):
+            dbname = 'AirflowMCC'
+            createRequest(dbname,request.form.get('url-ai'))
+            #ALEX make request to Air
+        if request.form.get('si'):
+            dbname = 'Sivi'
+            createRequest(dbname,request.form.get('url-si'))
+            #print(urlsi)
+            #ALEX make request to Sivi
+        return render_template('subscription.html')
+    else :
+        return render_template('subscription.html')
+
+def createRequest(dbName, endpoint):
+    url = "http://10.0.20.226:1026/v2/subscriptions/"
+    headerPartner = {}
+    headerPartner['Fiware-Service'] = dbName
+    headersDict = {"Content-Type" : "application/json", "Fiware-ServicePath" : "/"}
+    headersDict.update(headerPartner)
+    #constructing payload
+    #entities = [{"idPattern" : ".*"}]
+    #condition = {"attrs" : []}
+    payload = dict( description = dbName,
+                    subject = {"entities" : [], "condition" : {"attrs" : []}},
+                    notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
+                     )
+    payload["subject"]["entities"] = [{"idPattern" : ".*"}]
+    payload["notification"]["http"]["url"] = endpoint
+    sendRequestToFiware(url, headersDict,payload)
+
+
+
 def subscribe():
     if request.method == 'GET':
         if current_user.is_authenticated:
@@ -52,6 +97,7 @@ def subscribe():
             #ALEX make request to Air
         if request.form.get('si'):
             urlsi = request.form.get('url-si')
+            print(urlsi)
             #ALEX make request to Sivi
   
         return render_template('consumer.html')
@@ -119,7 +165,10 @@ def makeSubscription(filename):
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     #print(headersDict)
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= matchPayload)
+        print(matchPostURL)
+        print(headersDict)
+        print(json.dumps(matchPayload))
+        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchPayload))
         if r.status_code == 201:
             flash('Subscription completed successfully','success')
         elif r.status_code == 409:
