@@ -36,9 +36,10 @@ def subscribe():
             flash('You should login first!', 'error')
             return redirect(url_for('index'))
     else:
-
+        #print(request.form.get('fr'))
         if request.form.get('fr'):
             urlfr = request.form.get('url-fr')
+            #print(urlfr)
             #ALEX make request to FR
             #check request response -  produce flash messages to demonstrate success or fail in consumer.html
         if request.form.get('xb'):
