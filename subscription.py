@@ -174,7 +174,9 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
             flash('Subscription completed successfully','success')
         elif r.status_code == 409:
             flash('Device has already been registered','info')
-        #print(r.status_code)
+        else:
+            flash('Something went wrong','error')
+            print(r.status_code)
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
         raise SystemExit(e)

@@ -3,9 +3,31 @@
 
 {% block content %}
 
-<form method=post enctype=multipart/form-data>
-    <input type="file" id="myFile" name="uploadedJson">
-    <input type="submit">
-</form>
+<div class="container">
+    <h1>Get a token</h1>
+    <div class="row">
+        <div class="col-xl-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form-horizontal" method="" action="">
+                        <div class="form-group">
+                            <label class="control-label">This is your token.</label>
+                            <div>
+                                <input id="password2" type="password" class="form-control" name="password" value=arg1>
+                                <small>Copy it!</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    invoke = (event) => {
+        let nameOfFunction = this[event.target.name];
+        let arg1 = event.target.getAttribute('data-arg1');
+    }
+</script>
 {% endblock %}

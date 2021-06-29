@@ -5,6 +5,7 @@ import requests
 import json
 import sqlite3
 from os.path import join, dirname, realpath
+from requests.sessions import session
 from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
@@ -77,7 +78,7 @@ def index():
         #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
         #print("I'm here:", current_user.name, current_user.email)
         #print("HEY", current_user.name)
-        return render_template('main.html', name = current_user.name, email = current_user.email)
+        return render_template('main.html', name = current_user.name, email = current_user.email, token = request.args.get('tkn'))
     else:
         return render_template('index.html')
         #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'
@@ -105,6 +106,7 @@ def login():
 def callback():
     # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
+    print(code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
     #print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
@@ -114,7 +116,7 @@ def callback():
         #prompt='login',
         code=code
     )
-    #print("Token_url:", token_url, "headers:", headers)
+    print("Token_url:", token_url, "headers:", headers, "Body:", body)
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -123,7 +125,7 @@ def callback():
         verify=False
     )
     # Parse the tokens!
-    print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
+    #print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -134,12 +136,13 @@ def get_user_info():
     #print("AUTA:", uri, headers, body)
 
     token = headers['Authorization'].split(' ')[1]
-    #print("Token:", token)
+    print("Token:", token)
+    #session['access_token'] = token
     #uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
     uri2 = "https://10.0.20.226:443/user?access_token=" + token
     #print("uri2=", uri2)
     userinfo_response = requests.get(uri2, verify=False)
-    #print("HERE:", userinfo_response.json())
+    print("HERE:", userinfo_response.json())
     #print("HEY YOU!")
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
@@ -155,7 +158,7 @@ def get_user_info():
 
     #print("The user:", user)
     login_user(user)
-    return redirect(url_for("index"))
+    return redirect(url_for("index", tkn=token))
 
 @app.route("/logout")
 @login_required
