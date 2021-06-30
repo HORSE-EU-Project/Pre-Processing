@@ -78,6 +78,8 @@ def index():
         #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
         #print("I'm here:", current_user.name, current_user.email)
         #print("HEY", current_user.name)
+        # !!!!!!!!!!!
+        #I have to find another way to keep the token, because if we are not redirected from the login page to the main.html page, the tkn is None.
         return render_template('main.html', name = current_user.name, email = current_user.email, token = request.args.get('tkn'))
     else:
         return render_template('index.html')

@@ -73,26 +73,18 @@ def createRequest(dbName, endpoint):
 
 #Sending a request to fiware       
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
-    #print(headersDict)
     try:
         print(matchPostURL)
         print(headersDict)
         print(json.dumps(matchPayload))
         r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchPayload))
-        #print(r.status_code)
         if r.status_code == 201:
             flash('Subscription completed successfully','success')
-<<<<<<< HEAD
-        elif r.status_code == 409:
-            flash('Device has already been registered','info')
+        #elif r.status_code == 409:
+        #    flash('Device has already been registered','info')
         else:
             flash('Something went wrong','error')
-            print(r.status_code)
-=======
-        #elif r.status_code == 409:
-        else:
-            flash('Subscription has not been established correctly','info')
->>>>>>> 8f4d953abb60534f428d65c134fe56fafdb431aa
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
         raise SystemExit(e)
+    
