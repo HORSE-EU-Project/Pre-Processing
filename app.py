@@ -75,12 +75,10 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 @app.route('/', methods= ["GET", "POST"])
 def index():
     if current_user.is_authenticated:
-        #"Successfully authenticated. <br><br> <br><br><button onclick='window.location.href=\"/user_info\"'>Get my user info</button>"
-        #print("I'm here:", current_user.name, current_user.email)
-        #print("HEY", current_user.name)
-        # !!!!!!!!!!!
-        #I have to find another way to keep the token, because if we are not redirected from the login page to the main.html page, the tkn is None.
-        return render_template('main.html', name = current_user.name, email = current_user.email, token = request.args.get('tkn'))
+        #Successfully authenticated
+        
+        token = User.get_token(current_user.id)
+        return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
         #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'
@@ -108,7 +106,7 @@ def login():
 def callback():
     # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
-    print(code)
+    #print(code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
     #print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
@@ -118,7 +116,7 @@ def callback():
         #prompt='login',
         code=code
     )
-    print("Token_url:", token_url, "headers:", headers, "Body:", body)
+    #print("Token_url:", token_url, "headers:", headers, "Body:", body)
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -135,32 +133,24 @@ def callback():
 def get_user_info():
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
-    #print("AUTA:", uri, headers, body)
-
     token = headers['Authorization'].split(' ')[1]
-    print("Token:", token)
-    #session['access_token'] = token
     #uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
     uri2 = "https://10.0.20.226:443/user?access_token=" + token
-    #print("uri2=", uri2)
     userinfo_response = requests.get(uri2, verify=False)
-    print("HERE:", userinfo_response.json())
-    #print("HEY YOU!")
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email
+    id_=unique_id, name=user_name, email=user_email, token=token
     )
-
     # Doesn't exist? Add it to the database.
-    if not User.get(unique_id):
-        User.create(unique_id, user_name, user_email)
-
-    #print("The user:", user)
+    if not User.get(unique_id): 
+        User.create(unique_id, user_name, user_email, token)
+    else:
+        User.updateToken(unique_id, token)
     login_user(user)
-    return redirect(url_for("index", tkn=token))
+    return redirect(url_for("index"))
 
 @app.route("/logout")
 @login_required
@@ -173,5 +163,5 @@ if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
+    app.run(debug=True, ssl_context="adhoc", host="192.168.192.64")
     #"172.20.23.207"
