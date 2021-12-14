@@ -1,0 +1,21 @@
+.reveal-if-active {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+input[type="radio"]:checked ~ .reveal-if-active,
+input[type="checkbox"]:checked ~ .reveal-if-active {
+  opacity: 1;
+  max-height: 100px;
+  overflow: visible;
+  padding: 10px 20px;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+/*# sourceMappingURL=styles.css.map */

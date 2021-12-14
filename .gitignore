@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Notes to be ignored
-env_setup.txt
+.env_setup.txt
