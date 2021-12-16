@@ -39,17 +39,15 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 #from consumer import consumer
-from registerb import registerb
 from subscription import subscription
+from data_ingestion import data_ingestion
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
-#app.register_blueprint(consumer)
-app.register_blueprint(registerb)
 app.register_blueprint(subscription)
+app.register_blueprint(data_ingestion)
 
 # User session management setup
-# https://flask-login.readthedocs.io/en/latest
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -81,16 +79,12 @@ def index():
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
-        #return "Oauth2 IDM Demo.<br><br><button onclick='window.location.href=\"/auth\"'>Log in with Keyrock Account</button><br><br><button onclick='window.location.href=\"/authJWT\"'>Log in with Keyrock Account and JWT</button>'
-
 
 @app.route('/login')
 def login():
-    # Find out what URL to hit for Google login
+    # Find out what URL to hit for Keyrock login
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
     #print(request.base_url+ "/callback")
-    # Use library to construct the request for Google login and provide
-    # scopes that let you retrieve user's profile from Google
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=request.base_url + "/callback",
@@ -99,16 +93,13 @@ def login():
         #prompt='login',
         verify=False,
     )
-    #print(request_uri)
     return redirect(request_uri)
 
 @app.route("/login/callback")
 def callback():
     # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
-    #print(code)
     token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
-    #print("This is the base url:", request.base_url)
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
@@ -116,7 +107,6 @@ def callback():
         #prompt='login',
         code=code
     )
-    #print("Token_url:", token_url, "headers:", headers, "Body:", body)
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -125,7 +115,6 @@ def callback():
         verify=False
     )
     # Parse the tokens!
-    #print("Parse the tokens:", client.parse_request_body_response(json.dumps(token_response.json())))
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -134,7 +123,6 @@ def get_user_info():
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
-    #uri2 = 'https://account.lab.fiware.org/user?access_token=' + token
     uri2 = "https://10.0.20.226:443/user?access_token=" + token
     userinfo_response = requests.get(uri2, verify=False)
     unique_id = userinfo_response.json()["id"]
@@ -156,12 +144,11 @@ def get_user_info():
 @login_required
 def logout():
     logout_user()
-    #requests.post(KEYROCK_DISCOVERY_URL+"/oauth2/logout?client_id="+KEYROCK_CLIENT_ID, verify=False)
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
-    app.run(debug=True, ssl_context="adhoc", host="192.168.192.64")
+    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
     #"172.20.23.207"
