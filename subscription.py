@@ -5,12 +5,7 @@ from logging import exception
 from flask import Flask, render_template, request, redirect, url_for , jsonify, flash, Blueprint, current_app
 import os
 from os.path import join, dirname, realpath
-#from requests.api import head
-#from requests.models import HTTPError
-from werkzeug.datastructures import Headers
-from werkzeug.utils import secure_filename
 import socket
-#import fi
 import re
 import requests
 import json
@@ -28,30 +23,30 @@ subscription = Blueprint('subscription', __name__, template_folder='templates')
 
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 def subscriptionSubmission():
-    if request.method == 'POST':
-        if request.form.get('fr'):
-            dbname = 'FrSensorsPlatform'
-            createRequest(dbname,request.form.get('url-fr'))         
-            #check request response -  produce flash messages to demonstrate success or fail in consumer.html
-        if request.form.get('xb'):
-            dbname = 'XBELLO'
-            createRequest(dbname,request.form.get('url-xb'))
-        if request.form.get('tr'):
-            dbname = 'Triage_Platform'
-            createRequest(dbname,request.form.get('url-tr')) 
-        if request.form.get('ai'):
-            dbname = 'AirflowMCC'
-            createRequest(dbname,request.form.get('url-ai'))         
-        if request.form.get('si'):
-            dbname = 'Sivi'
-            createRequest(dbname,request.form.get('url-si'))
-        return render_template('subscription.html')
-    else :
-        if current_user.is_authenticated:
+    if current_user.is_authenticated:
+        if request.method == 'POST':
+            if request.form.get('fr'):
+                dbname = 'FrSensorsPlatform'
+                createRequest(dbname,request.form.get('url-fr'))         
+                #check request response -  produce flash messages to demonstrate success or fail in consumer.html
+            if request.form.get('xb'):
+                dbname = 'XBELLO'
+                createRequest(dbname,request.form.get('url-xb'))
+            if request.form.get('tr'):
+                dbname = 'Triage_Platform'
+                createRequest(dbname,request.form.get('url-tr')) 
+            if request.form.get('ai'):
+                dbname = 'AirflowMCC'
+                createRequest(dbname,request.form.get('url-ai'))         
+            if request.form.get('si'):
+                dbname = 'Sivi'
+                createRequest(dbname,request.form.get('url-si'))
             return render_template('subscription.html')
-        else:
-            flash('You should login first!', 'error')
-            return redirect(url_for('index'))
+        else :
+            return render_template('subscription.html')
+    else:
+        flash('You should login first!', 'error')
+        return redirect(url_for('index'))
 
 def createRequest(dbName, endpoint):
     url = "http://10.0.20.226:1026/v2/subscriptions/"
