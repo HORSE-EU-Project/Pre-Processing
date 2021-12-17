@@ -27,7 +27,7 @@ KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
-    "https://10.0.20.226:443"
+    "https://10.0.18.77:443"
 )
 
 ''' hostname = socket.gethostname()
