@@ -123,7 +123,7 @@ def get_user_info():
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
-    uri2 = "https://10.0.20.226:443/user?access_token=" + token
+    uri2 = KEYROCK_DISCOVERY_URL + "/user?access_token=" + token
     userinfo_response = requests.get(uri2, verify=False)
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
