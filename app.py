@@ -23,8 +23,10 @@ from user import User
 #import socket
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
+#KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
+#KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
+KEYROCK_CLIENT_ID = "74a46846-2e75-4e7f-8286-1be90331f60e"
+KEYROCK_CLIENT_SECRET="48b5d679-5e38-4f84-8b4f-bedc48b9adbd"
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -123,7 +125,7 @@ def get_user_info():
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
-    uri2 = "https://10.0.20.226:443/user?access_token=" + token
+    uri2 = KEYROCK_DISCOVERY_URL+'/user?access_token=' + token
     userinfo_response = requests.get(uri2, verify=False)
     unique_id = userinfo_response.json()["id"]
     user_email = userinfo_response.json()["email"]
