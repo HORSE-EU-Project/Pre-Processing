@@ -8,6 +8,8 @@ from flask_login import (
     current_user
 )
 
+from user import User
+
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='templates')
 
 @data_ingestion.route("/ingest", methods= ['GET', 'POST'])
@@ -33,6 +35,7 @@ def ingest_data():
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
                 flash('File uploaded successfully','success')
+                PostOrion(json_dict)
                 return redirect(request.url)    
             else:
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
@@ -43,6 +46,45 @@ def ingest_data():
         flash('You should login first!', 'error')
         return redirect(url_for('index'))
 
+def PostOrion(json_dict):
+    url = "http://10.0.18.77:1027/v2/op/update"
+    headerPartner = {}
+    
+    headerPartner['X-Auth-token'] = User.get_token(current_user.id)
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : "/"}
+    headersDict.update(headerPartner)
+
+    body = dict( 
+        {   "actionType":"APPEND",
+            "entities":[
+                {
+                    "id":"mobileID001", "type": "geoJson",
+                    "timestamp": {"type": "Datetime", "value": "10-04-19 12:00:17"},
+                    "LAT": {"type": "latitude", "value": 1111},
+                    "LON": {"type": "longitude", "value": "hello"}
+                }
+            ]
+        }
+    )
+    #payload["subject"]["entities"] = [{"idPattern" : ".*"}]
+    #payload["notification"]["http"]["url"] = endpoint
+    sendRequestToOrion(url, headersDict,body)
+
+def sendRequestToOrion(matchPostURL,headersDict,matchBody):
+    try:
+        print("matchPostURL",matchPostURL)
+        print("headersDict",headersDict)
+        print("-------json",json.dumps(matchBody))
+        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
+        if r.status_code == 201:
+            flash('Subscription completed successfully','success')
+        #elif r.status_code == 409:
+        #    flash('Device has already been registered','info')
+        else:
+            flash('Something went wrong','error')
+    except requests.exceptions.RequestException as e: 
+        flash('Internal error')
+        raise SystemExit(e)
 '''
 #Parsing the uploaded registration file
 def registerDevice(filename):

@@ -5,7 +5,7 @@ import requests
 import json
 import sqlite3
 from os.path import join, dirname, realpath
-from requests.sessions import session
+from requests.sessions import requote_uri, session
 from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
@@ -25,8 +25,8 @@ from user import User
 # Configure Keyrock as the IDM
 #KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
 #KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
-KEYROCK_CLIENT_ID = "74a46846-2e75-4e7f-8286-1be90331f60e"
-KEYROCK_CLIENT_SECRET="48b5d679-5e38-4f84-8b4f-bedc48b9adbd"
+KEYROCK_CLIENT_ID = "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd"
+KEYROCK_CLIENT_SECRET="12eab5b6-f063-417f-83e3-85ed61c45fe9"
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -83,6 +83,7 @@ def index():
         return render_template('index.html')
 
 @app.route('/login')
+
 def login():
     # Find out what URL to hit for Keyrock login
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
@@ -94,6 +95,7 @@ def login():
         scope=["openid", "email", "profile"],
         #prompt='login',
         verify=False,
+    
     )
     return redirect(request_uri)
 
@@ -109,6 +111,7 @@ def callback():
         #prompt='login',
         code=code
     )
+ 
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -117,6 +120,7 @@ def callback():
         verify=False
     )
     # Parse the tokens!
+
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -147,6 +151,22 @@ def get_user_info():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+#def PostJsonOrion():
+#--curl --location --request POST 'http://10.0.20.226:1027/v2/op/update' \
+#--header 'Content-Type: application/json' \
+#--header 'X-Auth-token: 8fb96f258d35951eaea2d999f5d0a83d10137145' \
+#--data-raw '{
+#    "actionType":"APPEND",
+#    "entities":[
+#        {
+#            "id":"mobileID001", "type": "geoJson",
+#            "timestamp": {"type": "Datetime", "value": "10-04-19 12:00:17"},
+#            "LAT": {"type": "latitude", "value": 28.93},
+#            "LON": {"type": "longitude", "value": "hello"}
+#        }
+#    ]
+#}'
 
 if __name__ == "__main__":
     # app.run(debug=True)
