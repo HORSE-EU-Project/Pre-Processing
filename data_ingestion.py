@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for , jsonify, 
 import os
 import json
 import requests
+from user import User
+from timedata import get_timestamp
 from werkzeug.utils import secure_filename
 from flask_login import (
     current_user
@@ -26,13 +28,16 @@ def ingest_data():
                 except:
                     flash('Incorrect file type. Please upload a valid json file.','error')
                     return redirect(request.url)  
-                print(fileContents)
+                timestamp = get_timestamp()
                 filename = secure_filename(file.filename)
+                #print("Name of the file is: ", filename)
                 # save uploaded json or create a new file with the same filename and write contents there
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
                 flash('File uploaded successfully','success')
+                User.update_history(current_user.id, timestamp, filename)
+                print(User.get_history(current_user.id))
                 return redirect(request.url)    
             else:
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')

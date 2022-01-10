@@ -19,3 +19,10 @@ input[type="checkbox"]:checked ~ .reveal-if-active {
 }
 
 /*# sourceMappingURL=styles.css.map */
+
+body {
+  text-align: center;
+}
+form {
+  display: inline-block;
+}

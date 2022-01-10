@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} Main Screen {% endblock %}
+
+{% block content %}
+
+<p>
+    <h1 style="color:green;text-align:center;">Hello, {{name}}!</h1>
+    <h4 style="color:green;text-align:center;"> This is your upload history: {{data | safe}}</h4>
+    
+</p>
+
+
+{% endblock %}
