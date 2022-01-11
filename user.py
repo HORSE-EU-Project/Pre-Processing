@@ -1,5 +1,5 @@
+import pandas as pd
 from flask_login import UserMixin
-
 from db import get_db
 
 class User(UserMixin):
@@ -22,6 +22,15 @@ class User(UserMixin):
             id_=user[0], name=user[1], email=user[2], token=user[3]
         )
         return user
+    
+    @staticmethod
+    def delete_per_id(id_):
+        db = get_db()
+        db.execute(
+            "DELETE FROM user WHERE id = ?", (id_,)
+        )
+     
+        db.commit()
 
     @staticmethod
     def updateToken(user_id, token):
@@ -59,6 +68,30 @@ class User(UserMixin):
             (id_, name, email, token),
         )
         db.commit()
+
+    @staticmethod
+    def update_history(id_, timestamp, filename):
+        db = get_db()
+        db.execute(
+            "INSERT INTO history (usr_id, timestamp, filename) "
+            "VALUES (?, ?, ?)",
+            (id_, timestamp, filename),
+        )
+        db.commit()
+
+    def get_history(user_id):
+        db = get_db()
+        history_data = db.execute(
+            "SELECT timestamp FROM history WHERE usr_id = ?", (user_id,)
+        ).fetchall()
+        return history_data
+
+    def upload_history(user_id):
+        db = get_db()
+        history_data = pd.read_sql_query(
+            "SELECT timestamp, filename FROM history WHERE usr_id = ?", db, params=(user_id,)
+        )
+        return history_data
 
     '''def delete_all():
         db = get_db()
