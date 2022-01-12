@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, Blueprint,
 import socket
 import base64
 import os
+from flask_login.utils import login_fresh
 import requests
 import json
 import sqlite3
@@ -11,9 +12,11 @@ from requests.sessions import session
 from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
+    fresh_login_required,
     current_user,
     login_required,
     login_user,
+    login_fresh,
     logout_user,
     UserMixin
 )
@@ -82,13 +85,17 @@ client = WebApplicationClient(KEYROCK_CLIENT_ID)
 def load_user(user_id):
     return User.get(user_id)
 
+@login_manager.needs_refresh_handler
+def refresh():
+    return render_template("index.html")
+
 # Upload folder
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 @app.route('/', methods= ["GET", "POST"])
 def index():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated: #and login_fresh()
         #Successfully authenticated   
         token = User.get_token(current_user.id)
         
@@ -162,32 +169,12 @@ def get_user_info():
 @app.route("/logout")
 @login_required
 def logout():
-    
-    # url = KEYROCK_DISCOVERY_URL + "/oauth2/revoke"
-    # a_str = (KEYROCK_CLIENT_ID + ":" + KEYROCK_CLIENT_SECRET).encode("ascii")
-    # creds = base64.b64encode(a_str)
-    # header = {
-    #     "Host": "idm",
-    #     "Authorization": "Basic " + creds.decode("ascii"),
-    #     "Content-Type": "application/x-www-form-urlencoded"
-    # }
-    # print("HEYYYYYYYYYYYYY",header["Authorization"])
-    # r = requests.post(url, headers=header, data={ "token" : User.get_token(current_user.id), "token_type_hint": "refresh_token"  }, verify=False)
-    # print("THIS IS THE CODE ---->",r.status_code)
-    
-    url = KEYROCK_DISCOVERY_URL + "/auth/external_logout?client_id=" + KEYROCK_CLIENT_ID
-    # header = {'Accept': 'application/json'}
-    r = requests.delete(url, verify=False)
-    print("THIS IS THE CODE------>",r)
-    usrid = current_user.id
     logout_user()
-    User.delete_per_id(usrid)
-    
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
-    app.run(debug=True, ssl_context="adhoc", host="192.168.192.41")
+    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
     #"172.20.23.207"

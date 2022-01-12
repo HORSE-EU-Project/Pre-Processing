@@ -70,7 +70,7 @@ class User(UserMixin):
         db.commit()
 
     @staticmethod
-    def update_history(id_, timestamp, filename):
+    def insert_in_history(id_, timestamp, filename):
         db = get_db()
         db.execute(
             "INSERT INTO history (usr_id, timestamp, filename) "
@@ -86,7 +86,7 @@ class User(UserMixin):
         ).fetchall()
         return history_data
 
-    def upload_history(user_id):
+    def fetch_history_dataframe(user_id):
         db = get_db()
         history_data = pd.read_sql_query(
             "SELECT timestamp, filename FROM history WHERE usr_id = ?", db, params=(user_id,)

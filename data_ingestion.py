@@ -29,14 +29,22 @@ def ingest_data():
                     flash('Incorrect file type. Please upload a valid json file.','error')
                     return redirect(request.url)  
                 timestamp = get_timestamp()
+                print(timestamp)
                 filename = secure_filename(file.filename)
-                #print("Name of the file is: ", filename)
+                '''
+                "metadata": {
+	                "username": "stelio",
+	                "dateUploaded": "2022-01-12T11:17:24.115+00:00"
+	            }
+                '''
+                metadata = {"username": current_user.name, "dateUploaded": str(timestamp)}
+                json_dict["metadata"] = metadata
                 # save uploaded json or create a new file with the same filename and write contents there
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
                 flash('File uploaded successfully','success')
-                User.update_history(current_user.id, timestamp, filename)
+                User.insert_in_history(current_user.id, timestamp, filename)
                 print(User.get_history(current_user.id))
                 return redirect(request.url)    
             else:

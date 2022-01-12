@@ -11,7 +11,7 @@ view_history = Blueprint('view_history', __name__, template_folder='templates')
 def view_upload_history():
     if current_user.is_authenticated:
         if request.method=='GET':
-            df = User.upload_history(current_user.id)
+            df = User.fetch_history_dataframe(current_user.id)
             if df.empty:
                 message = "You have not uploaded any files yet."
                 return render_template("user_history.html", name=current_user.name, data=message)   
