@@ -130,3 +130,6 @@ dmypy.json
 
 # Notes to be ignored
 .env_setup.txt
+
+static/json
+sqlite_db

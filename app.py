@@ -37,11 +37,13 @@ app = Blueprint('app', __name__, template_folder='templates')
 #from consumer import consumer
 from subscription import subscription
 from data_ingestion import data_ingestion
+from view_history import view_history
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
+app.register_blueprint(view_history)
 
 # User session management setup
 login_manager = LoginManager()
