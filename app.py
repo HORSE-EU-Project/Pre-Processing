@@ -23,8 +23,8 @@ from user import User
 #import socket
 
 # Configure Keyrock as the IDM
-#KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
-#KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
