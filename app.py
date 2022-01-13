@@ -25,17 +25,11 @@ from user import User
 # Configure Keyrock as the IDM
 #KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
 #KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
-KEYROCK_CLIENT_ID = "23a8072b-5fd2-412d-b485-287243c5e486"
-KEYROCK_CLIENT_SECRET="79745999-794b-46a1-9c59-8508c9a96c63"
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
 )
 
-''' hostname = socket.gethostname()
-local_ip = socket.gethostbyname(hostname)
-
-print(local_ip) '''
 
 app = Blueprint('app', __name__, template_folder='templates')
 
@@ -152,34 +146,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route("/")
-def routmain():
-    return render_template('main.html',name = current_user.name, email = current_user.email)
-
-@app.route("/sidemenu")
-def routmenu():
-    return render_template('sidemenu.html',name = current_user.name, email = current_user.email)
-
-
-#def PostJsonOrion():
-#--curl --location --request POST 'http://10.0.20.226:1027/v2/op/update' \
-#--header 'Content-Type: application/json' \
-#--header 'X-Auth-token: 8fb96f258d35951eaea2d999f5d0a83d10137145' \
-#--data-raw '{
-#    "actionType":"APPEND",
-#    "entities":[
-#        {
-#            "id":"mobileID001", "type": "geoJson",
-#            "timestamp": {"type": "Datetime", "value": "10-04-19 12:00:17"},
-#            "LAT": {"type": "latitude", "value": 28.93},
-#            "LON": {"type": "longitude", "value": "hello"}
-#        }
-#    ]
-#}'
 
 if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
-    #"172.20.23.207"
+
