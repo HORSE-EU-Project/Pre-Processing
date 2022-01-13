@@ -66,17 +66,12 @@ def PostOrion(json_dict):
             ]
         }
     )
-    #payload["subject"]["entities"] = [{"idPattern" : ".*"}]
-    #payload["notification"]["http"]["url"] = endpoint
     sendRequestToOrion(url, headersDict,body)
 
 def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        print("matchPostURL",matchPostURL)
-        print("headersDict",headersDict)
-        print("-------json",json.dumps(matchBody))
         r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
-        if r.status_code == 201:
+        if r.status_code == 204:
             flash('Subscription completed successfully','success')
         #elif r.status_code == 409:
         #    flash('Device has already been registered','info')
@@ -85,57 +80,4 @@ def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
         raise SystemExit(e)
-'''
-#Parsing the uploaded registration file
-def registerDevice(filename):
-    with open('static/json/' + filename, 'r') as file:
-        fileContents = file.read().replace(' ', '')
-        #Get url
-        httpPattern = r'h.*devices'
-        try:
-            matchPostURL = re.search(httpPattern, fileContents).group()
-            #print(matchPostURL)
-        except AttributeError:
-            print('Couldn\'t find the url')
-            flash('Error getting url','error')
-            matchPostURL = re.search(httpPattern, fileContents)
-        #Get headers!
-        headersPattern = r'(?<=\')[\w:/-]+(?=\')'
-        try:
-            matchHeaders = re.findall(headersPattern, fileContents)
-            #print(matchHeaders)
-        except AttributeError:
-            print('error Headers')
-            flash('Error getting headers','error')
-        #Creating dict of headers
-        headersDict = {}
-        for item in matchHeaders:
-            a = item.split(':')
-            headersDict[a[0]] = a[1]
-        #print(headersDict)
-            
-        #Returnpayload
-        payloadPattern =r'(?<=\')\{[\w\W\s\S\d\D]+\}(?=(\s)*\')'
-        try:
-            matchPayload = re.search(payloadPattern, fileContents).group()
-            #print(matchPayload)
-        except AttributeError:
-            print('error Payload')
-            flash('Error getting correct payload','error') 
-        #print(matchPayload)
-        sendRequestToFiware(matchPostURL,headersDict,matchPayload)
-        
-#Sending a request to fiware       
-def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
-    #print(headersDict)
-    try:
-        r = requests.post(matchPostURL,headers = headersDict,data= matchPayload)
-        if r.status_code == 201:
-            flash('Device registered successfully','success')
-        elif r.status_code == 409:
-            flash('Device has already been registered','info')
-        #print(r.status_code)
-    except requests.exceptions.RequestException as e: 
-        flash('Internal error')
-        raise SystemExit(e)
-        '''
+
