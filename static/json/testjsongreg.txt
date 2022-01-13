@@ -1,1 +1,0 @@
-{'actionType': 'APPEND', 'entities': [{'id': 'mobileID001', 'type': 'geoJson', 'timestamp': {'type': 'Datetime', 'value': '10-04-19 12:00:17'}, 'LAT': {'type': 'latitude', 'value': 28.93}, 'LON': {'type': 'longitude', 'value': 'hello'}}], 'metadata': 'HELLo'}

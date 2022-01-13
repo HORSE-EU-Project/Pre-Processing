@@ -1,22 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, Blueprint, make_response
+from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import socket
-import base64
 import os
-from flask_login.utils import login_fresh
 import requests
 import json
 import sqlite3
-import datetime
 from os.path import join, dirname, realpath
-from requests.sessions import session
+from requests.sessions import requote_uri, session
 from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
-    fresh_login_required,
     current_user,
     login_required,
     login_user,
-    login_fresh,
     logout_user,
     UserMixin
 )
@@ -30,50 +25,32 @@ from user import User
 # Configure Keyrock as the IDM
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
-#KEYROCK_CLIENT_ID = "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd"
-print(KEYROCK_CLIENT_ID)
-#KEYROCK_CLIENT_SECRET = "12eab5b6-f063-417f-83e3-85ed61c45fe9"
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
 )
 
-''' hostname = socket.gethostname()
-local_ip = socket.gethostbyname(hostname)
-
-print(local_ip) '''
 
 app = Blueprint('app', __name__, template_folder='templates')
-
 
 # Referencing the file __name__
 #from consumer import consumer
 from subscription import subscription
 from data_ingestion import data_ingestion
-from view_history import view_history
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
-app.register_blueprint(view_history)
-flag = False
 
 # User session management setup
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-def get_timestamp():
-    timestamp = datetime.datetime.now()
-    print(timestamp)
-    return timestamp
-
 # Naive database setup
 try:
     init_db_command()
 except sqlite3.OperationalError:
-
-
     # Assume it's already been created
     pass
 
@@ -85,30 +62,24 @@ client = WebApplicationClient(KEYROCK_CLIENT_ID)
 def load_user(user_id):
     return User.get(user_id)
 
-@login_manager.needs_refresh_handler
-def refresh():
-    return render_template("index.html")
-
 # Upload folder
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 @app.route('/', methods= ["GET", "POST"])
 def index():
-    if current_user.is_authenticated: #and login_fresh()
-        #Successfully authenticated   
-        token = User.get_token(current_user.id)
+    if current_user.is_authenticated:
+        #Successfully authenticated
         
+        token = User.get_token(current_user.id)
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
-       
     else:
         return render_template('index.html')
 
 @app.route('/login')
+
 def login():
     # Find out what URL to hit for Keyrock login
-    global flag 
-    flag = False
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
     #print(request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
@@ -118,6 +89,7 @@ def login():
         scope=["openid", "email", "profile"],
         #prompt='login',
         verify=False,
+    
     )
     return redirect(request_uri)
 
@@ -133,6 +105,7 @@ def callback():
         #prompt='login',
         code=code
     )
+ 
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -141,6 +114,7 @@ def callback():
         verify=False
     )
     # Parse the tokens!
+
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -172,9 +146,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
 if __name__ == "__main__":
     # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
-    #"172.20.23.207"
+

@@ -3,16 +3,50 @@
 
 {% block content %}
 
-<!--<button onclick='window.location.href="/login"'>Log in with Keyrock Account</button>-->
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
-<h1 style="color:green;text-align:center;">Welcome to DFM!</h1>
 
-<div class="row margin-bottom-10">
-    <div class="text-center">
-        <button class="btn btn-primary" role="button" data-bs-toggle="button" onclick="location.href='https://10.0.18.77/sign_up/'">Sign up in Keyrock</button>
-        <button class="btn btn-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/login"'>Log in with Keyrock</button>
+<h1 style="color:black;text-align: center;margin-top: 2%;"><strong>Welcome to DFF!</strong></h1>  
+<div class="row" style="border-radius:20px;display: flex; margin-bottom: 5%; margin: 20px; box-shadow: 1px 5px 20px #888888; margin-top: 2%; margin-left: auto;margin-right: auto;  width:50%;">
+
+  <div class="column" style="border-radius: 20px 0px 0px 20px;width: 50%;padding: 20px;">
+        <h2 style="color:black;text-align: center;">Sing up / Log in</h2>
+        <div class="column text-center" >
+            <button class="btn btn-primary btn-lg" style="width: 300px;margin:20px;" role="button" data-bs-toggle="button" onclick="location.href='https://10.0.18.77/sign_up/'">Sign up via Keyrock</button>
+        </div>
+        <div class="column text-center" >
+            <button class="btn btn-primary btn-lg" style="width: 300px;margin:20px;" role="button" data-bs-toggle="button" onclick='window.location.href="/login"'>Log in via Keyrock</button>
+        </div>
+        
+    
+    </div>
+    <div class="column" style="border-radius: 0px 20px 20px 0px;width: 50%;padding: 20px; background-image: url('../static/back.jpg');">
+        <h2 style="color:black;text-align: center; color:white;">What we do!</h2>  
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  Heterogenous data handling
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  flexible storage
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  subscription support
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  Heterogenous data handling
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  confidentiality
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  integrity & availability through OAuth2 workflows
+        </p>
+        <p style="color:white;">
+          <img src="../static/check.png" style="width:20px;height:20px;">  automatic service restarts & backups
+        </p>
     </div>
 </div>
+
+
 
 
 {% endblock %}
