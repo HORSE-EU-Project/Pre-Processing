@@ -3,48 +3,78 @@
 
 {% block content %}
 
-<p><h1 style="color:green;text-align:center;">Hello, {{name}}! You're logged in! Email: {{email}}</h1></p>
+<style>
+    .vertical-menu {
+        width: 200px;
+        border-radius: 200px;
+    }
+
+    .vertical-menu a {
+        background-color: #eee;
+        color: black;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+    }
+
+    .vertical-menu a:hover {
+        background-color: #ccc;
+    }
+
+    .vertical-menu a.active {
+        background-color: #025573;
+
+        color: white;
+    }
+</style>
 
 <div class="container">
-    <!-- Trigger the modal with a button -->
-    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Give me my token!</button>
-  
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">This is your token!</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
-                        <small>Copy it!</small>
+
+    <div class="row">
+
+        <div class="column" style="width:20%;">
+            
+            <div class=" vertical-menu ">
+        
+                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color:white; color: #025573; border-width: 1px; border-color: #025573; margin-bottom: 2%;"> <img src="./static/coin.png" style="height: 25px;">&nbsp;Give me token!</button>
+                
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">This is your token!</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
+                                    <small>Copy it!</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <a class="active" href="/" >home</a>
+                <a class="" href="/upload">Upload Data</a>
+                <a href="#">History Upload</a>
+                <a href="/subscribe">Subscribe</a>
+                
             </div>
         </div>
-    </div>
 
-    <form action=/consume method= "POST" enctype="multipart/form-data" >
-        <a class="btn btn-info btn-lg" role="button" data-bs-toggle="button" onclick='window.location.href="/ingest"'>Ingest data</a>
-    </form>
+        <div class="column" style="width: 80%;">
+            <div class="row" style="justify-content: center;">
+                <img src="../static/clapping.png" style="object-fit:cover; height:50px;">
+                <h1>Welcome, {{name}}!</h1>
+            </div>
+            <p style="text-align: center;">DFF is the No1 Web app for secure Data exchange</p>
+            
+        </div>
+
+      </div>
     
-    <form action=/consume method= "POST" enctype="multipart/form-data" >
-        <a class="btn btn-info btn-lg" role="button" data-bs-toggle="button" onclick='window.location.href="/subscribe"'>Make a subscription</a>
-    </form>
 
-    <a class="btn btn-primary" role="button" data-bs-toggle="button" onclick='window.location.href="/logout"'>Logout</a>
-</div>
-
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script> 
-    $(document).ready(function() {
-        $('#showToken').click(function() {
-            $('.show-onclick').show({tkn});
-        });
-    });
-</script>
+      {% include "./footer.html" %}
 {% endblock %}

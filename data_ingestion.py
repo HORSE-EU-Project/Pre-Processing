@@ -12,7 +12,7 @@ from user import User
 
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='templates')
 
-@data_ingestion.route("/ingest", methods= ['GET', 'POST'])
+@data_ingestion.route("/upload", methods= ['GET', 'POST'])
 def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
@@ -41,7 +41,7 @@ def ingest_data():
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
                 return redirect(request.url)    
         else:
-            return render_template('upload.html')
+            return render_template('upload.html',name = current_user.name, email = current_user.email)
     else:
         flash('You should login first!', 'error')
         return redirect(url_for('index'))
