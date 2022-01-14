@@ -7,7 +7,7 @@ from flask_login import (
 
 view_history = Blueprint('view_history', __name__, template_folder='templates')
 
-@view_history.route("/main/user_history", methods= ['GET', 'POST'])
+@view_history.route("/user_history", methods= ['GET', 'POST'])
 def view_upload_history():
     if current_user.is_authenticated:
         if request.method=='GET':
