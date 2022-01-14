@@ -19,3 +19,44 @@ input[type="checkbox"]:checked ~ .reveal-if-active {
 }
 
 /*# sourceMappingURL=styles.css.map */
+
+html, body {
+  height: 100%;
+ 
+}
+.content {
+  min-height: 69%;
+}
+.content-inside {
+  padding: 20px;
+  padding-bottom: 50px;
+
+}
+.footer{
+    height: 200px;
+    margin-top:-200px;
+}
+
+/* sidemenu */
+.vertical-menu {
+  width: 200px;
+  border-radius: 200px;
+}
+
+.vertical-menu a {
+  background-color: #eee;
+  color: black;
+  display: block;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.vertical-menu a:hover {
+  background-color: #ccc;
+}
+
+.vertical-menu a.active {
+  background-color: #025573;
+
+  color: white;
+}

@@ -1,28 +1,64 @@
-<!doctype html>
-<html lang="en">
 
-    <style>
-        .column-footer{
-            width: 20%;
-            padding-top: 2%;
-            
-            
-        }
-        .fixed-bottom{
-            min-height: 10%;
-            background-color: #025573
-        }
-    </style>
 
+<style>
+
+.col-container {
+  display: table; /* Make the container element behave like a table */
+  width: 100%; /* Set full-width to expand the whole page */
+  background-color:#025573 ;
+  padding-left:5%;
+  padding-right: 5%;
+}
+
+.col {
+    
+  display: table-cell;
+  width: 33.33%;
+}
+</style>
+
+
+<div class="col-container">
+    <div class="col">
+        <img src="./static/dff_tr_wh.png" style="height: 100px;">
+    </div>
   
-<div class="row fixed-bottom" >
+    <div class="col">
+        <legend style="color: white;">Menu</legend>
 
-    <div class="column column-footer">
-        
+        <div>
+            <a href="#" style="color: lightgray;">About</a>
+        </div>
+       <div>
+
+           <a href="#" style="color: lightgray;">Contact</a>
+       </div>
+    </div>
+  
+    <div class="col">
+        <legend style="color: white;">Posibilities</legend>
+
+        <div>
+            <a href="/upload" style="color: lightgray;">Upload Json</a>
+        </div>
+        <div>
+           <a href="/upload" style="color: lightgray;">History Upload</a>
+       </div>
+       <div>
+           <a href="/subscribe" style="color: lightgray;">Subscribe</a>
+       </div>
     </div>
     
+  </div>
+  <div style=" text-align: center; background-color:#002938 ;color: lightgrey; width: 100%;">
+    <p> © Copyright 2022 | All rights reserved | EIGHT BELLS LTD</p>
+</div>
+<!--
+<div class="row footer-content" >
+
+    
     <div class="column column-footer">
-        <img src="./static/dff_tr_wh.png" style="height: 100px;">
+        <img src="./static/dff_tr_wh.png" style="height: 10px;">
     </div>
 
     <div class="column column-footer vertical">
@@ -57,18 +93,11 @@
          
     </div>
     
-    <div class="column column-footer">
-        
-    </div>
+
     <div style=" text-align: center; background-color:#002938 ;color: lightgrey; width: 100%;">
         <p> © Copyright 2022 | All rights reserved | EIGHT BELLS LTD</p>
     </div>
     
 </div>
 
-    
-
-
-    
-    
-</html>
+-->

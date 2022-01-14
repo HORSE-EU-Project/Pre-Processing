@@ -5,137 +5,140 @@
 
 <style>
     .vertical-menu {
-        width: 200px;
-        border-radius: 200px;
-    }
+  width: 200px;
+  border-radius: 200px;
+}
 
-    .vertical-menu a {
-        background-color: #eee;
-        color: black;
-        display: block;
-        padding: 12px;
-        text-decoration: none;
-    }
+.vertical-menu a {
+  background-color: #eee;
+  color: black;
+  display: block;
+  padding: 12px;
+  text-decoration: none;
+}
 
-    .vertical-menu a:hover {
-        background-color: #ccc;
-    }
+.vertical-menu a:hover {
+  background-color: #ccc;
+}
 
-    .vertical-menu a.active {
-        background-color: #025573;
+.vertical-menu a.active {
+  background-color: #025573;
 
-        color: white;
-    }
+  color: white;
+}
 </style>
+<body>
 
-<div class="container">
+    <div class="content">
+        <div class="content-inside ">
+            <div class="row" style="padding:5%">
 
-    <div class="row">
+                <div class="column" style="width:20%;">
 
-        <div class="column" style="width:20%;">
-            
-            
-            <div class=" vertical-menu ">
-        
-                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color:white; color: #025573; border-width: 1px; border-color: #025573; margin-bottom: 2%;">Give me my token!</button>
-                
-                <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-                        
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">This is your token!</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <div>
-                                    <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
-                                    <small>Copy it!</small>
+
+                    <div class=" vertical-menu ">
+                    
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color:white; color: #025573; border-width: 1px; border-color: #025573; margin-bottom: 2%;">Give me my token!</button>
+
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">This is your token!</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
+                                            <small>Copy it!</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <a class=""       href="/upload">Upload Data</a>
+                        <a class=""       href="/user_history">History Upload</a>
+                        <a class="active" href="/subscribe">Subscribe</a>
+
                     </div>
                 </div>
+            
+                <div class="column " style="width: 80%;">
+                    <h3 style="text-align:center;">Subscription Form</h3>
+                    <form method=post action="#">
+                        <div class="text-center">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item ">
+                                <!-- Default checked -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="fr" id="fr">
+                                        <label class="custom-control-label" for="fr">Fr Sensors platform</label>
+                                        <div class="reveal-if-active">
+                                            <label for="url-fr">Please enter the url for notifications:</label>
+                                            <input class="require-if-active" type="url" id="url-fr" name="url-fr" data-require-pair="#fr">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                <!-- Default checked -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="xb" id="xb">
+                                    <label class="custom-control-label" for="xb">XBELLO</label> 
+                                    <div class="reveal-if-active">
+                                        <label for="url-xb">Please enter the url for notifications:</label>
+                                        <input class="require-if-active" type="url" id="url-xb" name="url-xb" data-require-pair="#xb">
+                                    </div>
+                                </div>
+                                </li>
+                                <li class="list-group-item">
+                                <!-- Default checked -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="tr" id="tr">
+                                    <label class="custom-control-label" for="tr">Triage platform</label>
+                                    <div class="reveal-if-active">
+                                        <label for="url-tr">Please enter the url for notifications:</label>
+                                        <input class="require-if-active" type="url" id="url-tr" name="url-tr" data-require-pair="#tr">
+                                    </div>
+                                </div>
+                                </li>
+                                <li class="list-group-item">
+                                <!-- Default checked -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="ai" id="ai">
+                                    <label class="custom-control-label" for="ai">AirflowMCC</label>
+                                    <div class="reveal-if-active">
+                                        <label for="url-ai">Please enter the url for notifications:</label>
+                                        <input class="require-if-active" type="url" id="url-ai" name="url-ai" data-require-pair="#ai">
+                                    </div>
+                                </div>
+                                </li>
+                                <li class="list-group-item">
+                                <!-- Default checked -->
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="si" id="si">
+                                    <label class="custom-control-label" for="si">Sivi</label>
+                                    <div class="reveal-if-active">
+                                        <label for="url-si">Please enter the url for notifications:</label>
+                                        <input class="require-if-active" type="url" id="url-si" name="url-si" data-require-pair="#si">
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
                 
-                <a class="" href="/" >home</a>
-                <a class="" href="/upload">Upload Data</a>
-                <a href="#">History Upload</a>
-                <a class="active" href="/subscribe">Subscribe</a>
-                
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="column " style="width: 80%;">
-            <h3 style="text-align:center;">Subscription Form</h3>
-            <form method=post action="#">
-                <div class="text-center">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item ">
-                        <!-- Default checked -->
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" name="fr" id="fr">
-                                <label class="custom-control-label" for="fr">Fr Sensors platform</label>
-                                <div class="reveal-if-active">
-                                    <label for="url-fr">Please enter the url for notifications:</label>
-                                    <input class="require-if-active" type="url" id="url-fr" name="url-fr" data-require-pair="#fr">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                        <!-- Default checked -->
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="xb" id="xb">
-                            <label class="custom-control-label" for="xb">XBELLO</label> 
-                            <div class="reveal-if-active">
-                                <label for="url-xb">Please enter the url for notifications:</label>
-                                <input class="require-if-active" type="url" id="url-xb" name="url-xb" data-require-pair="#xb">
-                            </div>
-                        </div>
-                        </li>
-                        <li class="list-group-item">
-                        <!-- Default checked -->
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="tr" id="tr">
-                            <label class="custom-control-label" for="tr">Triage platform</label>
-                            <div class="reveal-if-active">
-                                <label for="url-tr">Please enter the url for notifications:</label>
-                                <input class="require-if-active" type="url" id="url-tr" name="url-tr" data-require-pair="#tr">
-                            </div>
-                        </div>
-                        </li>
-                        <li class="list-group-item">
-                        <!-- Default checked -->
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="ai" id="ai">
-                            <label class="custom-control-label" for="ai">AirflowMCC</label>
-                            <div class="reveal-if-active">
-                                <label for="url-ai">Please enter the url for notifications:</label>
-                                <input class="require-if-active" type="url" id="url-ai" name="url-ai" data-require-pair="#ai">
-                            </div>
-                        </div>
-                        </li>
-                        <li class="list-group-item">
-                        <!-- Default checked -->
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="si" id="si">
-                            <label class="custom-control-label" for="si">Sivi</label>
-                            <div class="reveal-if-active">
-                                <label for="url-si">Please enter the url for notifications:</label>
-                                <input class="require-if-active" type="url" id="url-si" name="url-si" data-require-pair="#si">
-                            </div>
-                        </div>
-                        </li>
-                    </ul>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                
-            </form>
+    <footer>
+        {% include "./footer.html" %}
+    </footer>
 
-        </div>
-      </div>
-
-
-      {% include "./footer.html" %}
+</body>
 {% endblock %}
-
-<!-- onclick='window.location.href="/consumer"'-->

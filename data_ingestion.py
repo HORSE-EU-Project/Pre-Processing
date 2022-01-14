@@ -61,29 +61,18 @@ def ingest_data():
 
 def PostOrion(json_dict):
     url = "http://10.0.18.77:1027/v2/op/update"
-    headerPartner = {}
     
-    headerPartner['X-Auth-token'] = User.get_token(current_user.id)
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : "/"}
-    headersDict.update(headerPartner)
 
-    body = dict( 
-        {   "actionType":"APPEND",
-            "entities":[
-                {
-                    "id":"mobileID001", "type": "geoJson",
-                    "timestamp": {"type": "Datetime", "value": "10-04-19 12:00:17"},
-                    "LAT": {"type": "latitude", "value": 1111},
-                    "LON": {"type": "longitude", "value": "hello"}
-                }
-            ]
-        }
-    )
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_token(current_user.id))}
+
+    body = json_dict
+    print(body)
     sendRequestToOrion(url, headersDict,body)
 
 def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
+        r = requests.post(matchPostURL,headers = headersDict,data= matchBody)
+        print("----------",r.status_code)
         if r.status_code == 204:
             flash('Subscription completed successfully','success')
         #elif r.status_code == 409:
