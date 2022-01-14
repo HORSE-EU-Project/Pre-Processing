@@ -31,23 +31,16 @@ def ingest_data():
                     flash('Incorrect file type. Please upload a valid json file.','error')
                     return redirect(request.url)  
                 timestamp = get_timestamp()
-                print(timestamp)
                 filename = secure_filename(file.filename)
-                '''
-                "metadata": {
-	                "username": "stelio",
-	                "dateUploaded": "2022-01-12T11:17:24.115+00:00"
-	            }
-                '''
-                metadata = {"username": current_user.name, "dateUploaded": str(timestamp)}
-                json_dict["metadata"] = metadata
+                dfmmetadata = {"type": "username", "value": "admin"}
+                for i in range(0, len(json_dict["entities"])):
+                    json_dict["entities"][i]["dfm_metadata"] = dfmmetadata
                 # save uploaded json or create a new file with the same filename and write contents there
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
                 flash('File uploaded successfully','success')
                 User.insert_in_history(current_user.id, timestamp, filename)
-                print(User.get_history(current_user.id))
                 PostOrion(json_dict)
                 return redirect(request.url)    
             else:
@@ -61,31 +54,18 @@ def ingest_data():
 
 def PostOrion(json_dict):
     url = "http://10.0.18.77:1027/v2/op/update"
-    headerPartner = {}
-    
-    headerPartner['X-Auth-token'] = User.get_token(current_user.id)
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : "/"}
-    headersDict.update(headerPartner)
+    # headerPartner = {} 
+    # headerPartner['X-Auth-token'] = User.get_token(current_user.id)
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
+    #headersDict.update(headerPartner)
+    body = json_dict
+    sendRequestToOrion(url, headersDict, body)
 
-    body = dict( 
-        {   "actionType":"APPEND",
-            "entities":[
-                {
-                    "id":"mobileID001", "type": "geoJson",
-                    "timestamp": {"type": "Datetime", "value": "10-04-19 12:00:17"},
-                    "LAT": {"type": "latitude", "value": 1111},
-                    "LON": {"type": "longitude", "value": "hello"}
-                }
-            ]
-        }
-    )
-    sendRequestToOrion(url, headersDict,body)
-
-def sendRequestToOrion(matchPostURL,headersDict,matchBody):
+def sendRequestToOrion(matchPostURL, headersDict, matchBody):
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
+        r = requests.post(matchPostURL, headers = headersDict, data=json.dumps(matchBody))
         if r.status_code == 204:
-            flash('Subscription completed successfully','success')
+            flash('Data sent to orion successfully','success')
         #elif r.status_code == 409:
         #    flash('Device has already been registered','info')
         else:
