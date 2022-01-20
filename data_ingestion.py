@@ -19,6 +19,8 @@ def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
+            text=request.form['description']
+            
             if file.filename == '':
                 flash('No file was selected','error')
                 return redirect(request.url)
@@ -54,7 +56,10 @@ def ingest_data():
 
 def PostOrion(json_dict):
     url = "http://10.0.18.77:1027/v2/op/update"
+    # headerPartner = {} 
+    # headerPartner['X-Auth-token'] = User.get_token(current_user.id)
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
+    #headersDict.update(headerPartner)
     body = json_dict
     sendRequestToOrion(url, headersDict, body)
 
