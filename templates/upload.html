@@ -27,7 +27,6 @@
 }
 </style>
 <body>
-
     <div class="content">
         <div class="content-inside">
 
@@ -70,6 +69,7 @@
                         <div style="padding:5%;">
                             <form class="form-inline" style="justify-content: center;" method= "POST" enctype="multipart/form-data" action='/upload'>
                                 <p><input type="file" name="jsonFile"></p>
+                                <textarea id="description" name="description" placeholder="Write your description.." style="width:250px; height:50px; margin-right:30px;"></textarea>
                                 <p><input type="submit" value="Submit" onclick=PostJsonOrion()></p>
                             </form>
 
@@ -77,23 +77,8 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
     </div>
-=======
 
-        <div class="column " style="width: 80%;">
-            <h3 style="text-align:center;">Upload a JSON file</h3>
-
-                <div style="padding:5%;">
-                    <form class="form-inline" style="justify-content: center;" method= "POST" enctype="multipart/form-data" action='/upload'>
-                        <p><input type="file" name="jsonFile"></p>
-                        <p><input type="submit" value="Submit" onclick=PostJsonOrion()></p>
-                    </form>
-                    
-                </div>    
-        </div>
-      </div>
->>>>>>> 2c944a976bc9bc1cc70431720606a64f85ee5e24
     <footer>
         {% include "./footer.html" %}    
     </footer>

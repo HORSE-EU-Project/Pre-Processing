@@ -19,6 +19,7 @@ def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
+            text=request.form['description']
             if file.filename == '':
                 flash('No file was selected','error')
                 return redirect(request.url)

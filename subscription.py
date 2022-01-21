@@ -1,23 +1,12 @@
-
-from io import StringIO
-import random
 from logging import exception
-from flask import Flask, render_template, request, redirect, url_for , jsonify, flash, Blueprint, current_app
-import os
+from flask import Flask, render_template, request, redirect, url_for , flash, Blueprint
 from os.path import join, dirname, realpath
-import socket
-import re
 import requests
 import json
 from flask_login import (
-    LoginManager,
-    current_user,
-    login_required,
-    login_user,
-    logout_user,
-    UserMixin
+    current_user
 )
-
+from user import User
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
 
@@ -27,20 +16,25 @@ def subscriptionSubmission():
         if request.method == 'POST':
             if request.form.get('fr'):
                 dbname = 'FrSensorsPlatform'
-                createRequest(dbname,request.form.get('url-fr'))         
+                db_id = 'dataLoggerID'
+                createRequest(dbname,request.form.get('url-fr'), db_id)         
                 #check request response -  produce flash messages to demonstrate success or fail in consumer.html
             if request.form.get('xb'):
                 dbname = 'XBELLO'
-                createRequest(dbname,request.form.get('url-xb'))
+                db_id = 'mobileID'
+                createRequest(dbname,request.form.get('url-xb'), db_id)
             if request.form.get('tr'):
                 dbname = 'Triage_Platform'
-                createRequest(dbname,request.form.get('url-tr')) 
+                db_id = 'tagID'
+                createRequest(dbname,request.form.get('url-tr'), db_id) 
             if request.form.get('ai'):
                 dbname = 'AirflowMCC'
-                createRequest(dbname,request.form.get('url-ai'))         
+                db_id = 'uxvID'
+                createRequest(dbname,request.form.get('url-ai'), db_id)         
             if request.form.get('si'):
                 dbname = 'Sivi'
-                createRequest(dbname,request.form.get('url-si'))
+                db_id = 'sID'
+                createRequest(dbname,request.form.get('url-si'), db_id)
             return render_template('subscription.html')
         else :
             return render_template('subscription.html')
@@ -48,12 +42,9 @@ def subscriptionSubmission():
         flash('You should login first!', 'error')
         return redirect(url_for('index'))
 
-def createRequest(dbName, endpoint):
-    url = "http://10.0.20.226:1026/v2/subscriptions/"
-    headerPartner = {}
-    headerPartner['Fiware-Service'] = dbName
-    headersDict = {"Content-Type" : "application/json", "Fiware-ServicePath" : "/"}
-    headersDict.update(headerPartner)
+def createRequest(dbName, endpoint, db_id):
+    url = "http://10.0.18.77:1027/v2/subscriptions/"
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
     #constructing payload
     #entities = [{"idPattern" : ".*"}]
     #condition = {"attrs" : []}
@@ -61,9 +52,9 @@ def createRequest(dbName, endpoint):
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
                      )
-    payload["subject"]["entities"] = [{"idPattern" : ".*"}]
+    payload["subject"]["entities"] = [{"idPattern" : db_id + ".*"}]
     payload["notification"]["http"]["url"] = endpoint
-    sendRequestToFiware(url, headersDict,payload)
+    sendRequestToFiware(url, headersDict, payload)
 
 
 #Sending a request to fiware       
@@ -72,7 +63,7 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
         print(matchPostURL)
         print(headersDict)
         print(json.dumps(matchPayload))
-        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchPayload))
+        r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         if r.status_code == 201:
             flash('Subscription completed successfully','success')
         #elif r.status_code == 409:
