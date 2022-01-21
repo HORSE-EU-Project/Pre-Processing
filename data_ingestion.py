@@ -20,7 +20,6 @@ def ingest_data():
         if request.method == 'POST':
             file = request.files['jsonFile']
             text=request.form['description']
-            
             if file.filename == '':
                 flash('No file was selected','error')
                 return redirect(request.url)
@@ -56,16 +55,13 @@ def ingest_data():
 
 def PostOrion(json_dict):
     url = "http://10.0.18.77:1027/v2/op/update"
-    # headerPartner = {} 
-    # headerPartner['X-Auth-token'] = User.get_token(current_user.id)
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
-    #headersDict.update(headerPartner)
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_token(current_user.id))}
     body = json_dict
-    sendRequestToOrion(url, headersDict, body)
+    sendRequestToOrion(url, headersDict,body)
 
-def sendRequestToOrion(matchPostURL, headersDict, matchBody):
+def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        r = requests.post(matchPostURL, headers = headersDict, data=json.dumps(matchBody))
+        r = requests.post(matchPostURL,headers = headersDict,data= matchBody)
         if r.status_code == 204:
             flash('Data sent to orion successfully','success')
         #elif r.status_code == 409:
