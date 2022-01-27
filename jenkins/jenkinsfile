@@ -1,11 +1,19 @@
 pipeline {
-    agent any
+    agent none
     options {
         skipStagesAfterUnstable()
     }
     stages {
         stage('Build') {
+            agent {
+                docker {
+                    image 'python:3'
+                }
+            }
             steps {
+                echo 'Testing'
+                sh 'pip --version'
+                
                 echo 'Building'
                 sh 'pip install -r requirements.txt'
                 sh 'python app.py'
