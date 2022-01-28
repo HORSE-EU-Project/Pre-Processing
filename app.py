@@ -48,9 +48,6 @@ app.register_blueprint(view_history)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# create a restful api
-api = Api(app)
-
 # Naive database setup
 try:
     init_db_command()
