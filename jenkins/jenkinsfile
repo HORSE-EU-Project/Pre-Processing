@@ -6,6 +6,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {           
+                echo 'Setting up Wilma...'
+                sh 'docker-compose -f docker-compose.yml up'
                 echo 'Building'
                 sh 'python3 app.py'
             }
