@@ -7,8 +7,9 @@ pipeline {
         stage('Build') {
             steps {           
                 echo 'Building'
+                sh ''
                 sh 'pip install -r requirements.txt'
-                sh 'python app.py'
+                sh 'python3 app.py'
             }
         }
     }
