@@ -22,7 +22,7 @@ def ingest_data():
         if request.method == 'POST':
             file = request.files['jsonFile']
             text=request.form['description']
-            
+            print("-----------------------",text)
             if file.filename == '':
                 flash('No file was selected','error')
                 return redirect(request.url)
