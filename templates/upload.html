@@ -2,28 +2,20 @@
 {% block title %} Oauth2 IDM Demo. {% endblock %}
 
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
 <style>
-    .vertical-menu {
-  width: 200px;
-  border-radius: 200px;
-}
+    @media(max-width: 800px) {
 
-.vertical-menu a {
-  background-color: #eee;
-  color: black;
+.column {
+  font-size:auto;
+  width: 100%!important;
   display: block;
-  padding: 12px;
-  text-decoration: none;
+text-align: center;
 }
-
-.vertical-menu a:hover {
-  background-color: #ccc;
-}
-
-.vertical-menu a.active {
-  background-color: #025573;
-
-  color: white;
 }
 </style>
 <body>
@@ -47,12 +39,12 @@
                                         <h4 class="modal-title">This is your token!</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div>
-                                            <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
-                                            <small>Copy it!</small>
-                                        </div>
-                                    </div>
+                                    <div class="modal-body form-inline">
+                                         
+                                        <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
+                                        <small>Copy it!</small>
+                                     
+                                </div>
                                 </div>
                             </div>
                         </div>

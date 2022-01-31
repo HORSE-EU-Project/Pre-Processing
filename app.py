@@ -22,9 +22,12 @@ from user import User
 
 #import socket
 
+global index_add_counter #for test
+index_add_counter=0 #for test
+
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "23a8072b-5fd2-412d-b485-287243c5e486")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "79745999-794b-46a1-9c59-8508c9a96c63")
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -49,7 +52,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # create a restful api
-api = Api(app)
 
 # Naive database setup
 try:
@@ -70,15 +72,24 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
+
 @app.route('/', methods= ["GET", "POST"])
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
         
-        token = User.get_token(current_user.id)
-        return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+        token = User.get_token(current_user.id) 
+
+        global index_add_counter #for test
+        index_add_counter=index_add_counter+1 #for test
+
+        if index_add_counter==1: #for test
+            return render_template('modal.html' , name = current_user.name, email = current_user.email)
+        else:
+            return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
+
 
 @app.route('/login')
 

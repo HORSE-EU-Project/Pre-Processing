@@ -10,6 +10,7 @@ view_history = Blueprint('view_history', __name__, template_folder='templates')
 
 @view_history.route("/user_history", methods= ['GET', 'POST'])
 def view_upload_history():
+    token = User.get_token(current_user.id) 
     if current_user.is_authenticated:
         if request.method=='GET':
             df = User.fetch_history_dataframe(current_user.id)
@@ -17,7 +18,7 @@ def view_upload_history():
                 message = "You have not uploaded any files yet."
                 return render_template("user_history.html", name=current_user.name, data=message)
             df = df.sort_values("timestamp", 0, False)   
-            return render_template("user_history.html", name=current_user.name, data=df.to_html())
+            return render_template("user_history.html", name=current_user.name, data=df.to_html(),email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
         return redirect(url_for('index'))
