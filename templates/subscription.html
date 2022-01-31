@@ -27,6 +27,19 @@
   color: white;
 }
 </style>
+
+<style>
+    @media(max-width: 800px) {
+
+.column {
+  font-size:auto;
+  width: 100%!important;
+  display: block;
+text-align: center;
+}
+}
+</style>
+
 <body>
 
     <div class="content">
@@ -48,12 +61,12 @@
                                         <h4 class="modal-title">This is your token!</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div>
-                                            <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
-                                            <small>Copy it!</small>
-                                        </div>
-                                    </div>
+                                    <div class="modal-body form-inline">
+                                         
+                                        <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
+                                        <small>Copy it!</small>
+                                     
+                                </div>
                                 </div>
                             </div>
                         </div>

@@ -12,6 +12,8 @@ subscription = Blueprint('subscription', __name__, template_folder='templates')
 
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 def subscriptionSubmission():
+    token = User.get_token(current_user.id) 
+
     if current_user.is_authenticated:
         if request.method == 'POST':
             if request.form.get('fr'):
@@ -35,9 +37,9 @@ def subscriptionSubmission():
                 dbname = 'Sivi'
                 db_id = 'sID'
                 createRequest(dbname,request.form.get('url-si'), db_id)
-            return render_template('subscription.html')
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token)
         else :
-            return render_template('subscription.html')
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
         return redirect(url_for('index'))
