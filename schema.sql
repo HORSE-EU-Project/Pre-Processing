@@ -10,6 +10,8 @@ CREATE TABLE history (
   usr_id TEXT NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   filename TEXT NOT NULL,
+  description TEXT NOT NULL,
   foreign KEY (usr_id) references user (id)
+  
 	
 );

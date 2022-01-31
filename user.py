@@ -70,12 +70,12 @@ class User(UserMixin):
         db.commit()
 
     @staticmethod
-    def insert_in_history(id_, timestamp, filename):
+    def insert_in_history(id_, timestamp, filename, description):
         db = get_db()
         db.execute(
-            "INSERT INTO history (usr_id, timestamp, filename) "
-            "VALUES (?, ?, ?)",
-            (id_, timestamp, filename),
+            "INSERT INTO history (usr_id, timestamp, filename, description) "
+            "VALUES (?, ?, ?, ?)",
+            (id_, timestamp, filename, description),
         )
         db.commit()
 
@@ -89,7 +89,7 @@ class User(UserMixin):
     def fetch_history_dataframe(user_id):
         db = get_db()
         history_data = pd.read_sql_query(
-            "SELECT timestamp, filename FROM history WHERE usr_id = ?", db, params=(user_id,)
+            "SELECT timestamp, filename, description FROM history WHERE usr_id = ?", db, params=(user_id,)
         )
         return history_data
 
