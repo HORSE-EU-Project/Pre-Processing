@@ -43,7 +43,7 @@ def ingest_data():
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
                 flash('File uploaded successfully','success')
-                User.insert_in_history(current_user.id, timestamp, filename)
+                User.insert_in_history(current_user.id, timestamp, filename, text)
                 PostOrion(json_dict)
                 return redirect(request.url)    
             else:
