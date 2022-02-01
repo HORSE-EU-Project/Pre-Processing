@@ -1,3 +1,4 @@
+from email.mime import application
 from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import socket
 import os
@@ -79,17 +80,23 @@ def index():
         #Successfully authenticated
         
         token = User.get_token(current_user.id) 
-
+        global appl
         global index_add_counter #for test
         index_add_counter=index_add_counter+1 #for test
-
-        if index_add_counter==1: #for test
-            return render_template('modal.html' , name = current_user.name, email = current_user.email)
-        else:
+        if request.method == 'POST':
+            appl = request.form['application']
+            print("--------------> ", appl)
+            organisation = request.form.get('organisation')
+            print("LOOK ----------------------> ", organisation)
             return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+        else:
+            if index_add_counter==1: #for test
+                return render_template('modal.html' , name = current_user.name, email = current_user.email)
+            else:
+                return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
-
+    
 
 @app.route('/login')
 
