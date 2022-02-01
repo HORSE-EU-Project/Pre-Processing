@@ -136,7 +136,7 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token, application=None
+    id_=unique_id, name=user_name, email=user_email, token=token, application=None,
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
