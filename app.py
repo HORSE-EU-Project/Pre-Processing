@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import socket
 import os
@@ -70,8 +71,17 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
+def decoratorCheckAppOrg(func):
+    def inner():
+        if User.get_app(current_user.id)==NULL or User.get_org(current_user.id)==NULL:
+            return render_template('modal.html' , name = current_user.name, email = current_user.email)
+        else:
+            view = func()
+            return view
+    return inner
 
 @app.route('/', methods= ["GET", "POST"])
+@decoratorCheckAppOrg
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
