@@ -8,6 +8,9 @@ from flask_login import (
 
 view_history = Blueprint('view_history', __name__, template_folder='templates')
 
+from decoratorApp import decoratorCheckAppOrg
+
+@decoratorCheckAppOrg
 @view_history.route("/user_history", methods= ['GET', 'POST'])
 def view_upload_history():
     token = User.get_token(current_user.id) 

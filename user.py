@@ -40,16 +40,6 @@ class User(UserMixin):
             "UPDATE user SET token = ? WHERE id = ?", (token, user_id), 
         )
         db.commit()
-        '''
-        user = db.execute(
-            "SELECT * FROM user WHERE id = ?", (user_id,)
-        ).fetchone()
-      
-        user = User(
-            id_=user[0], name=user[1], email=user[2], token=user[3]
-        )
-        return user
-        '''
         return
     
     @staticmethod
@@ -100,6 +90,14 @@ class User(UserMixin):
             "UPDATE user SET application = ? WHERE id = ?", (application, user_id), 
         )
         db.commit()
+
+    @staticmethod
+    def get_app(user_id):
+        db = get_db()
+        app = db.execute(
+            "SELECT application FROM user WHERE id = ?", (user_id,)
+        ).fetchone()[0]
+        return app
 
     '''def delete_all():
         db = get_db()

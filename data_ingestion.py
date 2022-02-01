@@ -10,14 +10,14 @@ from flask_login import (
     current_user
 )
 
-from user import User
-
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='templates')
 
+from user import User
+from decoratorApp import decoratorCheckAppOrg
+
+@decoratorCheckAppOrg
 @data_ingestion.route("/upload", methods= ['GET', 'POST'])
 def ingest_data():
-    token = User.get_token(current_user.id) 
-
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
@@ -50,6 +50,7 @@ def ingest_data():
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
                 return redirect(request.url)    
         else:
+            token = User.get_token(current_user.id) 
             return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
