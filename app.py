@@ -1,4 +1,5 @@
-from email.mime import application
+# from asyncio.windows_events import NULL
+# from email.mime import application
 from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import socket
 import os
@@ -22,7 +23,7 @@ from db import init_db_command
 from user import User
 
 #import socket
-
+# global appl
 global index_add_counter #for test
 index_add_counter=0 #for test
 
@@ -80,20 +81,21 @@ def index():
         #Successfully authenticated
         
         token = User.get_token(current_user.id) 
-        global appl
         global index_add_counter #for test
         index_add_counter=index_add_counter+1 #for test
         if request.method == 'POST':
+            global appl
             appl = request.form['application']
             print("--------------> ", appl)
+            User.add_app(current_user.id, appl)
             organisation = request.form.get('organisation')
             print("LOOK ----------------------> ", organisation)
             return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
         else:
-            if index_add_counter==1: #for test
-                return render_template('modal.html' , name = current_user.name, email = current_user.email)
-            else:
-                return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+            # if index_add_counter==1: #for test
+            return render_template('modal.html' , name = current_user.name, email = current_user.email)
+            # else:
+            #     return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
     
@@ -152,11 +154,11 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token
+    id_=unique_id, name=user_name, email=user_email, token=token, application=None
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token)
+        User.create(unique_id, user_name, user_email, token, None)
     else:
         User.updateToken(unique_id, token)
     login_user(user)
