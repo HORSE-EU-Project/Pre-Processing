@@ -1,34 +1,25 @@
-from asyncio.windows_events import NULL
+from pickle import NONE
 from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import socket
 import os
 import requests
 import json
 import sqlite3
-from os.path import join, dirname, realpath
-from requests.sessions import requote_uri, session
-from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
     current_user,
     login_required,
     login_user,
-    logout_user,
-    UserMixin
+    logout_user
 )
 from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
 
-#import socket
-
-global index_add_counter #for test
-index_add_counter=0 #for test
-
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "23a8072b-5fd2-412d-b485-287243c5e486")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "79745999-794b-46a1-9c59-8508c9a96c63")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "346ee691-93e9-4aee-a529-73fc400794ad")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "670cfd79-4ebe-4ed3-9d46-211ecad7e716")
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -41,6 +32,7 @@ app = Blueprint('app', __name__, template_folder='templates')
 from subscription import subscription
 from data_ingestion import data_ingestion
 from view_history import view_history
+from decoratorApp import decoratorCheckAppOrg
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
@@ -71,36 +63,27 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
-def decoratorCheckAppOrg(func):
-    def inner():
-        if User.get_app(current_user.id)==NULL or User.get_org(current_user.id)==NULL:
-            return render_template('modal.html' , name = current_user.name, email = current_user.email)
-        else:
-            view = func()
-            return view
-    return inner
-
-@app.route('/', methods= ["GET", "POST"])
 @decoratorCheckAppOrg
+@app.route('/', methods= ["GET", "POST"])
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        
         token = User.get_token(current_user.id) 
-
-        global index_add_counter #for test
-        index_add_counter=index_add_counter+1 #for test
-
-        if index_add_counter==1: #for test
-            return render_template('modal.html' , name = current_user.name, email = current_user.email)
+        if request.method == 'POST':
+            appl = request.form['application']
+            print("--------------> ", appl)
+            User.add_app(current_user.id, appl)
+            print(User.get_app(current_user.id))
+            organisation = request.form.get('organisation')
+            print("LOOK ----------------------> ", organisation)
+            return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
         else:
             return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
-
+    
 
 @app.route('/login')
-
 def login():
     # Find out what URL to hit for Keyrock login
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
@@ -153,11 +136,11 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token
+    id_=unique_id, name=user_name, email=user_email, token=token, application=None
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token)
+        User.create(unique_id, user_name, user_email, token, None)
     else:
         User.updateToken(unique_id, token)
     login_user(user)

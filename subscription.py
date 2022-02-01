@@ -6,10 +6,13 @@ import json
 from flask_login import (
     current_user
 )
-from user import User
+
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
+from user import User
+from decoratorApp import decoratorCheckAppOrg
 
+@decoratorCheckAppOrg
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 def subscriptionSubmission():
     token = User.get_token(current_user.id) 
