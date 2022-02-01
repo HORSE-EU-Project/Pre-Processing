@@ -78,6 +78,7 @@ def index():
             print("LOOK ----------------------> ", organisation)
             return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
         else:
+            print(User.get_app(current_user.id))
             return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')

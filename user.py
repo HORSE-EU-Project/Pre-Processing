@@ -56,7 +56,7 @@ class User(UserMixin):
         db.execute(
             "INSERT INTO user (id, name, email, token, application) "
             "VALUES (?, ?, ?, ?, ?)",
-            (id_, name, email, token, application),
+            (id_, name, email, token, application,),
         )
         db.commit()
 
