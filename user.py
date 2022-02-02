@@ -65,7 +65,7 @@ class User(UserMixin):
         db = get_db()
         db.execute(
             "INSERT INTO user (id, name, email, token) "
-            "VALUES (?, ?, ?, ?, ?)",
+            "VALUES (?, ?, ?, ?)",
             (id_, name, email, token),
         )
         db.commit()

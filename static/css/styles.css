@@ -23,13 +23,13 @@ input[type="checkbox"]:checked ~ .reveal-if-active {
 
 
  body {
-   padding: 0;
+  padding: 0;
   margin: 0;
   height: 100%;
 }
 
 .content {
-  min-height: 70%;
+  min-height: 71%;
 
 }
 .content-inside {
