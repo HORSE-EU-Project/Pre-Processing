@@ -63,31 +63,29 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
+@app.route('/', methods= ["GET"])
 @decoratorCheckAppOrg
-@app.route('/', methods= ["GET", "POST"])
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
         token = User.get_token(current_user.id) 
-        if request.method == 'POST':
-            appl = request.form['application']
-            print("--------------> ", appl)
-            User.add_app(current_user.id, appl)
-            print(User.get_app(current_user.id))
-            organisation = request.form.get('organisation')
-            print("LOOK ----------------------> ", organisation)
-            return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
-        else:
-            print(User.get_app(current_user.id))
-            return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+        #print(User.get_app(current_user.id))
+        return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
-    
+
+@app.route('/push_app', methods= ["POST"])
+def push_app():
+    appl = request.form['application']
+    User.add_app(current_user.id, appl)
+    print(User.get_app(current_user.id))
+    #organisation = request.form.get('organisation')
+    return index()
 
 @app.route('/login')
 def login():
     # Find out what URL to hit for Keyrock login
-    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
+    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
     #print(request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
@@ -145,17 +143,16 @@ def get_user_info():
     else:
         User.updateToken(unique_id, token)
     login_user(user)
-    return redirect(url_for("index"))
+    return index()
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return index()
 
 
 if __name__ == "__main__":
-    # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
     print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
