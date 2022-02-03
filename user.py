@@ -3,12 +3,12 @@ from flask_login import UserMixin
 from db import get_db
 
 class User(UserMixin):
-    def __init__(self, id_, name, email, token):
+    def __init__(self, id_, name, email, token, application):
         self.id = id_
         self.name = name
         self.email = email
         self.token = token
-        
+        self.application = application
 
     @staticmethod
     def get(user_id):
@@ -20,7 +20,7 @@ class User(UserMixin):
             return None
         
         user = User(
-            id_=user[0], name=user[1], email=user[2], token=user[3]
+            id_=user[0], name=user[1], email=user[2], token=user[3], application=user[4]
         )
         return user
     
@@ -40,16 +40,6 @@ class User(UserMixin):
             "UPDATE user SET token = ? WHERE id = ?", (token, user_id), 
         )
         db.commit()
-        '''
-        user = db.execute(
-            "SELECT * FROM user WHERE id = ?", (user_id,)
-        ).fetchone()
-      
-        user = User(
-            id_=user[0], name=user[1], email=user[2], token=user[3]
-        )
-        return user
-        '''
         return
     
     @staticmethod
@@ -61,12 +51,12 @@ class User(UserMixin):
         return token
 
     @staticmethod
-    def create(id_, name, email, token):
+    def create(id_, name, email, token, application):
         db = get_db()
         db.execute(
-            "INSERT INTO user (id, name, email, token) "
-            "VALUES (?, ?, ?, ?)",
-            (id_, name, email, token),
+            "INSERT INTO user (id, name, email, token, application) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (id_, name, email, token, application,),
         )
         db.commit()
 
@@ -93,6 +83,21 @@ class User(UserMixin):
             "SELECT timestamp, filename, description FROM history WHERE usr_id = ?", db, params=(user_id,)
         )
         return history_data
+
+    def add_app(user_id, application):
+        db = get_db()
+        db.execute(
+            "UPDATE user SET application = ? WHERE id = ?", (application, user_id), 
+        )
+        db.commit()
+
+    @staticmethod
+    def get_app(user_id):
+        db = get_db()
+        app = db.execute(
+            "SELECT application FROM user WHERE id = ?", (user_id,)
+        ).fetchone()[0]
+        return app
 
     '''def delete_all():
         db = get_db()

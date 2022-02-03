@@ -10,19 +10,18 @@ from flask_login import (
     current_user
 )
 
-from user import User
-
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='templates')
 
+from user import User
+from decoratorApp import decoratorCheckAppOrg
+
+@decoratorCheckAppOrg
 @data_ingestion.route("/upload", methods= ['GET', 'POST'])
 def ingest_data():
-    token = User.get_token(current_user.id) 
-
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
             text=request.form['description']
-            print("-----------------------",text)
             if file.filename == '':
                 flash('No file was selected','error')
                 return redirect(request.url)
@@ -51,23 +50,24 @@ def ingest_data():
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
                 return redirect(request.url)    
         else:
+            token = User.get_token(current_user.id) 
             return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
-        return redirect(url_for('index'))
+        from app import index
+        return redirect("/")
 
 def PostOrion(json_dict):
-    url = "http://10.0.18.77:1027/v2/op/update"
-    # headerPartner = {} 
-    # headerPartner['X-Auth-token'] = User.get_token(current_user.id)
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
-    #headersDict.update(headerPartner)
+    url = "http://10.0.20.174:1027/v2/op/update"
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_token(current_user.id))}
     body = json_dict
-    sendRequestToOrion(url, headersDict, body)
+    sendRequestToOrion(url, headersDict,body)
 
-def sendRequestToOrion(matchPostURL, headersDict, matchBody):
+def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        r = requests.post(matchPostURL, headers = headersDict, data=json.dumps(matchBody))
+        print(matchBody)
+        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
+        print(r)
         if r.status_code == 204:
             flash('Data sent to orion successfully','success')
         #elif r.status_code == 409:

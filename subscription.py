@@ -6,10 +6,13 @@ import json
 from flask_login import (
     current_user
 )
-from user import User
+
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
+from user import User
+from decoratorApp import decoratorCheckAppOrg
 
+@decoratorCheckAppOrg
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 def subscriptionSubmission():
     token = User.get_token(current_user.id) 
@@ -42,10 +45,10 @@ def subscriptionSubmission():
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
-        return redirect(url_for('index'))
+        return redirect("/")
 
 def createRequest(dbName, endpoint, db_id):
-    url = "http://10.0.18.77:1027/v2/subscriptions/"
+    url = "http://10.0.20.174:1027/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
     #constructing payload
     #entities = [{"idPattern" : ".*"}]
