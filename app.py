@@ -74,14 +74,14 @@ def index():
     else:
         return render_template('index.html')
 
-@app.route('/push_app', methods= ["POST"])
-def push_app():
+@app.route('/push_app_org', methods= ["POST"])
+def push_app_org():
     if not current_user.is_authenticated:
         flash('You should login first!', 'error')
         return index()
     appl = request.form['application']
-    User.add_app(current_user.id, appl)
     org = request.values.get('org')
+    User.add_app_org(current_user.id, appl, org)
     return redirect("/")
 
 @app.route('/login')

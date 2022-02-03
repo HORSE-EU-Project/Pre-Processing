@@ -12,8 +12,8 @@ subscription = Blueprint('subscription', __name__, template_folder='templates')
 from user import User
 from decoratorApp import decoratorCheckAppOrg
 
-@decoratorCheckAppOrg
 @subscription.route('/subscribe', methods=['GET', 'POST'])
+@decoratorCheckAppOrg
 def subscriptionSubmission():
     token = User.get_token(current_user.id) 
 

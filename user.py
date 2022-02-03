@@ -84,20 +84,26 @@ class User(UserMixin):
         )
         return history_data
 
-    def add_app(user_id, application):
+    def add_app_org(user_id, application, organization):
         db = get_db()
         db.execute(
             "UPDATE user SET application = ? WHERE id = ?", (application, user_id), 
         )
+        db.execute(
+            "UPDATE user SET organization = ? WHERE id = ?", (organization, user_id), 
+        )
         db.commit()
 
     @staticmethod
-    def get_app(user_id):
+    def get_app_org(user_id):
         db = get_db()
         app = db.execute(
             "SELECT application FROM user WHERE id = ?", (user_id,)
         ).fetchone()[0]
-        return app
+        org = db.execute(
+            "SELECT organization FROM user WHERE id = ?", (user_id,)
+        ).fetchone()[0]
+        return [app, org]
 
     '''def delete_all():
         db = get_db()

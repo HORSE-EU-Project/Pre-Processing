@@ -15,8 +15,8 @@ data_ingestion = Blueprint('data_ingestion', __name__, template_folder='template
 from user import User
 from decoratorApp import decoratorCheckAppOrg
 
-@decoratorCheckAppOrg
 @data_ingestion.route("/upload", methods= ['GET', 'POST'])
+@decoratorCheckAppOrg
 def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
