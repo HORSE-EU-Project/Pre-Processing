@@ -1,5 +1,5 @@
 from pickle import NONE
-from flask import Flask, render_template, request, redirect, url_for, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
 import socket
 import os
 import requests
@@ -76,11 +76,14 @@ def index():
 
 @app.route('/push_app', methods= ["POST"])
 def push_app():
+    if not current_user.is_authenticated:
+        flash('You should login first!', 'error')
+        return index()
     appl = request.form['application']
     User.add_app(current_user.id, appl)
     print(User.get_app(current_user.id))
     #organisation = request.form.get('organisation')
-    return index()
+    return redirect("/")
 
 @app.route('/login')
 def login():
@@ -125,6 +128,9 @@ def callback():
 
 @app.route("/user_info")
 def get_user_info():
+    # if not current_user.is_authenticated:
+    #     flash('You should login first!', 'error')
+    #     return index()
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
@@ -143,17 +149,14 @@ def get_user_info():
     else:
         User.updateToken(unique_id, token)
     login_user(user)
-    return index()
+    return redirect("/")
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return index()
-
+    return redirect("/")
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
-

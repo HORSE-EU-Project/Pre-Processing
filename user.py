@@ -20,7 +20,7 @@ class User(UserMixin):
             return None
         
         user = User(
-            id_=user[0], name=user[1], email=user[2], token=user[3], application=user[4],
+            id_=user[0], name=user[1], email=user[2], token=user[3], application=user[4]
         )
         return user
     
