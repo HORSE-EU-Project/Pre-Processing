@@ -20,7 +20,7 @@ from user import User
 # Configure Keyrock as the IDM
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd")
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "12eab5b6-f063-417f-83e3-85ed61c45fe9")
-=======
+
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
