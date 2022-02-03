@@ -65,7 +65,8 @@ def PostOrion(json_dict):
 
 def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= matchBody)
+        print(matchBody)
+        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
         print(r)
         if r.status_code == 204:
             flash('Data sent to orion successfully','success')
