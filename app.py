@@ -1,5 +1,5 @@
 from pickle import NONE
-from flask import Flask, render_template, request, redirect, url_for, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
 import socket
 import os
 import requests
@@ -18,8 +18,9 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "346ee691-93e9-4aee-a529-73fc400794ad")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "670cfd79-4ebe-4ed3-9d46-211ecad7e716")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "12eab5b6-f063-417f-83e3-85ed61c45fe9")
+
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -69,18 +70,19 @@ def index():
     if current_user.is_authenticated:
         #Successfully authenticated
         token = User.get_token(current_user.id) 
-        #print(User.get_app(current_user.id))
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
 
-@app.route('/push_app', methods= ["POST"])
-def push_app():
+@app.route('/push_app_org', methods= ["POST"])
+def push_app_org():
+    if not current_user.is_authenticated:
+        flash('You should login first!', 'error')
+        return index()
     appl = request.form['application']
-    User.add_app(current_user.id, appl)
-    print(User.get_app(current_user.id))
-    #organisation = request.form.get('organisation')
-    return index()
+    org = request.values.get('org')
+    User.add_app_org(current_user.id, appl, org)
+    return redirect("/")
 
 @app.route('/login')
 def login():
@@ -125,6 +127,9 @@ def callback():
 
 @app.route("/user_info")
 def get_user_info():
+    # if not current_user.is_authenticated:
+    #     flash('You should login first!', 'error')
+    #     return index()
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
@@ -143,17 +148,14 @@ def get_user_info():
     else:
         User.updateToken(unique_id, token)
     login_user(user)
-    return index()
+    return redirect("/")
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return index()
-
+    return redirect("/")
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    print(ipV4IP)
     app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
-

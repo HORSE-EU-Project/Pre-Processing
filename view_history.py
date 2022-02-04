@@ -10,11 +10,11 @@ view_history = Blueprint('view_history', __name__, template_folder='templates')
 
 from decoratorApp import decoratorCheckAppOrg
 
-@decoratorCheckAppOrg
 @view_history.route("/user_history", methods= ['GET', 'POST'])
+@decoratorCheckAppOrg
 def view_upload_history():
-    token = User.get_token(current_user.id) 
     if current_user.is_authenticated:
+        token = User.get_token(current_user.id) 
         if request.method=='GET':
             df = User.fetch_history_dataframe(current_user.id)
             if df.empty:
@@ -24,4 +24,4 @@ def view_upload_history():
             return render_template("user_history.html", name=current_user.name, data=df.to_html(),email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
-        return redirect(url_for('index'))
+        return redirect('/')

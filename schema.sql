@@ -3,7 +3,8 @@ CREATE TABLE user (
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   token TEXT UNIQUE NOT NULL,
-  application TEXT 
+  application TEXT,
+  organization TEXT
 );
 
 CREATE TABLE history (

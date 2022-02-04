@@ -15,8 +15,8 @@ data_ingestion = Blueprint('data_ingestion', __name__, template_folder='template
 from user import User
 from decoratorApp import decoratorCheckAppOrg
 
-@decoratorCheckAppOrg
 @data_ingestion.route("/upload", methods= ['GET', 'POST'])
+@decoratorCheckAppOrg
 def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
@@ -54,17 +54,20 @@ def ingest_data():
             return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
-        return redirect(url_for('index'))
+        from app import index
+        return redirect("/")
 
 def PostOrion(json_dict):
-    url = "http://10.0.18.77:1027/v2/op/update"
+    url = "http://10.0.20.174:1027/v2/op/update"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_token(current_user.id))}
     body = json_dict
     sendRequestToOrion(url, headersDict,body)
 
 def sendRequestToOrion(matchPostURL,headersDict,matchBody):
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= matchBody)
+        print(matchBody)
+        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
+        print(r)
         if r.status_code == 204:
             flash('Data sent to orion successfully','success')
         #elif r.status_code == 409:
