@@ -3,6 +3,7 @@
 
 {% block content %}
 
+<head>
 <style>
     .vertical-menu {
   width: 200px;
@@ -39,6 +40,33 @@ text-align: center;
 }
 }
 </style>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.chk1').change(function () {
+                if ($(this).is(":checked")) {
+                    $('#btnClick').removeAttr('disabled');
+                }
+                else {
+                    var isChecked = false;
+                    $('.chk1').each(function () {
+                        if ($(this).is(":checked")) {
+                            $('#btnClick').removeAttr('disabled');
+                            isChecked = true;
+                        }
+                    });
+                    if (!isChecked) {
+                        $('#btnClick').attr('disabled', 'disabled');
+                    }
+                }
+ 
+ 
+            })
+        });
+    </script>
+</head>
 
 <body>
 
@@ -83,63 +111,20 @@ text-align: center;
                     <form method=post action="#">
                         <div class="text-center">
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item ">
-                                <!-- Default checked -->
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" name="fr" id="fr">
-                                        <label class="custom-control-label" for="fr">Fr Sensors platform</label>
-                                        <div class="reveal-if-active">
-                                            <label for="url-fr">Please enter the url for notifications:</label>
-                                            <input class="require-if-active" type="url" id="url-fr" name="url-fr" data-require-pair="#fr">
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                <!-- Default checked -->
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="xb" id="xb">
-                                    <label class="custom-control-label" for="xb">XBELLO</label> 
-                                    <div class="reveal-if-active">
-                                        <label for="url-xb">Please enter the url for notifications:</label>
-                                        <input class="require-if-active" type="url" id="url-xb" name="url-xb" data-require-pair="#xb">
-                                    </div>
-                                </div>
-                                </li>
-                                <li class="list-group-item">
-                                <!-- Default checked -->
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="tr" id="tr">
-                                    <label class="custom-control-label" for="tr">Triage platform</label>
-                                    <div class="reveal-if-active">
-                                        <label for="url-tr">Please enter the url for notifications:</label>
-                                        <input class="require-if-active" type="url" id="url-tr" name="url-tr" data-require-pair="#tr">
-                                    </div>
-                                </div>
-                                </li>
-                                <li class="list-group-item">
-                                <!-- Default checked -->
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="ai" id="ai">
-                                    <label class="custom-control-label" for="ai">AirflowMCC</label>
-                                    <div class="reveal-if-active">
-                                        <label for="url-ai">Please enter the url for notifications:</label>
-                                        <input class="require-if-active" type="url" id="url-ai" name="url-ai" data-require-pair="#ai">
-                                    </div>
-                                </div>
-                                </li>
-                                <li class="list-group-item">
-                                <!-- Default checked -->
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="si" id="si">
-                                    <label class="custom-control-label" for="si">Sivi</label>
-                                    <div class="reveal-if-active">
-                                        <label for="url-si">Please enter the url for notifications:</label>
-                                        <input class="require-if-active" type="url" id="url-si" name="url-si" data-require-pair="#si">
-                                    </div>
-                                </div>
-                                </li>
+                                
+
+                                    
+                                        {%for i in ids%}
+                                        <li>
+                                            <label for="id1">{{i}}</label>
+                                            <input type = "checkbox" class="chk1" id = "id_{{i}}" name = "ids" value = "1">
+                                            <label for="url-fr">Url</label> 
+                                            <input class="require-if-active" type="url" id="url_{{i}}" name="urls" data-require-pair="#id_{{i}}">
+                                         </li>
+                                        {% endfor %}
+                                     
                             </ul>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" id="btnClick" class="btn btn-primary" value="submit" disabled="disabled">Submit</button>
                         </div>
 
                     </form>
@@ -152,6 +137,5 @@ text-align: center;
     <footer>
         {% include "./footer.html" %}
     </footer>
-
 </body>
 {% endblock %}

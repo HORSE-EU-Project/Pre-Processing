@@ -18,31 +18,38 @@ def subscriptionSubmission():
     token = User.get_token(current_user.id) 
 
     if current_user.is_authenticated:
+        list_apps= User.fetch_applications()
         if request.method == 'POST':
-            if request.form.get('fr'):
-                dbname = 'FrSensorsPlatform'
-                db_id = 'dataLoggerID'
-                createRequest(dbname,request.form.get('url-fr'), db_id)         
-                #check request response -  produce flash messages to demonstrate success or fail in consumer.html
-            if request.form.get('xb'):
-                dbname = 'XBELLO'
-                db_id = 'mobileID'
-                createRequest(dbname,request.form.get('url-xb'), db_id)
-            if request.form.get('tr'):
-                dbname = 'Triage_Platform'
-                db_id = 'tagID'
-                createRequest(dbname,request.form.get('url-tr'), db_id) 
-            if request.form.get('ai'):
-                dbname = 'AirflowMCC'
-                db_id = 'uxvID'
-                createRequest(dbname,request.form.get('url-ai'), db_id)         
-            if request.form.get('si'):
-                dbname = 'Sivi'
-                db_id = 'sID'
-                createRequest(dbname,request.form.get('url-si'), db_id)
-            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token)
+
+            print('hi greg     i am here , i see you')
+
+            url=request.form['urls']
+            print(url)
+            #if request.form.get('fr'):
+            #    dbname = 'FrSensorsPlatform'
+            #    db_id = 'dataLoggerID'
+            #    createRequest(dbname,request.form.get('url-fr'), db_id)         
+            #    #check request response -  produce flash messages to demonstrate success or fail in consumer.html
+            #if request.form.get('xb'):
+            #    dbname = 'XBELLO'
+            #    db_id = 'mobileID'
+            #    createRequest(dbname,request.form.get('url-xb'), db_id)
+            #if request.form.get('tr'):
+            #    dbname = 'Triage_Platform'
+            #    db_id = 'tagID'
+            #    createRequest(dbname,request.form.get('url-tr'), db_id) 
+            #if request.form.get('ai'):
+            #    dbname = 'AirflowMCC'
+            #    db_id = 'uxvID'
+            #    createRequest(dbname,request.form.get('url-ai'), db_id)         
+            #if request.form.get('si'):
+            #    dbname = 'Sivi'
+            #    db_id = 'sID'
+            #    createRequest(dbname,request.form.get('url-si'), db_id)
+
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
-            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token)
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
