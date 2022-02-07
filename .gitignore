@@ -133,3 +133,6 @@ dmypy.json
 
 static/json
 sqlite_db
+pyvenv.cfg
+dffenv
+lib64

@@ -1,4 +1,3 @@
-from pickle import NONE
 from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
 import socket
 import os
@@ -12,14 +11,15 @@ from flask_login import (
     login_user,
     logout_user
 )
+import pandas
 from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "12eab5b6-f063-417f-83e3-85ed61c45fe9")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
 
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
@@ -158,4 +158,4 @@ def logout():
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
+    app.run(debug=True, ssl_context="adhoc", host='jenkins.8bellsresearch.com')
