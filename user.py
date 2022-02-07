@@ -123,4 +123,15 @@ class User(UserMixin):
         entries = cursor.fetchall()
 
         return print(entries)'''
+
+    def fetch_applications():
+        db = get_db()
+        applications = db.execute(
+            "SELECT application FROM user",
+        ).fetchall()
+        appList=[]
+        for row in applications:
+            appList.append(row[0])
+        appList = list(set(appList))
+        return appList
        
