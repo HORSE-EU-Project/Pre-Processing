@@ -4,9 +4,15 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
+        // stage('Build') {
+        //     steps {           
+        //         echo 'Building flask rest api image...'
+        //         sh 'docker build . -t login-rest-api -f loginApi/Dockerfile'
+        //     }
+        // }
         stage('Build') {
             steps {           
-                echo 'Setting up Wilma...'
+                echo 'Deploying containers: PEP Proxy for Orion & Quantumleap & flask-rest-api...'
                 sh 'docker-compose -f docker-compose.yml up'
             }
         }
