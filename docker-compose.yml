@@ -67,7 +67,7 @@ services:
       interval: 50s
 
   dff-login-api:
-    build: loginApi/Dockerfile
+    build: loginApi/
     container_name: login-rest-api
     hostname: login-api
     networks:
