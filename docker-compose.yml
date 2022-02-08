@@ -1,0 +1,67 @@
+version: "3.5"
+services:
+  orion-proxy:
+    image: fiware/pep-proxy:8.0.0-distroless
+    container_name: fiware-orion-proxy
+    hostname: orion-proxy
+    networks:
+      - default
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "1027:1027"
+    expose:
+      - "1027"
+    environment:
+      - DEBUG=pep-proxy:*
+      - PEP_PROXY_DEBUG=true
+      - PEP_PROXY_APP_HOST=10.0.18.77
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1027
+      - PEP_PROXY_IDM_HOST=10.0.18.77
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=true
+      - PEP_PROXY_IDM_PORT=443
+      - PEP_PROXY_APP_ID=bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd
+      - PEP_PROXY_USERNAME=pep_proxy_ec244697-cf17-4369-ba66-d7ef24344ed3
+      - PEP_PASSWORD=pep_proxy_aa044f18-9a8e-4fee-b3c1-8ce570a51570
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+      - PEP_PROXY_PUBLIC_PATHS=/version
+    healthcheck:
+      interval: 50s
+
+  quantumleap-proxy:
+    image: fiware/pep-proxy:8.0.0-distroless
+    container_name: fiware-quantumleap-proxy
+    hostname: quantumleap-proxy
+    networks:
+      - default
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8669:8669"
+    expose:
+      - "8669"
+    environment:
+      - DEBUG=pep-proxy:*
+      - PEP_PROXY_DEBUG=true
+      - PEP_PROXY_APP_HOST=10.0.18.77
+      - PEP_PROXY_APP_PORT=8668
+      - PEP_PROXY_PORT=8669
+      - PEP_PROXY_IDM_HOST=10.0.18.77
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=true
+      - PEP_PROXY_IDM_PORT=443
+      - PEP_PROXY_APP_ID=bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd
+      - PEP_PROXY_USERNAME=pep_proxy_ec244697-cf17-4369-ba66-d7ef24344ed3
+      - PEP_PASSWORD=pep_proxy_aa044f18-9a8e-4fee-b3c1-8ce570a51570
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+      - PEP_PROXY_PUBLIC_PATHS=/version
+    healthcheck:
+      interval: 50s
