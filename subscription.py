@@ -6,44 +6,56 @@ import json
 from flask_login import (
     current_user
 )
-from user import User
+
 subscription = Blueprint('subscription', __name__, template_folder='templates')
 
+from user import User
+from decoratorApp import decoratorCheckAppOrg
 
 @subscription.route('/subscribe', methods=['GET', 'POST'])
+@decoratorCheckAppOrg
 def subscriptionSubmission():
+    token = User.get_token(current_user.id) 
+
     if current_user.is_authenticated:
+        list_apps= User.fetch_applications()
         if request.method == 'POST':
-            if request.form.get('fr'):
-                dbname = 'FrSensorsPlatform'
-                db_id = 'dataLoggerID'
-                createRequest(dbname,request.form.get('url-fr'), db_id)         
-                #check request response -  produce flash messages to demonstrate success or fail in consumer.html
-            if request.form.get('xb'):
-                dbname = 'XBELLO'
-                db_id = 'mobileID'
-                createRequest(dbname,request.form.get('url-xb'), db_id)
-            if request.form.get('tr'):
-                dbname = 'Triage_Platform'
-                db_id = 'tagID'
-                createRequest(dbname,request.form.get('url-tr'), db_id) 
-            if request.form.get('ai'):
-                dbname = 'AirflowMCC'
-                db_id = 'uxvID'
-                createRequest(dbname,request.form.get('url-ai'), db_id)         
-            if request.form.get('si'):
-                dbname = 'Sivi'
-                db_id = 'sID'
-                createRequest(dbname,request.form.get('url-si'), db_id)
-            return render_template('subscription.html')
+
+            print('hi greg     i am here , i see you')
+
+            url=request.form['urls']
+            print(url)
+            #if request.form.get('fr'):
+            #    dbname = 'FrSensorsPlatform'
+            #    db_id = 'dataLoggerID'
+            #    createRequest(dbname,request.form.get('url-fr'), db_id)         
+            #    #check request response -  produce flash messages to demonstrate success or fail in consumer.html
+            #if request.form.get('xb'):
+            #    dbname = 'XBELLO'
+            #    db_id = 'mobileID'
+            #    createRequest(dbname,request.form.get('url-xb'), db_id)
+            #if request.form.get('tr'):
+            #    dbname = 'Triage_Platform'
+            #    db_id = 'tagID'
+            #    createRequest(dbname,request.form.get('url-tr'), db_id) 
+            #if request.form.get('ai'):
+            #    dbname = 'AirflowMCC'
+            #    db_id = 'uxvID'
+            #    createRequest(dbname,request.form.get('url-ai'), db_id)         
+            #if request.form.get('si'):
+            #    dbname = 'Sivi'
+            #    db_id = 'sID'
+            #    createRequest(dbname,request.form.get('url-si'), db_id)
+
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
-            return render_template('subscription.html')
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
         flash('You should login first!', 'error')
-        return redirect(url_for('index'))
+        return redirect("/")
 
 def createRequest(dbName, endpoint, db_id):
-    url = "http://10.0.18.77:1027/v2/subscriptions/"
+    url = "http://10.0.20.174:1027/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
     #constructing payload
     #entities = [{"idPattern" : ".*"}]

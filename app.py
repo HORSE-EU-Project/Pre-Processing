@@ -1,30 +1,26 @@
-from flask import Flask, render_template, request, redirect, url_for, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
 import socket
 import os
 import requests
 import json
 import sqlite3
-from os.path import join, dirname, realpath
-from requests.sessions import requote_uri, session
-from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
     current_user,
     login_required,
     login_user,
-    logout_user,
-    UserMixin
+    logout_user
 )
+import pandas
 from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
 from user import User
 
-#import socket
-
 # Configure Keyrock as the IDM
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", None)
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", None)
+
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
     "https://10.0.18.77:443"
@@ -37,6 +33,7 @@ app = Blueprint('app', __name__, template_folder='templates')
 from subscription import subscription
 from data_ingestion import data_ingestion
 from view_history import view_history
+from decoratorApp import decoratorCheckAppOrg
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
@@ -67,21 +64,30 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
-@app.route('/', methods= ["GET", "POST"])
+@app.route('/', methods= ["GET"])
+@decoratorCheckAppOrg
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        
-        token = User.get_token(current_user.id)
+        token = User.get_token(current_user.id) 
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
 
-@app.route('/login')
+@app.route('/push_app_org', methods= ["POST"])
+def push_app_org():
+    if not current_user.is_authenticated:
+        flash('You should login first!', 'error')
+        return index()
+    appl = request.form['application']
+    org = request.values.get('org')
+    User.add_app_org(current_user.id, appl, org)
+    return redirect("/")
 
+@app.route('/login')
 def login():
     # Find out what URL to hit for Keyrock login
-    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize' #'/v1/auth'
+    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
     #print(request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
@@ -121,6 +127,9 @@ def callback():
 
 @app.route("/user_info")
 def get_user_info():
+    # if not current_user.is_authenticated:
+    #     flash('You should login first!', 'error')
+    #     return index()
     userinfo_endpoint = KEYROCK_DISCOVERY_URL+'/user'
     uri, headers, body = client.add_token(userinfo_endpoint)
     token = headers['Authorization'].split(' ')[1]
@@ -131,26 +140,22 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token
+    id_=unique_id, name=user_name, email=user_email, token=token, application=None,
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token)
+        User.create(unique_id, user_name, user_email, token, None)
     else:
         User.updateToken(unique_id, token)
     login_user(user)
-    return redirect(url_for("index"))
+    return redirect("/")
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
-
+    return redirect("/")
 
 if __name__ == "__main__":
-    # app.run(debug=True)
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    print(ipV4IP)
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
-
+    app.run(debug=True, ssl_context="adhoc", host='0.0.0.0')

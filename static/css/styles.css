@@ -1,4 +1,4 @@
-.reveal-if-active {
+/*.reveal-if-active {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
@@ -17,25 +17,27 @@ input[type="checkbox"]:checked ~ .reveal-if-active {
   -webkit-transform: scale(1);
           transform: scale(1);
 }
-
+*/
 /*# sourceMappingURL=styles.css.map */
 
-html, body {
+
+
+ body {
+  padding: 0;
+  margin: 0;
   height: 100%;
- 
 }
+
 .content {
-  min-height: 69%;
+  min-height: 71%;
+
 }
 .content-inside {
   padding: 20px;
   padding-bottom: 50px;
 
 }
-.footer{
-    height: 200px;
-    margin-top:-200px;
-}
+
 
 /* sidemenu */
 .vertical-menu {
@@ -59,4 +61,17 @@ html, body {
   background-color: #025573;
 
   color: white;
+}
+
+
+/* style about copy icon */
+.peeper-keyhole,.peeper-copy-pass {
+
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left:10px;
+  z-index: 100;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.637);
 }
