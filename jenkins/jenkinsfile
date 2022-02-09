@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Build') {      
             steps{
-                echo 'Deploying containers: PEP Proxy for Orion & Quantumleap & flask-rest-api...'
+                echo 'Deploying containers: PEP Proxy for Orion & Quantumleap...'
                 sh 'docker-compose -f docker-compose.yml up'
             }     
         }
