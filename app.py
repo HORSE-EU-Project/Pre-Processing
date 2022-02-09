@@ -158,4 +158,4 @@ def logout():
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP, port=8085)
+    app.run(host=ipV4IP)
