@@ -3,6 +3,7 @@ from flask import Flask, abort, request
 from flask_restful import Resource, Api
 import requests
 import os
+import socket
 from marshmallow import Schema, fields
 
 class LoginQuerySchema(Schema):
@@ -41,4 +42,5 @@ api.add_resource(Login, '/api-login')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+    ipV4IP = socket.gethostbyname(socket.gethostname())
+    app.run(host=ipV4IP)
