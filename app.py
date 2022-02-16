@@ -18,8 +18,8 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "23a8072b-5fd2-412d-b485-287243c5e486")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "79745999-794b-46a1-9c59-8508c9a96c63")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "12eab5b6-f063-417f-83e3-85ed61c45fe9")
 
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
@@ -30,7 +30,7 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 #from consumer import consumer
-from subscription import subscription
+from subscription import subscription, createRequest, sendRequestToFiware
 from data_ingestion import data_ingestion
 from view_history import view_history
 from decoratorApp import decoratorCheckAppOrg
@@ -81,6 +81,9 @@ def push_app_org():
         return index()
     appl = request.form['application']
     org = request.values.get('org')
+    if appl not in User.fetch_applications():
+        #create subscription to notify quantumleap in order to persist data in crateDB
+        createRequest(appl, "http://quantumleap:8668/v2/notify")
     User.add_app_org(current_user.id, appl, org)
     return redirect("/")
 
@@ -91,7 +94,7 @@ def login():
     print("Within login", request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri="https://jenkins.8bellsresearch.com:443/login/callback", #request.base_url + "/callback",
+        redirect_uri= request.base_url + "/callback", #"https://jenkins.8bellsresearch.com:443/login/callback"
         state="xyz",
         scope=["openid", "email", "profile"],
         #prompt='login',
@@ -108,7 +111,7 @@ def callback():
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
-        redirect_url="https://jenkins.8bellsresearch.com:443/login/callback", #request.base_url,
+        redirect_url= request.base_url,#"https://jenkins.8bellsresearch.com:443/login/callback"
         #prompt='login',
         code=code
     )
