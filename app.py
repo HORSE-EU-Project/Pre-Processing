@@ -1,4 +1,3 @@
-from pickle import NONE
 from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
 import socket
 import os
@@ -12,6 +11,7 @@ from flask_login import (
     login_user,
     logout_user
 )
+import pandas
 from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
@@ -23,7 +23,7 @@ KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "79745999-794b-4
 
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
-    "https://10.0.18.77:443"
+    "https://cloud-20-nic.8bellsresearch.com:443"
 )
 
 app = Blueprint('app', __name__, template_folder='templates')
@@ -88,10 +88,10 @@ def push_app_org():
 def login():
     # Find out what URL to hit for Keyrock login
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
-    #print(request.base_url+ "/callback")
+    print("Within login", request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri=request.base_url + "/callback",
+        redirect_uri="https://jenkins.8bellsresearch.com:443/login/callback", #request.base_url + "/callback",
         state="xyz",
         scope=["openid", "email", "profile"],
         #prompt='login',
@@ -108,7 +108,7 @@ def callback():
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
-        redirect_url=request.base_url,
+        redirect_url="https://jenkins.8bellsresearch.com:443/login/callback", #request.base_url,
         #prompt='login',
         code=code
     )
@@ -158,4 +158,4 @@ def logout():
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
+    app.run(ssl_context="adhoc", host=ipV4IP)
