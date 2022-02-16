@@ -23,7 +23,7 @@ KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "79745999-794b-4
 
 KEYROCK_DISCOVERY_URL = (
     #"https://account.lab.fiware.org"
-    "https://jenkins.8bellsresearch.com:30401"
+    "https://cloud-20-nic.8bellsresearch.com:443"
 )
 
 app = Blueprint('app', __name__, template_folder='templates')
@@ -158,4 +158,4 @@ def logout():
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(debug=True, ssl_context="adhoc", host=ipV4IP)
+    app.run(host=ipV4IP)
