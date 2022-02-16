@@ -91,7 +91,7 @@ def login():
     print("Within login", request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri="https://jenkins.8bellsresearch.com:443/"#request.base_url + "/callback",
+        redirect_uri="https://jenkins.8bellsresearch.com:443/", #request.base_url + "/callback",
         state="xyz",
         scope=["openid", "email", "profile"],
         #prompt='login',
