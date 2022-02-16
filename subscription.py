@@ -21,32 +21,18 @@ def subscriptionSubmission():
         list_apps= User.fetch_applications()
         if request.method == 'POST':
 
-            print('hi greg     i am here , i see you')
+            print('hi greg  i am here , i see you')
+            
 
-            url=request.form['urls']
-            print(url)
-            #if request.form.get('fr'):
-            #    dbname = 'FrSensorsPlatform'
-            #    db_id = 'dataLoggerID'
-            #    createRequest(dbname,request.form.get('url-fr'), db_id)         
-            #    #check request response -  produce flash messages to demonstrate success or fail in consumer.html
-            #if request.form.get('xb'):
-            #    dbname = 'XBELLO'
-            #    db_id = 'mobileID'
-            #    createRequest(dbname,request.form.get('url-xb'), db_id)
-            #if request.form.get('tr'):
-            #    dbname = 'Triage_Platform'
-            #    db_id = 'tagID'
-            #    createRequest(dbname,request.form.get('url-tr'), db_id) 
-            #if request.form.get('ai'):
-            #    dbname = 'AirflowMCC'
-            #    db_id = 'uxvID'
-            #    createRequest(dbname,request.form.get('url-ai'), db_id)         
-            #if request.form.get('si'):
-            #    dbname = 'Sivi'
-            #    db_id = 'sID'
-            #    createRequest(dbname,request.form.get('url-si'), db_id)
-
+            for i in range(0,len(list_apps)):
+                temp_id="id_"+str(list_apps[i])
+                temp_url="url_"+str(list_apps[i])
+                if request.form.get(temp_id)=="1":
+                    print("---------->",list_apps[i])
+                    print("---------->",request.form.get(temp_url))
+                    
+                    createRequest(list_apps[i],request.form.get(temp_url))
+            
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
@@ -54,7 +40,7 @@ def subscriptionSubmission():
         flash('You should login first!', 'error')
         return redirect("/")
 
-def createRequest(dbName, endpoint, db_id):
+def createRequest(dbName, endpoint):
     url = "http://10.0.20.174:1027/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
     #constructing payload
@@ -64,7 +50,7 @@ def createRequest(dbName, endpoint, db_id):
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
                      )
-    payload["subject"]["entities"] = [{"idPattern" : db_id + ".*"}]
+    payload["subject"]["entities"] = [{"idPattern": ".*","type":dbName}]
     payload["notification"]["http"]["url"] = endpoint
     sendRequestToFiware(url, headersDict, payload)
 
