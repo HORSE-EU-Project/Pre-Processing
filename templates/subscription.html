@@ -116,10 +116,10 @@ text-align: center;
                                     
                                         {%for i in ids%}
                                         <li>
-                                            <label for="id1">{{i}}</label>
-                                            <input type = "checkbox" class="chk1" id = "id_{{i}}" name = "ids" value = "1">
+                                            <label for="id1" >{{i}}</label>
+                                            <input type = "checkbox" class="chk1" id = "id_{{i}}" name = "id_{{i}}" value = "1">
                                             <label for="url-fr">Url</label> 
-                                            <input class="require-if-active" type="url" id="url_{{i}}" name="urls" data-require-pair="#id_{{i}}">
+                                            <input class="require-if-active" type="url" id="url_{{i}}" name="url_{{i}}" data-require-pair="#id_{{i}}">
                                          </li>
                                         {% endfor %}
                                      
