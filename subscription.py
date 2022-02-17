@@ -16,23 +16,14 @@ from decoratorApp import decoratorCheckAppOrg
 @decoratorCheckAppOrg
 def subscriptionSubmission():
     token = User.get_token(current_user.id) 
-
     if current_user.is_authenticated:
         list_apps= User.fetch_applications()
         if request.method == 'POST':
-
-            print('hi greg  i am here , i see you')
-            
-
             for i in range(0,len(list_apps)):
                 temp_id="id_"+str(list_apps[i])
                 temp_url="url_"+str(list_apps[i])
                 if request.form.get(temp_id)=="1":
-                    print("---------->",list_apps[i])
-                    print("---------->",request.form.get(temp_url))
-                    
                     createRequest(list_apps[i],request.form.get(temp_url))
-            
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
@@ -43,9 +34,6 @@ def subscriptionSubmission():
 def createRequest(dbName, endpoint):
     url = "http://10.0.20.174:1027/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
-    #constructing payload
-    #entities = [{"idPattern" : ".*"}]
-    #condition = {"attrs" : []}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
@@ -54,7 +42,6 @@ def createRequest(dbName, endpoint):
     payload["notification"]["http"]["url"] = endpoint
     sendRequestToFiware(url, headersDict, payload)
 
-
 #Sending a request to fiware       
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
@@ -62,6 +49,7 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
         print(headersDict)
         print(json.dumps(matchPayload))
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
+        print(r.status_code)
         if r.status_code == 201:
             flash('Subscription completed successfully','success')
         #elif r.status_code == 409:

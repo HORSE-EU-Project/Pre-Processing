@@ -105,6 +105,18 @@ class User(UserMixin):
         ).fetchone()[0]
         return [app, org]
 
+    def fetch_applications():
+        db = get_db()
+        applications = db.execute(
+            "SELECT application FROM user",
+        ).fetchall()
+        appList=[]
+        for row in applications:
+            appList.append(row[0])
+        # remove duplicates
+        appList = list(set(appList))
+        return appList
+
     '''def delete_all():
         db = get_db()
         cursor = db.cursor()
