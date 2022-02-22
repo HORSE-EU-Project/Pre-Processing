@@ -11,7 +11,6 @@ from flask_login import (
     login_user,
     logout_user
 )
-import pandas
 from oauthlib.oauth2 import WebApplicationClient
 
 from db import init_db_command
@@ -29,7 +28,7 @@ KEYROCK_DISCOVERY_URL = (
 app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
-#from consumer import consumer
+#from consumer import consumers
 from subscription import subscription, createRequest, sendRequestToFiware
 from data_ingestion import data_ingestion
 from view_history import view_history
@@ -161,4 +160,4 @@ def logout():
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host=ipV4IP)
+    app.run(ssl_context="adhoc", host=ipV4IP)
