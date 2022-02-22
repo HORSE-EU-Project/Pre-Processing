@@ -3,6 +3,9 @@ from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields
+import sys, os
+sys.path.append(os.path.dirname(sys.path[0]))
+from user import User
 
 # class LoginQuerySchema(Schema):
 #     username = fields.Str(required=True)
@@ -50,10 +53,14 @@ class GetTypeDataPerTimeIndex(Resource):
         header={
             "Content-Type": "application/json"
         }
-        table = "et" + (request.args["type"]).lower()
+        type = request.args["type"]
+        table = "et" + type.lower()
+        if type not in User.fetch_applications():
+            return {"message": "The type your are requesting data for, does not exist."}, 400
+        url = "http://10.0.18.77:4200/_sql"
         body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
         print(body)
-        r = requests.post(url="http://10.0.18.77:4200/_sql", headers=header, data=body, verify=False)
+        r = requests.post(url=url, headers=header, data=body, verify=False)
         data = r.json()
         entities = []
         for row in data["rows"]:
@@ -67,7 +74,7 @@ class GetTypeDataPerTimeIndex(Resource):
                     else:
                         (new_data_dict["attributes"]).append({"attrName": data["cols"][i], "value": row[i]})
             entities.append(new_data_dict)
-        return entities
+        return entities, 200
 
 api.add_resource(GetTypeDataPerTimeIndex, '/getTypeDataPerTimeIndex')
 
