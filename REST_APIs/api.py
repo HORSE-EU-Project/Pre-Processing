@@ -1,11 +1,9 @@
+from click import pass_context
 from flask import Flask, abort, request
 from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields
-import sys, os
-sys.path.append(os.path.dirname(sys.path[0]))
-from user import User
 
 # class LoginQuerySchema(Schema):
 #     username = fields.Str(required=True)
@@ -55,12 +53,21 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         type = request.args["type"]
         table = "et" + type.lower()
-        if type not in User.fetch_applications():
-            return {"message": "The type your are requesting data for, does not exist."}, 400
         url = "http://10.0.18.77:4200/_sql"
-        body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
-        print(body)
+        body = "{\"stmt\":\"SHOW tables\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
+        if r.status_code != 200:
+            return {"message": "An error occurred while retrieving data from the database"}, r.status_code
+        tableExists = False
+        for i in r.json()["rows"]:
+            if table in i:
+                tableExists = True
+        if not tableExists:
+            return {"message": "The type your are requesting data for does not exist."}, 400
+        body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
+        r = requests.post(url=url, headers=header, data=body, verify=False)
+        if r.status_code != 200:
+            return {"message": "An error occurred while retrieving data from the database"}, r.status_code
         data = r.json()
         entities = []
         for row in data["rows"]:
