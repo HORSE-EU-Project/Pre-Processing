@@ -1,8 +1,6 @@
-import base64
 from flask import Flask, abort, request
 from flask_restful import Resource, Api
 import requests
-import os
 import socket
 from marshmallow import Schema, fields
 
