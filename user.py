@@ -113,6 +113,7 @@ class User(UserMixin):
         appList=[]
         for row in applications:
             appList.append(row[0])
+        # remove duplicates
         appList = list(set(appList))
         return appList
 
