@@ -68,7 +68,7 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        User.delete_per_id("f5c94014-90e5-4866-be16-bd619d88390f")
+        #User.delete_per_id("f5c94014-90e5-4866-be16-bd619d88390f")
         token = User.get_token(current_user.id) 
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
