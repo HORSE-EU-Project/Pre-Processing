@@ -76,9 +76,9 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "5002:5002"
+      - "5004:5004"
     expose:
-      - "5002"
+      - "5004"
     environment:
       - DEBUG=pep-proxy:*
       - PEP_PROXY_DEBUG=true
@@ -98,21 +98,5 @@ services:
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
       interval: 50s
-
-  # dff-login-api:
-  #   build: loginApi/
-  #   container_name: login-rest-api
-  #   hostname: login-api
-  #   networks:
-  #     - default
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   ports: 
-  #     - "8084:8084"
-  #   expose:
-  #     - "8084"
-  #   healthcheck:
-  #     interval: 50s
 
 
