@@ -83,8 +83,8 @@ services:
       - DEBUG=pep-proxy:*
       - PEP_PROXY_DEBUG=true
       - PEP_PROXY_APP_HOST=10.0.20.174
-      - PEP_PROXY_APP_PORT=5001
-      - PEP_PROXY_PORT=5002
+      - PEP_PROXY_APP_PORT=5003
+      - PEP_PROXY_PORT=5004
       - PEP_PROXY_IDM_HOST=10.0.18.77
       - PEP_PROXY_HTTPS_ENABLED=false
       - PEP_PROXY_AUTH_ENABLED=false
