@@ -6,8 +6,8 @@ from marshmallow import Schema, fields, validate
 
 class DataPerIndexQuerySchema(Schema):
     type = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
-    fromDate = fields.DateTime(required=False)
-    toDate = fields.DateTime(required=False)
+    # fromDate = fields.DateTime(required=False)
+    # toDate = fields.DateTime(required=False)
 
 app = Flask(__name__)
 api = Api(app)
@@ -36,11 +36,11 @@ class GetTypeDataPerTimeIndex(Resource):
                 tableExists = True
         if not tableExists:
             return {"message": "The type your are requesting data for does not exist."}, 400
-        if fromD is None and toD is None:
+        if fromD not in request.args and toD not in request.args:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
-        elif fromD is None:
+        elif fromD not in request.args:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
-        elif toD is None:
+        elif toD not in request.args:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP ORDER BY time_index;\"}"
         else:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP AND time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
