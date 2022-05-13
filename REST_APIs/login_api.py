@@ -32,7 +32,7 @@ class Login(Resource):
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json"
         }
-        body = "email="+request.args["email"]+"&password="+request.args["password"]+"&grant_type=password"
+        body = "username="+request.args["email"]+"&password="+request.args["password"]+"&grant_type=password"
         r = requests.post(url=KEYROCK_DISCOVERY_URL+"/oauth2/token", headers=header, data=body, verify=False)
         json = r.json()
         return json["access_token"]
