@@ -22,8 +22,6 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type": "application/json"
         }
         type = request.args["type"]
-        fromD = request.args["fromDate"]
-        toD = request.args["toDate"]
         table = "et" + type.lower()
         url = "http://10.0.18.77:4200/_sql"
         body = "{\"stmt\":\"SHOW tables\"}"
@@ -36,13 +34,17 @@ class GetTypeDataPerTimeIndex(Resource):
                 tableExists = True
         if not tableExists:
             return {"message": "The type your are requesting data for does not exist."}, 400
-        if fromD not in request.args and toD not in request.args:
+        if "fromDate" not in request.args and "toDate" not in request.args:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
-        elif fromD not in request.args:
+        elif "fromDate" not in request.args:
+            toD = request.args["toDate"]
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
-        elif toD not in request.args:
+        elif "toDate" not in request.args:
+            fromD = request.args["fromDate"]
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP ORDER BY time_index;\"}"
         else:
+            fromD = request.args["fromDate"]
+            toD = request.args["toDate"]
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP AND time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
         if r.status_code != 200:
