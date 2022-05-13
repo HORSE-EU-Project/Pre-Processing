@@ -6,8 +6,8 @@ from marshmallow import Schema, fields, validate
 
 class DataPerIndexQuerySchema(Schema):
     type = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
-    # fromDate = fields.DateTime(required=False)
-    # toDate = fields.DateTime(required=False)
+    fromDate = fields(required=False)
+    toDate = fields(required=False)
 
 app = Flask(__name__)
 api = Api(app)
