@@ -1,3 +1,4 @@
+from pickle import FALSE
 from flask import Flask, abort, request
 from flask_restful import Resource, Api
 import requests
@@ -5,9 +6,9 @@ import socket
 from marshmallow import Schema, fields, validate
 
 class DataPerIndexQuerySchema(Schema):
-    type = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
-    fromDate = fields(required=False)
-    toDate = fields(required=False)
+    inputType = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
+    fromDate = fields.String(validate=validate.Regexp("^\"*\d{4}-\d\d-\d\d(T\d\d:\d\d:\d\d(\.\d+)?(([ -]\d\d:\d\d)|Z)?)*\"*$"), required=False)
+    toDate = fields.String(validate=validate.Regexp("^\"*\d{4}-\d\d-\d\d(T\d\d:\d\d:\d\d(\.\d+)?(([ -]\d\d:\d\d)|Z)?)*\"*$"), required=False)
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,14 +16,22 @@ getDataSchema = DataPerIndexQuerySchema()
 
 class GetTypeDataPerTimeIndex(Resource):
     def get(self):
+        if "fromDate" in request.args and "toDate" in request.args:
+            fromD = request.args["fromDate"]
+            toD = request.args["toDate"]
+            request.args.get("fromDate").encode('UTF-8')
+            request.args.get("toDate").encode('UTF-8')
+        else:
+            fromD=None
+            toD=None
         errors = getDataSchema.validate(request.args)
         if errors:
             abort(400, str(errors))
         header={
             "Content-Type": "application/json"
         }
-        type = request.args["type"]
-        table = "et" + type.lower()
+        dType = request.args["inputType"]
+        table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"
         body = "{\"stmt\":\"SHOW tables\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
@@ -34,17 +43,13 @@ class GetTypeDataPerTimeIndex(Resource):
                 tableExists = True
         if not tableExists:
             return {"message": "The type your are requesting data for does not exist."}, 400
-        if "fromDate" not in request.args and "toDate" not in request.args:
+        if fromD==None and toD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
-        elif "fromDate" not in request.args:
-            toD = request.args["toDate"]
+        elif fromD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
-        elif "toDate" not in request.args:
-            fromD = request.args["fromDate"]
+        elif toD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP ORDER BY time_index;\"}"
         else:
-            fromD = request.args["fromDate"]
-            toD = request.args["toDate"]
             body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP AND time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
         if r.status_code != 200:
@@ -68,4 +73,4 @@ api.add_resource(GetTypeDataPerTimeIndex, '/getTypeData')
 
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host=ipV4IP, port=5003)
+    app.run(host=ipV4IP, port=5003, debug=True)
