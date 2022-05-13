@@ -17,13 +17,17 @@ getDataSchema = DataPerIndexQuerySchema()
 class GetTypeDataPerTimeIndex(Resource):
     def get(self):
         if "fromDate" in request.args and "toDate" in request.args:
-            fromD = request.args["fromDate"]
-            toD = request.args["toDate"]
-            request.args.get("fromDate").encode('UTF-8')
-            request.args.get("toDate").encode('UTF-8')
-        else:
-            fromD=None
+            fromD = request.args["fromDate"].replace(" ", "+")
+            toD = request.args["toDate"].replace(" ", "+")
+        elif "fromDate" in request.args:
             toD=None
+            fromD = request.args["fromDate"].replace(" ", "+")
+        elif "toDate" in request.args:
+            fromD=None
+            toD = request.args["toDate"].replace(" ", "+")
+        else:
+            toD=None
+            fromD=None
         errors = getDataSchema.validate(request.args)
         if errors:
             abort(400, str(errors))
@@ -46,12 +50,16 @@ class GetTypeDataPerTimeIndex(Resource):
         if fromD==None and toD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
         elif fromD==None:
-            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + " WHERE time_index < \'"+ toD +"\' ORDER BY time_index;\"}"
+            print(body)
         elif toD==None:
-            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP ORDER BY time_index;\"}"
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + " WHERE time_index > \'"+ fromD +"\' ORDER BY time_index;\"}"
+            print(body)
         else:
-            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP AND time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + " WHERE time_index > \'"+ fromD +"\' and time_index < \'"+ toD +"\' ORDER BY time_index;\"}"
+            print(body)
         r = requests.post(url=url, headers=header, data=body, verify=False)
+        #print(r.content)
         if r.status_code != 200:
             return {"message": "An error occurred while retrieving data from the database"}, r.status_code
         data = r.json()
