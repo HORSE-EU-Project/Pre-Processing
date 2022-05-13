@@ -2,10 +2,12 @@ from flask import Flask, abort, request
 from flask_restful import Resource, Api
 import requests
 import socket
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 class DataPerIndexQuerySchema(Schema):
-    type = fields.Str(required=True)
+    type = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
+    fromDate = fields.DateTime(required=False)
+    toDate = fields.DateTime(required=False)
 
 app = Flask(__name__)
 api = Api(app)
@@ -20,6 +22,8 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type": "application/json"
         }
         type = request.args["type"]
+        fromD = request.args["fromDate"]
+        toD = request.args["toDate"]
         table = "et" + type.lower()
         url = "http://10.0.18.77:4200/_sql"
         body = "{\"stmt\":\"SHOW tables\"}"
@@ -32,7 +36,14 @@ class GetTypeDataPerTimeIndex(Resource):
                 tableExists = True
         if not tableExists:
             return {"message": "The type your are requesting data for does not exist."}, 400
-        body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
+        if fromD is None and toD is None:
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
+        elif fromD is None:
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
+        elif toD is None:
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP ORDER BY time_index;\"}"
+        else:
+            body = "{\"stmt\":\"SELECT * FROM doc." + table + "WHERE time_index>" + fromD + "::TIMESTAMP AND time_index<" + toD + "::TIMESTAMP ORDER BY time_index;\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
         if r.status_code != 200:
             return {"message": "An error occurred while retrieving data from the database"}, r.status_code
