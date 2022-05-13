@@ -7,7 +7,7 @@ from marshmallow import Schema, fields
 import base64
 
 class LoginQuerySchema(Schema):
-    username = fields.Str(required=True)
+    email = fields.Str(required=True)
     password = fields.Str(required=True)
 
 #Configure Keyrock as the IDM
@@ -32,7 +32,7 @@ class Login(Resource):
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json"
         }
-        body = "username="+request.args["username"]+"&password="+request.args["password"]+"&grant_type=password"
+        body = "email="+request.args["email"]+"&password="+request.args["password"]+"&grant_type=password"
         r = requests.post(url=KEYROCK_DISCOVERY_URL+"/oauth2/token", headers=header, data=body, verify=False)
         json = r.json()
         return json["access_token"]
