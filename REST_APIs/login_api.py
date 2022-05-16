@@ -39,6 +39,7 @@ class Login(Resource):
 
 api.add_resource(Login, '/login')
 
+#needs to be run on production server
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(host=ipV4IP, port=5001)
