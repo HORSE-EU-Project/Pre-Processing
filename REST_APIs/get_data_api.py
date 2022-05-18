@@ -14,6 +14,14 @@ app = Flask(__name__)
 api = Api(app)
 getDataSchema = DataPerIndexQuerySchema()
 
+class orionSubscriptions(Resource):
+    def get(self):
+        # db.csubs.find( { 'entities.type': {$eq: "XBELLO"}})
+        return 
+    def delete(self):
+        # db.csubs.find({"reference": { $regex: /^http:\/\/10.0.3.190:5000/ } })
+        return
+
 class GetTypeDataPerTimeIndex(Resource):
     def get(self):
         if "fromDate" in request.args and "toDate" in request.args:
