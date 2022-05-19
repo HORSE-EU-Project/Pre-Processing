@@ -5,12 +5,8 @@ from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields, validate
-import os
-import sys
 
-# dirname = os.path.basename(__file__)
-# sys.path.append("../"+dirname)
-# from user import User
+from ..user import User
 
 class DataPerIndexQuerySchema(Schema):
     inputType = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
@@ -92,7 +88,7 @@ class GetTypeDataPerTimeIndex(Resource):
                     else:
                         (new_data_dict["attributes"]).append({"attrName": data["cols"][i], "value": row[i]})
             entities.append(new_data_dict)
-        return entities, 200
+        return request.headers.get('X-Auth-token'), 200
 
 api.add_resource(GetTypeDataPerTimeIndex, '/getTypeData')
 
