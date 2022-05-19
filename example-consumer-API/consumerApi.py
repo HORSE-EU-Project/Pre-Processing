@@ -18,4 +18,4 @@ api.add_resource(ReceiveDFF, '/dff-data')
 
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")

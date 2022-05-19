@@ -15,7 +15,7 @@ from decoratorApp import decoratorCheckAppOrg
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 @decoratorCheckAppOrg
 def subscriptionSubmission():
-    token = User.get_token(current_user.id) 
+    token = User.get_field(current_user.id, "user", "token")
     if current_user.is_authenticated:
         list_apps= User.fetch_applications()
         if request.method == 'POST':
@@ -33,7 +33,7 @@ def subscriptionSubmission():
 
 def createRequest(dbName, endpoint):
     url = "http://10.0.20.174:1027/v2/subscriptions/"
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_token(current_user.id)}
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field(current_user.id, "user", "token")}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
