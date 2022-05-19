@@ -1,6 +1,4 @@
-from logging import exception
-from flask import Flask, render_template, request, redirect, url_for , flash, Blueprint
-from os.path import join, dirname, realpath
+from flask import render_template, request, redirect, flash, Blueprint
 import requests
 import json
 from flask_login import (
@@ -15,7 +13,7 @@ from decoratorApp import decoratorCheckAppOrg
 @subscription.route('/subscribe', methods=['GET', 'POST'])
 @decoratorCheckAppOrg
 def subscriptionSubmission():
-    token = User.get_field(current_user.id, "user", "token")
+    token = User.get_field("id", current_user.id, "user", "token")
     if current_user.is_authenticated:
         list_apps= User.fetch_applications()
         if request.method == 'POST':
@@ -33,7 +31,7 @@ def subscriptionSubmission():
 
 def createRequest(dbName, endpoint):
     url = "http://10.0.20.174:1027/v2/subscriptions/"
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field(current_user.id, "user", "token")}
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field("id", current_user.id, "user", "token")}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                

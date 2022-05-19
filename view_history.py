@@ -14,7 +14,7 @@ from decoratorApp import decoratorCheckAppOrg
 @decoratorCheckAppOrg
 def view_upload_history():
     if current_user.is_authenticated:
-        token = User.get_field(current_user.id, "user", "token") 
+        token = User.get_field("id", current_user.id, "user", "token") 
         if request.method=='GET':
             df = User.fetch_history_dataframe(current_user.id)
             if df.empty:

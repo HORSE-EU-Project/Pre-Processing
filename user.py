@@ -69,19 +69,19 @@ class User(UserMixin):
         )
         return history_data
 
-    def update_field(user_id, database, field, data):
+    def update_field(cond_field, cond, database, field, data):
         db = get_db()
-        query="UPDATE " + database + " SET " + field + "= ? WHERE id = ?"
+        query="UPDATE " + database + " SET " + field + "= ? WHERE " + cond_field + "= ?"
         db.execute(
-           query, (data, user_id), 
+           query, (data, cond), 
         )
         db.commit()
 
-    def get_field(user_id, database, field):
+    def get_field(cond_field, cond, database, field):
         db = get_db()
-        query = "SELECT " + field + " FROM " + database + " WHERE id = ?"
+        query = "SELECT " + field + " FROM " + database + " WHERE " + cond_field + "= ?"
         data = db.execute(
-            query, (user_id,)
+            query, (cond,)
         ).fetchone()[0]
         return data
 
