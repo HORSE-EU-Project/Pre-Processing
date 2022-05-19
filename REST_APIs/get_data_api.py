@@ -5,7 +5,12 @@ from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields, validate
-from user import User
+import os
+import sys
+
+# dirname = os.path.basename(__file__)
+# sys.path.append("../"+dirname)
+# from user import User
 
 class DataPerIndexQuerySchema(Schema):
     inputType = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
