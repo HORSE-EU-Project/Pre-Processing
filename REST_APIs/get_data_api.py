@@ -1,12 +1,13 @@
-from pickle import FALSE
 from flask import Flask, abort, request
-from flask_login import current_user
 from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields, validate
+import sys
+import os
 
-from ..user import User
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import user
 
 class DataPerIndexQuerySchema(Schema):
     inputType = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
