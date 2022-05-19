@@ -18,14 +18,14 @@ app = Flask(__name__)
 api = Api(app)
 getDataSchema = DataPerIndexQuerySchema()
 
-# class orionSubscriptions(Resource):
-#     def get(self):
-#         print(request.headers.get('X-Auth-token'))
-#         # db.csubs.find( { 'entities.type': {$eq: "XBELLO"}})
-#         return 
-#     def delete(self):
-#         # db.csubs.find({"reference": { $regex: /^http:\/\/10.0.3.190:5000/ } })
-#         return
+class orionSubscriptions(Resource):
+    def get(self):
+        token = request.headers.get('X-Auth-token')
+        # db.csubs.find( { 'entities.type': {$eq: "XBELLO"}})
+        return 
+    def delete(self):
+        # db.csubs.find({"reference": { $regex: /^http:\/\/10.0.3.190:5000/ } })
+        return
 
 class GetTypeDataPerTimeIndex(Resource):
     def get(self):
@@ -73,7 +73,6 @@ class GetTypeDataPerTimeIndex(Resource):
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " WHERE time_index > \'"+ fromD +"\' and time_index < \'"+ toD +"\' ORDER BY time_index;\"}"
             print(body)
         r = requests.post(url=url, headers=header, data=body, verify=False)
-        #print(r.content)
         if r.status_code != 200:
             return {"message": "An error occurred while retrieving data from the database"}, r.status_code
         data = r.json()
@@ -89,7 +88,7 @@ class GetTypeDataPerTimeIndex(Resource):
                     else:
                         (new_data_dict["attributes"]).append({"attrName": data["cols"][i], "value": row[i]})
             entities.append(new_data_dict)
-        return request.headers.get('X-Auth-token'), 200
+        return entities, 200
 
 api.add_resource(GetTypeDataPerTimeIndex, '/getTypeData')
 

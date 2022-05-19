@@ -5,6 +5,11 @@ import requests
 import socket
 from marshmallow import Schema, fields
 import base64
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import user
 
 class LoginQuerySchema(Schema):
     email = fields.Str(required=True)
