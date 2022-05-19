@@ -1,6 +1,4 @@
-from logging import exception
-from flask import Flask, render_template, request, redirect, url_for , flash, Blueprint
-from os.path import join, dirname, realpath
+from flask import render_template, request, redirect, url_for , flash, Blueprint
 import requests
 import json
 from flask_login import (

@@ -1,9 +1,11 @@
 from pickle import FALSE
 from flask import Flask, abort, request
+from flask_login import current_user
 from flask_restful import Resource, Api
 import requests
 import socket
 from marshmallow import Schema, fields, validate
+from user import User
 
 class DataPerIndexQuerySchema(Schema):
     inputType = fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
@@ -14,16 +16,18 @@ app = Flask(__name__)
 api = Api(app)
 getDataSchema = DataPerIndexQuerySchema()
 
-class orionSubscriptions(Resource):
-    def get(self):
-        # db.csubs.find( { 'entities.type': {$eq: "XBELLO"}})
-        return 
-    def delete(self):
-        # db.csubs.find({"reference": { $regex: /^http:\/\/10.0.3.190:5000/ } })
-        return
+# class orionSubscriptions(Resource):
+#     def get(self):
+#         print(request.headers.get('X-Auth-token'))
+#         # db.csubs.find( { 'entities.type': {$eq: "XBELLO"}})
+#         return 
+#     def delete(self):
+#         # db.csubs.find({"reference": { $regex: /^http:\/\/10.0.3.190:5000/ } })
+#         return
 
 class GetTypeDataPerTimeIndex(Resource):
     def get(self):
+        print(request.headers.get('X-Auth-token'))
         if "fromDate" in request.args and "toDate" in request.args:
             fromD = request.args["fromDate"].replace(" ", "+")
             toD = request.args["toDate"].replace(" ", "+")
