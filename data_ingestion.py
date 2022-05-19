@@ -50,7 +50,7 @@ def ingest_data():
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
                 return redirect(request.url)    
         else:
-            token = User.get_token(current_user.id) 
+            token = User.get_field(current_user.id, "user", "token")
             return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
@@ -59,7 +59,7 @@ def ingest_data():
 
 def PostOrion(json_dict):
     url = "http://10.0.20.174:1027/v2/op/update"
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_token(current_user.id))}
+    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_field(current_user.id, "user", "token"))}
     body = json_dict
     sendRequestToOrion(url, headersDict,body)
 

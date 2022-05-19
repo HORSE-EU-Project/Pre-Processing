@@ -4,7 +4,8 @@ CREATE TABLE user (
   email TEXT UNIQUE NOT NULL,
   token TEXT UNIQUE NOT NULL,
   application TEXT,
-  organization TEXT
+  organization TEXT,
+  domain_name TEXT
 );
 
 CREATE TABLE history (
