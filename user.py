@@ -69,19 +69,20 @@ class User(UserMixin):
         )
         return history_data
 
-    def update_field(user_id, database, field, data):
-        db = get_db()
-        query="UPDATE " + database + " SET " + field + "= ? WHERE id = ?"
+    def update_field(cond_field, cond, table, field, data, path = None):
+        db = get_db(path)
+        query="UPDATE " + table + " SET " + field + "= ? WHERE " + cond_field + "= ?"
         db.execute(
-           query, (data, user_id), 
+           query, (data, cond), 
         )
         db.commit()
 
-    def get_field(user_id, database, field):
-        db = get_db()
-        query = "SELECT " + field + " FROM " + database + " WHERE id = ?"
+    def get_field(cond_field, cond, table, field, path=None):
+        db = get_db(path)
+        query = "SELECT " + field + " FROM " + table + " WHERE " + cond_field + "= ?"
+        #query = "SELECT * FROM " + table
         data = db.execute(
-            query, (user_id,)
+            query, (cond,)
         ).fetchone()[0]
         return data
 
@@ -127,12 +128,4 @@ class User(UserMixin):
         # remove duplicates
         appList = list(set(appList))
         return appList
-
-    '''def delete_all():
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM user")
-        entries = cursor.fetchall()
-
-        return print(entries)'''
        

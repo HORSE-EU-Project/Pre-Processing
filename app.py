@@ -28,10 +28,10 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 #from consumer import consumers
-from subscription import subscription, createRequest, sendRequestToFiware
-from data_ingestion import data_ingestion
-from view_history import view_history
-from decoratorApp import decoratorCheckAppOrg
+from Web_app.subscription import subscription, createRequest
+from Web_app.data_ingestion import data_ingestion
+from Web_app.view_history import view_history
+from Web_app.decoratorApp import decoratorCheckAppOrg
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
@@ -67,7 +67,7 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        token = User.get_field(current_user.id, "user", "token")
+        token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
@@ -81,7 +81,7 @@ def push_app_org():
     org = request.values.get('org')
     domain_name = request.form['domain_name']
     User.add_app_org(current_user.id, appl, org)
-    User.update_field(current_user.id, "user", "domain_name", domain_name)
+    User.update_field("id", current_user.id, "user", "domain_name", domain_name)
     if appl not in User.fetch_applications():
         #create subscription to notify quantumleap in order to data in crateDB
         createRequest(appl, "http://quantumleap:8668/v2/notify")
@@ -148,7 +148,7 @@ def get_user_info():
     if not User.get(unique_id): 
         User.create(unique_id, user_name, user_email, token, None, None, None)
     else:
-        User.update_field(unique_id, "user", "token", token)
+        User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
     return redirect("/")
 

@@ -1,4 +1,6 @@
 requests==2.21.0
 Flask==1.0.2
-flask_restful
+flask_restx
 marshmallow
+pymongo
+jsonify

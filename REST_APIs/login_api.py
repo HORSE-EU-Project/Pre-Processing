@@ -37,10 +37,13 @@ class Login(Resource):
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json"
         }
-        body = "username="+request.args["email"]+"&password="+request.args["password"]+"&grant_type=password"
+        email = request.args["email"]
+        body = "username="+email+"&password="+request.args["password"]+"&grant_type=password"
         r = requests.post(url=KEYROCK_DISCOVERY_URL+"/oauth2/token", headers=header, data=body, verify=False)
         json = r.json()
-        return json["access_token"]
+        token = json["access_token"]
+        user.User.update_field("email", email, "user", "token", token, path = "../")
+        return token
 
 api.add_resource(Login, '/login')
 
