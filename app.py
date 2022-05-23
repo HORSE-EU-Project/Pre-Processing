@@ -28,10 +28,10 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 #from consumer import consumers
-from subscription import subscription, createRequest, sendRequestToFiware
-from data_ingestion import data_ingestion
-from view_history import view_history
-from decoratorApp import decoratorCheckAppOrg
+from Web_app.subscription import subscription, createRequest
+from Web_app.data_ingestion import data_ingestion
+from Web_app.view_history import view_history
+from Web_app.decoratorApp import decoratorCheckAppOrg
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
