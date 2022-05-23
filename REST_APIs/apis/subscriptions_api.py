@@ -29,7 +29,7 @@ class orionSubscriptions(Resource):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
-        domain = user.User.get_field("token", token, "user", "domain_name", path = "../")
+        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App")
         client = oriondb.mongoConnect(db)
         subs = oriondb.getSubscriptions(client, db, col, domain, None)
         oriondb.mongoCloseConnection(client)
@@ -43,7 +43,7 @@ class orionSubscriptions(Resource):
         if errors:
             abort(400, str(errors))
         token = request.headers.get('X-Auth-token')
-        domain = user.User.get_field("token", token, "user", "domain_name", path = "../")
+        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App")
         inputSubId = request.args["subId"]
         subId = ObjectId(inputSubId)
         client = oriondb.mongoConnect(db)
