@@ -83,7 +83,11 @@ class User(UserMixin):
         #query = "SELECT * FROM " + table
         data = db.execute(
             query, (cond,)
-        ).fetchone()[0]
+        ).fetchone()
+        if data:
+            data = data[0]
+        else:
+            return -1
         return data
 
     # def update_fields(user_id, db, fields):
