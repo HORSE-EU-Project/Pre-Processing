@@ -1,5 +1,5 @@
 from flask import abort, request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, reqparse
 import requests
 
 from marshmallow import Schema, fields, validate
@@ -13,8 +13,16 @@ class DataPerIndexQuerySchema(Schema):
 
 getDataSchema = DataPerIndexQuerySchema()
 
+parser = reqparse.RequestParser()
+
+parser.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+
 @api.route('/getTypeData')
 class GetTypeDataPerTimeIndex(Resource):
+    @api.doc(parser=parser)
+    @api.response(200, 'OK')
+    @api.response(400, 'Validation error')
+    @api.response(404, 'The type your are requesting data for does not exist.')
     def get(self):
         print(request.headers.get('X-Auth-token'))
         if "fromDate" in request.args and "toDate" in request.args:
@@ -31,7 +39,7 @@ class GetTypeDataPerTimeIndex(Resource):
             fromD=None
         errors = getDataSchema.validate(request.args)
         if errors:
-            abort(400, str(errors))
+            abort(400, 'Validation error')
         header={
             "Content-Type": "application/json"
         }
@@ -47,7 +55,7 @@ class GetTypeDataPerTimeIndex(Resource):
             if table in i:
                 tableExists = True
         if not tableExists:
-            return {"message": "The type your are requesting data for does not exist."}, 400
+            abort(404, "The type your are requesting data for does not exist.")
         if fromD==None and toD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
         elif fromD==None:
