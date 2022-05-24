@@ -24,7 +24,7 @@
               <div class="modal-body">
                   <form  method= "POST" enctype="multipart/form-data" action="/push_app_org">
                     <div class="form-group">
-                        <label for="org">Organization</label>
+                        <label style="width: 110px;" for="org">Organization</label>
                         <select id="org" name="org" required>
                             <option value="" disabled selected hidden>Choose organization</option>
                             <option value="org1">8BELLS</option>
@@ -39,8 +39,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="application">Application</label>
+                        <label style="width: 110px;" for="application">Application</label>
                         <input type="text" id="application" name="application" required><br><br>
+                    </div>
+                    <div class="form-group">
+                        <label style="width: 110px;" for="domain_name">Domain name</label>
+                        <input type="url" id="domain_name" name="domain_name" placeholder="https://example.com"><br><br>
                     </div>
                     <input type="submit" value="Submit">
                 </form>

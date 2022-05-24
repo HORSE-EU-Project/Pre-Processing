@@ -17,11 +17,10 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID", "bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET", "12eab5b6-f063-417f-83e3-85ed61c45fe9")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
 
 KEYROCK_DISCOVERY_URL = (
-    #"https://account.lab.fiware.org"
     "https://cloud-20-nic.8bellsresearch.com:443"
 )
 
@@ -29,10 +28,10 @@ app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
 #from consumer import consumers
-from subscription import subscription, createRequest, sendRequestToFiware
-from data_ingestion import data_ingestion
-from view_history import view_history
-from decoratorApp import decoratorCheckAppOrg
+from Web_app.subscription import subscription, createRequest
+from Web_app.data_ingestion import data_ingestion
+from Web_app.view_history import view_history
+from Web_app.decoratorApp import decoratorCheckAppOrg
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
@@ -68,7 +67,7 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        token = User.get_token(current_user.id) 
+        token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
         return render_template('index.html')
@@ -80,10 +79,12 @@ def push_app_org():
         return index()
     appl = request.form['application']
     org = request.values.get('org')
-    if appl not in User.fetch_applications():
-        #create subscription to notify quantumleap in order to persist data in crateDB
-        createRequest(appl, "http://quantumleap:8668/v2/notify")
+    domain_name = request.form['domain_name']
     User.add_app_org(current_user.id, appl, org)
+    User.update_field("id", current_user.id, "user", "domain_name", domain_name)
+    if appl not in User.fetch_applications():
+        #create subscription to notify quantumleap in order to data in crateDB
+        createRequest(appl, "http://quantumleap:8668/v2/notify")
     return redirect("/")
 
 @app.route('/login')
@@ -123,7 +124,6 @@ def callback():
         verify=False
     )
     # Parse the tokens!
-
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
 
@@ -142,13 +142,13 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token, application=None,
+    id_=unique_id, name=user_name, email=user_email, token=token, application=None, organization=None, domain_name=None
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token, None)
+        User.create(unique_id, user_name, user_email, token, None, None, None)
     else:
-        User.updateToken(unique_id, token)
+        User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
     return redirect("/")
 
