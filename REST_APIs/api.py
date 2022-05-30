@@ -1,8 +1,9 @@
-from flask import Flask, g
+from flask import Flask
 from apis import api
 import socket
 
 app = Flask(__name__)
+
 api.init_app(app)
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 from flask import abort, request
-from flask_restx import Resource, Namespace, reqparse
-from marshmallow import Schema, fields, validate
+from flask_restx import Resource, Namespace, reqparse, fields
+from marshmallow import Schema, validate
+import marshmallow
 import sys
 import os
 import json
@@ -15,7 +16,7 @@ import oriondb
 api = Namespace('subscriptions', description='Subscription related operations')
 
 class deleteSubscriptionSchema(Schema):
-    subId = fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)
+    subId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)
 
 deleteSubSchema = deleteSubscriptionSchema()
 
@@ -23,8 +24,12 @@ parser = reqparse.RequestParser()
 
 parser.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
 
-okay_response = api.model('Resource', {
+okay_response_get = api.model('Get Subscriptions', {
     'subs': fields.List(fields.Raw)
+})
+
+okay_response_del = api.model('Delete Subscriptions', {
+    'message': fields.String
 })
 
 @api.route('/')
@@ -33,7 +38,7 @@ class orionSubscriptions(Resource):
     db = "orion"
     global col
     col = "csubs"
-    @api.response(200, "OK")
+    @api.response(200, "OK", okay_response_get)
     @api.doc(parser=parser)
     @api.response(204, 'Either you do not owe any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app.')
     @api.response(400, 'This method does not accept any parameters.')
@@ -58,14 +63,11 @@ class orionSubscriptions(Resource):
         if subs:
             return {"subs": json.loads(json_util.dumps(subs))}, 200
         else:
-            return {"message": "Either you do not owe any subscriptions or you mistyped the domain name that your application uses for subscriptions when you registered your app."}, 204
+            abort(204, "Either you do not owe any subscriptions or you mistyped the domain name that your application uses for subscriptions when you registered your app.")
     
-    # okay_response_del = api.model('Resource', {
-    #     'message': fields.String
-    # })
     parser.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription document that you wish to delete.')
     @api.doc(parser=parser)
-    @api.response(200, "OK")
+    @api.response(200, "OK", okay_response_del)
     @api.response(400, 'Validation error')
     @api.response(401, "Either the requested entity does not exist or you are not authorized to delete it.")
     @api.response(403, 'You are not registered in the database: you need to login through the DFF Web App first.')
