@@ -11,12 +11,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import oriondb
+import requests
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
 class deleteSubscriptionSchema(Schema):
     subId = fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)
-
+    
 deleteSubSchema = deleteSubscriptionSchema()
 
 @api.route('/')
@@ -66,3 +67,28 @@ class orionSubscriptions(Resource):
             else:
                 oriondb.mongoCloseConnection(client)
                 abort(401, "Either the requested entity does not exist or you are not authorized to delete it.")
+    
+    def post(self):
+        if 'X-Auth-token' not in request.headers:
+            abort(400, "X-AUth-token header is missing.")
+        token = request.headers.get('X-Auth-token') 
+        body = request.get_json()
+        header = {
+            "Content-Type" : "application/json",
+            "X-Auth-token" : token
+        }
+        r = requests.post(url="http://jenkins.8bellsresearch.com:1027/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
+        if(r.status_code==201):
+            return {"message": "Subscription created successfully."}, 200
+        else:
+            abort(r.status_code, "While trying to create the subscription, an error occurred.")
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
