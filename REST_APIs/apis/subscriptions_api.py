@@ -1,6 +1,7 @@
 from flask import abort, request
-from flask_restx import Resource, Namespace
-from marshmallow import Schema, fields, validate
+from flask_restx import Resource, Namespace, reqparse, fields
+from marshmallow import Schema, validate
+import marshmallow
 import sys
 import os
 import json
@@ -16,9 +17,25 @@ import requests
 api = Namespace('subscriptions', description='Subscription related operations')
 
 class deleteSubscriptionSchema(Schema):
-    subId = fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)
-    
+    subId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)
+
 deleteSubSchema = deleteSubscriptionSchema()
+
+parser = reqparse.RequestParser()
+
+parser.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+
+okay_response_get = api.model('GET Subscriptions', {
+    'subs': fields.List(fields.Raw)
+})
+
+okay_response_post = api.model('POST Subscriptions', {
+    'message': fields.String
+})
+
+okay_response_del = api.model('DEL Subscriptions', {
+    'message': fields.String
+})
 
 @api.route('/')
 class orionSubscriptions(Resource):
@@ -26,51 +43,39 @@ class orionSubscriptions(Resource):
     db = "orion"
     global col
     col = "csubs"
+    @api.response(200, "OK", okay_response_get)
+    @api.doc(parser=parser)
+    @api.response(204, 'Either you do not owe any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app.')
+    @api.response(400, 'This method does not accept any parameters.')
+    @api.response(403, 'You are not registered in the database: you need to login through the DFF Web App first.')
+    @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
+    @api.response(500, 'While trying to connect to MongoDB, an error occurred.')
     def get(self):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
         domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
         if domain==-1:
-            abort(401, "You are not registered in the database: you need to login through the DFF Web App first.")
+            abort(403, "You are not registered yet: you need to login through the DFF Web App first.")
         elif domain==None:
-            abort(404, "The domain_name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
-        client = oriondb.mongoConnect(db)
+            abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
+        try:
+            client = oriondb.mongoConnect(db)
+        except:
+            abort(500, 'While trying to connect to MongoDB, an error occurred.')
         subs = oriondb.getSubscriptions(client, db, col, "reference", domain, None)
         oriondb.mongoCloseConnection(client)
         if subs:
             return {"subs": json.loads(json_util.dumps(subs))}, 200
         else:
-            return {"message": "Either you do not have any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app."}, 200
-
-    def delete(self):
-        errors = deleteSubSchema.validate(request.args)
-        if errors:
-            abort(400, str(errors))
-        token = request.headers.get('X-Auth-token')
-        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
-        if domain==-1:
-            abort(401, "You are not registered in the database: you need to login through the DFF Web App first.")
-        elif domain==None:
-            abort(404, "The domain_name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
-        inputSubId = request.args["subId"]
-        subId = ObjectId(inputSubId)
-        client = oriondb.mongoConnect(db)
-        for d in oriondb.getSubscriptions(client, db, col, "reference", domain, "_id"):
-            if subId in d.values():
-                result = oriondb.deleteSubscription(client, db, col, "_id", subId)
-                oriondb.mongoCloseConnection(client)
-                if result.acknowledged == True:
-                    return {"message": "The requested entity was deleted."}, 200
-                else:
-                    abort(500, "The deletion was not performed.")
-            else:
-                oriondb.mongoCloseConnection(client)
-                abort(401, "Either the requested entity does not exist or you are not authorized to delete it.")
+            abort(204, "Either you do not owe any subscriptions or you mistyped the domain name that your application uses for subscriptions when you registered your app.")
     
+    @api.doc(parser=parser)
+    @api.response(200, "OK", okay_response_post)
+    @api.response(400, 'X-Auth-token header is missing.')
     def post(self):
         if 'X-Auth-token' not in request.headers:
-            abort(400, "X-AUth-token header is missing.")
+            abort(400, "X-Auth-token header is missing.")
         token = request.headers.get('X-Auth-token') 
         body = request.get_json()
         header = {
@@ -82,7 +87,44 @@ class orionSubscriptions(Resource):
             return {"message": "Subscription created successfully."}, 200
         else:
             abort(r.status_code, "While trying to create the subscription, an error occurred.")
-        
+    
+    parser.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription document that you wish to delete.')
+    @api.doc(parser=parser)
+    @api.response(200, "OK", okay_response_del)
+    @api.response(400, 'Validation error')
+    @api.response(401, "Either the requested entity does not exist or you are not authorized to delete it.")
+    @api.response(403, 'You are not registered in the database: you need to login through the DFF Web App first.')
+    @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
+    @api.response(500, 'While trying to connect to MongoDB, an error occurred.')
+    @api.response(502, "The deletion was unsuccessful.")
+    def delete(self):
+        errors = deleteSubSchema.validate(request.args)
+        if errors:
+            abort(400, 'Validation error')
+        token = request.headers.get('X-Auth-token')
+        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
+        if domain==-1:
+            abort(403, "You are not registered in the database: you need to login through the DFF Web App first.")
+        elif domain==None:
+            abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
+        inputSubId = request.args["subId"]
+        subId = ObjectId(inputSubId)
+        try:
+            client = oriondb.mongoConnect(db)
+        except:
+            abort(500, 'While trying to connect to MongoDB, an error occurred.')
+        for d in oriondb.getSubscriptions(client, db, col, "reference", domain, "_id"):
+            if subId in d.values():
+                result = oriondb.deleteSubscription(client, db, col, "_id", subId)
+                oriondb.mongoCloseConnection(client)
+                if result.acknowledged == True:
+                    return {"message": "The requested entity was deleted."}, 200
+                else:
+                    abort(502, "The deletion was unsuccessful.")
+            else:
+                oriondb.mongoCloseConnection(client)
+                abort(401, "Either the requested entity does not exist or you are not authorized to delete it.")
+    
         
         
         
