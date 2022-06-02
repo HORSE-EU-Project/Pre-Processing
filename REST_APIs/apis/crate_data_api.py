@@ -62,7 +62,7 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         dType = request.args["inputType"]
         table = "et" + dType.lower()
-        url = "http://10.0.18.77:4200/_sql"
+        url = "10.0.18.77:4200/_sql"
         body = "{\"stmt\":\"SHOW tables\"}"
         r = requests.post(url=url, headers=header, data=body, verify=False)
         if r.status_code != 200:
