@@ -1,6 +1,7 @@
 from flask import abort, request
 from flask_restx import Namespace, Resource, reqparse
 import requests
+import json
 
 from marshmallow import Schema, fields, validate
 
@@ -13,16 +14,27 @@ class DataPerIndexQuerySchema(Schema):
 
 getDataSchema = DataPerIndexQuerySchema()
 
-parser = reqparse.RequestParser()
+parserG = reqparse.RequestParser()
 
-parser.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+parserG.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
 
-@api.route('/getTypeData')
+parserD = reqparse.RequestParser()
+
+parserD.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+
+okay_response_post = api.model('POST Subscriptions', {
+    'message': fields.String
+})
+
+@api.route('/')
 class GetTypeDataPerTimeIndex(Resource):
-    @api.doc(parser=parser)
+    parserG.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to get data from, e.g. XBELLO.')
+    parserG.add_argument('fromDate', type=str, location = 'args', help='The date after which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC.')
+    parserG.add_argument('toDate', type=str, location = 'args', help='The date until which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC.')
+    @api.doc(parser=parserG)
     @api.response(200, 'OK')
     @api.response(400, 'Validation error')
-    @api.response(404, 'The type your are requesting data for does not exist.')
+    @api.response(404, 'The application your are requesting data from does not exist.')
     def get(self):
         print(request.headers.get('X-Auth-token'))
         if "fromDate" in request.args and "toDate" in request.args:
@@ -55,7 +67,7 @@ class GetTypeDataPerTimeIndex(Resource):
             if table in i:
                 tableExists = True
         if not tableExists:
-            abort(404, "The type your are requesting data for does not exist.")
+            abort(404, "The application your are requesting data from does not exist.")
         if fromD==None and toD==None:
             body = "{\"stmt\":\"SELECT * FROM doc." + table + " ORDER BY time_index;\"}"
         elif fromD==None:
@@ -81,3 +93,20 @@ class GetTypeDataPerTimeIndex(Resource):
                         (new_data_dict["attributes"]).append({"attrName": data["cols"][i], "value": row[i]})
             entities.append(new_data_dict)
         return entities, 200
+
+    @api.doc(parser=parserD)
+    @api.response(200, 'OK', okay_response_post)
+    def post(self):
+        token = request.headers.get('X-Auth-token') 
+        body = request.get_json()
+        header = {
+            "Content-Type" : "application/json",
+            "X-Auth-token" : token
+        }
+        r = requests.post(url="http://jenkins.8bellsresearch.com:1027/v2/op/update", headers=header, data=json.dumps(body), verify=False)
+        if(r.status_code==204):
+            return {"message": "Data posted successfully."}, 200
+        else:
+            #"While trying to post data, an error occurred."
+            abort(r.status_code, r.json())
+        

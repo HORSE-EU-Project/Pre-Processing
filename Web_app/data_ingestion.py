@@ -43,9 +43,7 @@ def ingest_data():
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
                     f.write(str(json_dict))
-                flash('File uploaded successfully','success')
-                User.insert_in_history(current_user.id, timestamp, filename, text)
-                PostOrion(json_dict)
+                PostOrion(json_dict, timestamp, filename, text)
                 return redirect(request.url)    
             else:
                 flash('Incorrect file type. Please upload a file with content type application/json.','error')
@@ -55,27 +53,23 @@ def ingest_data():
             return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
     else:
         flash('You should login first!', 'error')
-        from app import index
         return redirect("/")
 
-def PostOrion(json_dict):
+def PostOrion(json_dict, timestamp, filename, text):
     url = "http://10.0.20.174:1027/v2/op/update"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_field("id", current_user.id, "user", "token"))}
     body = json_dict
-    sendRequestToOrion(url, headersDict,body)
+    sendRequestToOrion(url, headersDict, body, timestamp, filename, text)
+    return
 
-def sendRequestToOrion(matchPostURL,headersDict,matchBody):
+def sendRequestToOrion(matchPostURL,headersDict,matchBody, timestamp, filename, text):
     try:
-        print(matchBody)
         r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
-        print(r)
         if r.status_code == 204:
-            flash('Data sent to orion successfully','success')
-        #elif r.status_code == 409:
-        #    flash('Device has already been registered','info')
+            flash('File uploaded and stored successfully','success')
+            User.insert_in_history(current_user.id, timestamp, filename, text)
         else:
-            flash('Something went wrong','error')
+            flash('While trying to store the uploaded data en error occurred','error')
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
         raise SystemExit(e)
-

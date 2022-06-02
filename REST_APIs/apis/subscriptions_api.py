@@ -72,10 +72,7 @@ class orionSubscriptions(Resource):
     
     @api.doc(parser=parser)
     @api.response(200, "OK", okay_response_post)
-    @api.response(400, 'X-Auth-token header is missing.')
     def post(self):
-        if 'X-Auth-token' not in request.headers:
-            abort(400, "X-Auth-token header is missing.")
         token = request.headers.get('X-Auth-token') 
         body = request.get_json()
         header = {
@@ -86,7 +83,7 @@ class orionSubscriptions(Resource):
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
-            abort(r.status_code, "While trying to create the subscription, an error occurred.")
+            abort(r.status_code, r.json())
     
     parser.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription document that you wish to delete.')
     @api.doc(parser=parser)
