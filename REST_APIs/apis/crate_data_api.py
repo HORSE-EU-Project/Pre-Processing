@@ -110,7 +110,7 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         name=user.User.get_field("token", token, "user", "name", "../../DFF_Web_App/")
         if name==-1:
-            abort(500, "Internal Server Error.")
+            abort(500, "Please, get a fresh token!")
         dffMetadata = {"type": "user", "value": name}
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata

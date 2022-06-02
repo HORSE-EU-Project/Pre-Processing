@@ -47,7 +47,7 @@ class orionSubscriptions(Resource):
     @api.doc(parser=parser)
     @api.response(204, 'Either you do not owe any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app.')
     @api.response(400, 'This method does not accept any parameters.')
-    @api.response(403, 'You are not registered in the database: you need to login through the DFF Web App first.')
+    @api.response(403, 'Either your domain name is not registered in the DFF Web App or you need to get a fresh token.')
     @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
     @api.response(500, 'While trying to connect to MongoDB, an error occurred.')
     def get(self):
@@ -56,7 +56,7 @@ class orionSubscriptions(Resource):
         token = request.headers.get('X-Auth-token')
         domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
         if domain==-1:
-            abort(403, "You are not registered yet: you need to login through the DFF Web App first.")
+            abort(403, "Either your domain name is not registered in the DFF Web App or you need to get a fresh token.")
         elif domain==None:
             abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
         try:
