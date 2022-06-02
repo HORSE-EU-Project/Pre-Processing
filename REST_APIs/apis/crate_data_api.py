@@ -7,7 +7,7 @@ import os
 
 from marshmallow import Schema, fields, validate
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 
 api = Namespace('dffData', description='Crate data related operations')
