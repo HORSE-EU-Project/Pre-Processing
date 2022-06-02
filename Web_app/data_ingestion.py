@@ -41,7 +41,7 @@ def ingest_data():
                     json_dict["entities"][i]["dfm_metadata"] = dfmmetadata
                 # save uploaded json or create a new file with the same filename and write contents there
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                with open(os.path.join(current_app.config['UPLOAD_FOLDER'], filename), "w") as f:
+                with open(os.path.join("static/json", filename), "w") as f:
                     f.write(str(json_dict))
                 PostOrion(json_dict, timestamp, filename, text)
                 return redirect(request.url)    
