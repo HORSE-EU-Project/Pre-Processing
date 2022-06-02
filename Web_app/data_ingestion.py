@@ -36,13 +36,13 @@ def ingest_data():
                     return redirect(request.url)  
                 timestamp = get_timestamp()
                 filename = secure_filename(file.filename)
-                dfmmetadata = {"type": "username", "value": "admin"}
+                dffMetadata = {"type": "user", "value": current_user.name}
                 for i in range(0, len(json_dict["entities"])):
-                    json_dict["entities"][i]["dfm_metadata"] = dfmmetadata
+                    json_dict["entities"][i]["dfm_metadata"] = dffMetadata
                 # save uploaded json or create a new file with the same filename and write contents there
                 #file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                with open(os.path.join("static/json", filename), "w") as f:
-                    f.write(str(json_dict))
+                # with open(os.path.join("static/json", filename), "w") as f:
+                #     f.write(str(json_dict))
                 PostOrion(json_dict, timestamp, filename, text)
                 return redirect(request.url)    
             else:

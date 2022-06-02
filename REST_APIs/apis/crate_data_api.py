@@ -2,8 +2,13 @@ from flask import abort, request
 from flask_restx import Namespace, Resource, reqparse
 import requests
 import json
+import sys
+import os
 
 from marshmallow import Schema, fields, validate
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import user
 
 api = Namespace('dffData', description='Crate data related operations')
 
@@ -103,10 +108,15 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type" : "application/json",
             "X-Auth-token" : token
         }
+        name=user.User.get_field("token", token, "user", "name", "../../DFF_Web_App/")
+        if name==-1:
+            abort(500, "Internal Server Error.")
+        dffMetadata = {"type": "user", "value": name}
+        for i in range(0, len(body["entities"])):
+            body["entities"][i]["dfm_metadata"] = dffMetadata
         r = requests.post(url="http://jenkins.8bellsresearch.com:1027/v2/op/update", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==204):
             return {"message": "Data posted successfully."}, 200
         else:
-            #"While trying to post data, an error occurred."
             abort(r.status_code, r.json())
         
