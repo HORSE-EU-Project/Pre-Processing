@@ -106,7 +106,7 @@ class GetTypeDataPerTimeIndex(Resource):
         body = request.get_json()
         header = {
             "Content-Type" : "application/json",
-            "X-Auth-token" : token
+            #"X-Auth-token" : token
         }
         name=user.User.get_field("token", token, "user", "name", "../../DFF_Web_App/")
         if name==-1:
@@ -114,7 +114,7 @@ class GetTypeDataPerTimeIndex(Resource):
         dffMetadata = {"type": "user", "value": name}
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
-        r = requests.post(url="http://10.0.20.174:1027/v2/op/update", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url="http://10.0.20.174:1026/v2/op/update", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==204):
             return {"message": "Data posted successfully."}, 200
         else:
