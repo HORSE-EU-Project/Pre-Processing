@@ -37,7 +37,7 @@ okay_response_del = api.model('DEL Subscriptions', {
     'message': fields.String
 })
 
-@api.route('/')
+@api.route('')
 class orionSubscriptions(Resource):
     global db 
     db = "orion"

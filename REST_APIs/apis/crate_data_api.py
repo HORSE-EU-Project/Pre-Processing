@@ -31,7 +31,7 @@ okay_response_post = api.model('POST Subscriptions', {
     'message': fields.String
 })
 
-@api.route('/')
+@api.route('')
 class GetTypeDataPerTimeIndex(Resource):
     parserG.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to get data from, e.g. XBELLO.')
     parserG.add_argument('fromDate', type=str, location = 'args', help='The date after which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC.')
