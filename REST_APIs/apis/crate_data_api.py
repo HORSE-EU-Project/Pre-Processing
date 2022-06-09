@@ -182,6 +182,7 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(200, 'OK', okay_response_del)
     @api.response(400, 'Validation error')
     @api.response(404, 'The application you have entered does not exist')
+    @api.response(401, 'You are not allowed to delete data from an application you do not owe.')
     def delete(self):
         token = request.headers.get('X-Auth-token') 
         errors = deleteDataSchema.validate(request.args)
@@ -191,13 +192,17 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type": "application/json"
         }
         dType = request.args["inputType"]
+        app=user.User.get_field("token", token, "user", "application", "../../DFF_Web_App/")
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"
         checkIfTableExists(url, header, table)
-        body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
-        r = requests.delete(url=url, headers=header, data=body, verify=False)
-        if r.status_code != 200:
-            abort(r.status_code, "An error occurred while retrieving data from the database")
+        if app == dType:
+            body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
+            r = requests.delete(url=url, headers=header, data=body, verify=False)
+            if r.status_code != 200:
+                abort(r.status_code, "An error occurred while retrieving data from the database")
+            else:
+                return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
         else:
-            return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
+            abort(401, "You are not allowed to delete data from an application you do not owe.")
