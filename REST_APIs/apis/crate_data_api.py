@@ -29,14 +29,15 @@ class DeletDataSchema(Schema):
 deleteDataSchema = DeletDataSchema()
 
 parserG = reqparse.RequestParser()
+parserG.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.', required=True)
 
-parserG.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+parserP = reqparse.RequestParser()
+parserP.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.', required=True)
 
 parserD = reqparse.RequestParser()
-
-parserD.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
-parserD.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to delete data from, e.g. XBELLO.')
-parserD.add_argument('entityId', type=str, location = 'args', help='The id of the specific entity -belonging to this specific application- whose data you want to delete.')
+parserD.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.', required=True)
+parserD.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to delete data from, e.g. XBELLO.', required=True)
+parserD.add_argument('entityId', type=str, location = 'args', help='The id of the specific entity -belonging to this specific application- whose data you want to delete.', required=True)
 
 okay_response_post = api.model('POST data', {
     'message': fields.String
@@ -61,7 +62,7 @@ def checkIfTableExists(url, header, table):
 
 @api.route('')
 class GetTypeDataPerTimeIndex(Resource):
-    parserG.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to get data from, e.g. XBELLO.')
+    parserG.add_argument('inputType', type=str, location = 'args', help='The application (equivalent to type in DFF) that you want to get data from, e.g. XBELLO.', required=True)
     parserG.add_argument('entityId', type=str, location = 'args', help='The id of the specific entity -belonging to this specific application- that you want to retrieve data from.')
     parserG.add_argument('lastN', type=int, location='args', help='The number of last data entries that you wish to retrieve.')
     parserG.add_argument('fromDate', type=str, location = 'args', help='The date after which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC.')
@@ -156,7 +157,7 @@ class GetTypeDataPerTimeIndex(Resource):
             entities.append(new_data_dict)
         return entities, 200
 
-    @api.doc(parser=parserD)
+    @api.doc(parser=parserP)
     @api.response(200, 'OK', okay_response_post)
     def post(self):
         token = request.headers.get('X-Auth-token') 
