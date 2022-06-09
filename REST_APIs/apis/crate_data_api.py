@@ -197,7 +197,7 @@ class GetTypeDataPerTimeIndex(Resource):
         table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"
         checkIfTableExists(url, header, table)
-        if app == dType:
+        if app.lower() == dType.lower():
             body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
             r = requests.delete(url=url, headers=header, data=body, verify=False)
             if r.status_code != 200:
