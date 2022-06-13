@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %} Main Screen {% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<style>
+    th, td {
+  padding: 15px;
+  text-align: left;
+}
+
+thead,
+tfoot {
+    background-color: #025573;
+    color: #fff;
+}
+tr:nth-child(odd){
+    background:rgba(2,85, 115,0.3);}
+
+tr:nth-child(even){
+    background:#f5f5f5;}
+
+.dataframe{
+    margin:0 auto;
+}
+</style>
+
+<style>
+    @media(max-width: 800px) {
+
+.column {
+  font-size:auto;
+  width: 100%!important;
+  display: block;
+text-align: center;
+}
+}
+</style>
+
+<body>
+
+    <div class="content">
+        <div class="content-inside ">
+            <div class="row" style="padding:5%">
+
+                
+            
+                <div class="column" style="width: 50%; margin: 0 auto;">
+                    <h3 style="text-align:center;">Edit your Profile</h3>
+                    <form method=post>
+                        <!-- 2 column grid layout with text inputs for the first and last names -->
+                        <div class="row mb-4">
+                          <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label" for="form3Example1">Name</label>
+                                <input  type="text" id="form3Example1" class="form-control" value="{{name}}" disabled="disabled"  />
+                              
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label" for="form3Example2">Email</label>
+                                <input type="email" id="form3Example2" class="form-control" value="{{email}}" disabled="disabled" />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="form3Example3">This is your token!</label>
+                                <div class="form-inline">
+                                         
+                                    <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
+                                    <small>Copy it!</small>
+                                 
+                                </div>
+                        </div>
+
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="organization">Organization</label><br>
+                            <select id="organization" class="form-control" name="organization" required>
+                                {% if current_user.organization == "org1"%}
+                                    <option selected value="org1">8BELLS</option>
+                                    <option value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                {% elif current_user.organization == "org2"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option selected value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org3"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option selected value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org4"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option selected value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org5"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option selected value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org6"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option selected value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org7"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option selected value="org7">ROB</option>
+                                    <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org8"%}
+                                    <option  value="org1">8BELLS</option>
+                                    <option  value="org2">PROBO</option>
+                                    <option value="org3">PRO</option>
+                                    <option value="org4">VICOM</option>
+                                    <option value="org5">VPF</option>
+                                    <option value="org6">ATM</option>
+                                    <option value="org7">ROB</option>
+                                    <option selected value="org8">CLS</option>
+                                {%endif%}
+                            </select>
+                        
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col">
+                              <div class="form-outline">
+                                  <label class="form-label" for="application">Application</label>
+                                  <input type="text" id="application" class="form-control" name="application" value="{{application}}"  />
+                                
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-outline">
+
+                                <label class="form-label" for="domain_name">Domain_name</label>
+                                <input type="url" id="domain_name" class="form-control" name="domain_name" value="{{domain_name}}"/>
+                    
+                              </div>
+                            </div>
+                        </div>
+                        
+
+                        <INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />  
+                            <TABLE id="dataTable" width="350px" border="1">  
+                                <TR>  
+                                    <TD><input type="button" name="button1" value="Delete" onclick="removeRow('button1')"></TD>  
+                                    <TD>1</TD>  
+                                    <TD><input type="text" value="" name="nameTxt"></TD>  
+                                </TR>  
+                            </TABLE>  
+                            
+                            <SCRIPT language="javascript">  
+                                function addRow(tableID) {  
+                         var table = document.getElementById(tableID);  
+                         var rowCount = table.rows.length;  
+                         var row = table.insertRow(rowCount);  
+                         //Column 1  
+                         var cell1 = row.insertCell(0);  
+                         var element1 = document.createElement("input");  
+                         element1.type = "button";  
+                         var btnName = "button" + (rowCount + 1);  
+                         element1.name = btnName;  
+                         element1.setAttribute('value', 'Delete'); // or element1.value = "button";  
+                         element1.onclick = function () { removeRow(btnName); }  
+                         cell1.appendChild(element1);  
+                         //Column 2    
+                         var cell2 = row.insertCell(1);  
+                         cell2.innerHTML = rowCount + 1;  
+                         //Column 3  
+                         var cell3 = row.insertCell(2);  
+                         var element3 = document.createElement("input");  
+                         element3.type = "text";  
+                         cell3.appendChild(element3);  
+                     }  
+                     function removeRow(btnName) {  
+                         try {  
+                             var table = document.getElementById('dataTable');  
+                             var rowCount = table.rows.length;  
+                             for (var i = 0; i < rowCount; i++) {  
+                                 var row = table.rows[i];  
+                                 var rowObj = row.cells[0].childNodes[0];  
+                                 if (rowObj.name == btnName) {  
+                                     table.deleteRow(i);  
+                                     rowCount--;  
+                                 }  
+                             }  
+                         }  
+                         catch (e) {  
+                             alert(e);  
+                         }  
+                     }  
+                 </SCRIPT>
+
+
+                        <!-- Submit button -->
+                            <div style="text-align:right">
+                                <button type="submit" class="btn btn-danger  " name="Cancel" value="Cancel">Cancel</button>
+                                <button type="submit" class="btn btn-primary " name="Save" value="Save">Save</button>
+                            </div>
+                        
+                        
+
+
+                      
+                        
+                      
+
+                      </form>
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        {% include "./footer.html" %}
+    </footer>
+        
+
+</body>
+
+{% endblock %}

@@ -17,8 +17,8 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
+KEYROCK_CLIENT_ID = "23a8072b-5fd2-412d-b485-287243c5e486"
+KEYROCK_CLIENT_SECRET = "79745999-794b-46a1-9c59-8508c9a96c63"
 
 KEYROCK_DISCOVERY_URL = (
     "https://cloud-20-nic.8bellsresearch.com:443"
@@ -32,12 +32,14 @@ from Web_app.subscription import subscription, createRequest
 from Web_app.data_ingestion import data_ingestion
 from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg
+from Web_app.profile import profile
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
 app.register_blueprint(view_history)
+app.register_blueprint(profile)
 
 # User session management setup
 login_manager = LoginManager()
@@ -157,6 +159,10 @@ def get_user_info():
 def logout():
     logout_user()
     return redirect("/")
+
+
+
+
 
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())

@@ -55,23 +55,14 @@
                 <div class="navbar-nav action-buttons ml-auto" style="margin-right: 50px;">
                     <div class="dropdown">
                         <button class="dropbtn" >     
-                          <img src="../static/user.png" style="height:25px;">       
+                          <img src="../static/user.png" style="height:25px;">  {{name}}       
                         </button>
                         <div class="dropdown-content">
-                            <table>
-                                <tr>
-                                  <th style="font-weight: 700;">User: </th>
-                                  <th style="font-weight: 400;">{{name}}</th>
-                                </tr>
-                                <tr >
-                                  <td style="font-weight: 700;">email: </td>
-                                  <td style="font-weight: 400;">{{email}}</td>
-                                </tr> 
-                            </table>
+                          <a href="/profile" class="nav-item nav-link">Profile</a>
+                          <a class="nav-item nav-link" style="color:red;" href="/logout">Logout</a>
                         </div>
                       </div>            
 
-        			<a class="navbar-brand" href="/logout">Logout</a>
         		</div>
 
         	</div>
