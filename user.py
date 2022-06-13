@@ -54,12 +54,18 @@ class User(UserMixin):
         db.commit()
 
     def create_user_app(app, user, path=None):
-        db = get_db()
+        db = get_db(path)
         db.execute(
             "INSERT INTO apps (name, user) "
             "VALUES (?, ?)",
             (app, user,),
         )
+        db.commit()
+
+    def delete_app_user(user, app, path=None):
+        db=get_db(path)
+        query = "DELETE FROM apps WHERE user = ? and name = ?"
+        db.execute(query, (user, app,))
         db.commit()
 
     def get_all(table, field, path=None):
@@ -123,16 +129,3 @@ class User(UserMixin):
             "SELECT application, organization FROM user WHERE id = ?", (user_id,)
         ).fetchone()
         return [app_org[0], app_org[1]]
-
-    # def fetch_applications():
-    #     db = get_db()
-    #     applications = db.execute(
-    #         "SELECT application FROM user",
-    #     ).fetchall()
-    #     appList=[]
-    #     for row in applications:
-    #         appList.append(row[0])
-    #     # remove duplicates
-    #     appList = list(set(appList))
-    #     return appList
-       
