@@ -19,7 +19,7 @@ subscription = Blueprint('subscription', __name__, template_folder='../templates
 def subscriptionSubmission():
     token = User.get_field("id", current_user.id, "user", "token")
     if current_user.is_authenticated:
-        list_apps= User.fetch_applications()
+        list_apps= User.get_all("apps", "name")
         if request.method == 'POST':
             for i in range(0,len(list_apps)):
                 temp_id="id_"+str(list_apps[i])
