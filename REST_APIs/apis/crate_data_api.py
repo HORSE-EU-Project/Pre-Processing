@@ -157,6 +157,7 @@ class GetTypeDataPerTimeIndex(Resource):
             entities.append(new_data_dict)
         return entities, 200
 
+    parserP.add_argument('data', help="The data you wish to send to DFF", location='json')
     @api.doc(parser=parserP)
     @api.response(200, 'OK', okay_response_post)
     def post(self):

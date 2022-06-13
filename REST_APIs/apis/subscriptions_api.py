@@ -56,7 +56,7 @@ class orionSubscriptions(Resource):
         token = request.headers.get('X-Auth-token')
         domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
         if domain==-1:
-            abort(403, "Either your domain name is not registered in the DFF Web App or you need to get a fresh token.")
+            abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
         elif domain==None:
             abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
         try:
@@ -68,7 +68,7 @@ class orionSubscriptions(Resource):
         if subs:
             return {"subs": json.loads(json_util.dumps(subs))}, 200
         else:
-            abort(204, "Either you do not owe any subscriptions or you mistyped the domain name that your application uses for subscriptions when you registered your app.")
+            return {"message": "Either you do not owe any subscriptions or you mistyped the domain name that your application uses for subscriptions when you registered your app."}, 204
     
     @api.doc(parser=parser)
     @api.response(200, "OK", okay_response_post)
