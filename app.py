@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash, g
 import socket
 import os
 import requests
@@ -17,8 +17,8 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = "23a8072b-5fd2-412d-b485-287243c5e486"
-KEYROCK_CLIENT_SECRET = "79745999-794b-46a1-9c59-8508c9a96c63"
+KEYROCK_CLIENT_ID = ("23a8072b-5fd2-412d-b485-287243c5e486")
+KEYROCK_CLIENT_SECRET = ("79745999-794b-46a1-9c59-8508c9a96c63")
 
 KEYROCK_DISCOVERY_URL = (
     "https://cloud-20-nic.8bellsresearch.com:443"
@@ -45,12 +45,10 @@ app.register_blueprint(profile)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Naive database setup
-try:
+#we assume that app.py and sqlite_db are on the same directory
+#initialize db only if it does not exist yet
+if 'sqlite_db' not in os.listdir():
     init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
 
 # OAuth 2 client setup
 client = WebApplicationClient(KEYROCK_CLIENT_ID)
@@ -76,17 +74,35 @@ def index():
 
 @app.route('/push_app_org', methods= ["POST"])
 def push_app_org():
+
     if not current_user.is_authenticated:
         flash('You should login first!', 'error')
         return index()
-    appl = request.form['application']
     org = request.values.get('org')
     domain_name = request.form['domain_name']
-    User.add_app_org(current_user.id, appl, org)
+
+    appl = request.form.get("app4")
+    app_list=[]
+    for i in range(1,1000):
+        appl = request.form.get("app"+str(i))
+
+        if appl!=None:
+            print("mphkeeeee")
+            if appl not in app_list and appl!='':
+                app_list.append(appl)
+        else:
+            break
+    print(appl)
+    User.update_field("id", current_user.id, "user", "organization", org)
+    #when a new user-app entry is created in the apps db, a new subscription must be created to QL !!!
+
+    for appl in app_list:
+        User.create_user_app(appl, current_user.id)
     User.update_field("id", current_user.id, "user", "domain_name", domain_name)
-    if appl not in User.fetch_applications():
-        #create subscription to notify quantumleap in order to data in crateDB
-        createRequest(appl, "http://quantumleap:8668/v2/notify")
+    for appl in app_list:
+        if appl not in User.get_all("apps", "name"):
+            #create subscription to notify quantumleap in order to data in crateDB
+            createRequest(appl, "http://quantumleap:8668/v2/notify")
     return redirect("/")
 
 @app.route('/login')
@@ -144,11 +160,11 @@ def get_user_info():
     user_name = userinfo_response.json()["username"]
 
     user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token, application=None, organization=None, domain_name=None
+    id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
     )
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token, None, None, None)
+        User.create(unique_id, user_name, user_email, token, None, None)
     else:
         User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
@@ -160,10 +176,7 @@ def logout():
     logout_user()
     return redirect("/")
 
-
-
-
-
 if __name__ == "__main__":
+
     ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(ssl_context="adhoc", host=ipV4IP)
