@@ -1,13 +1,9 @@
-import requests
 from flask import render_template, request, redirect, flash, Blueprint, current_app
 import os
-import json
-import requests
+import re
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
-from .timedata import get_timestamp
-from werkzeug.utils import secure_filename
 from flask_login import (
     current_user
 )
@@ -16,29 +12,41 @@ profile = Blueprint('profile', __name__, template_folder='../templates')
 
 from .decoratorApp import decoratorCheckAppOrg
 
-
 @profile.route("/profile", methods= ['GET', 'POST'])
 @decoratorCheckAppOrg
 def edit_profile():
     if current_user.is_authenticated:
         token = User.get_field("id", current_user.id, "user", "token") 
-        
-        print(current_user.organization)
+        old_app_list = User.get_all_cond("apps", "name", "user", current_user.id)
         if request.method == 'POST':
-
             if request.form.get('Cancel') == 'Cancel':
-                print("cancel time")
-                        
+                print("cancel time")       
                 return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)
-
             if request.form.get('Save') == 'Save':
-
                 new_url=request.form.get("domain_name")
-                new_app=request.form.get("application")
                 new_org=request.form.get("organization")
+                new_app_list = []
+                i=1
+                while appl!=None:
+                    appl = request.form.get("app"+str(i))
+                    i += 1
+                    if re.match("^*[a-zA-Z0-9_]+*$", appl):
+                        if appl not in new_app_list:
+                            new_app_list.append(appl)
+                    else:
+                        message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
+                        return render_template('profile.html', message=message)
 
-                print("----------->",new_url,new_app,new_org)
-
+                print("----------->",new_url,new_app_list,new_org)
+                temp_list=[]
+                for app in old_app_list:
+                    if app not in new_app_list:
+                        User.delete_app_user(current_user.id, app)
+                    else:
+                        temp_list.append(app)
+                for app in new_app_list:
+                    if i not in temp_list:
+                        User.create_user_app(app, current_user.id)
                 return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)
 
         return render_template("profile.html", name=current_user.name,email = current_user.email,application = current_user.application,organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)

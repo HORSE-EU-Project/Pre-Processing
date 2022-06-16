@@ -3,6 +3,7 @@ import socket
 import os
 import requests
 import json
+import re
 import sqlite3
 from flask_login import (
     LoginManager,
@@ -74,31 +75,28 @@ def index():
 
 @app.route('/push_app_org', methods= ["POST"])
 def push_app_org():
-
     if not current_user.is_authenticated:
         flash('You should login first!', 'error')
         return index()
     org = request.values.get('org')
     domain_name = request.form['domain_name']
-
-    appl = request.form.get("app4")
     app_list=[]
-    for i in range(1,1000):
+    i=1
+    while appl!=None:
         appl = request.form.get("app"+str(i))
-
-        if appl!=None:
-            print("mphkeeeee")
-            if appl not in app_list and appl!='':
+        i += 1
+        if re.match("^*[a-zA-Z0-9_]+*$", appl):
+            if appl not in app_list:
                 app_list.append(appl)
         else:
-            break
+            message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
+            return render_template('index.html', message=message)
     print(appl)
     User.update_field("id", current_user.id, "user", "organization", org)
+    User.update_field("id", current_user.id, "user", "domain_name", domain_name)
     #when a new user-app entry is created in the apps db, a new subscription must be created to QL !!!
-
     for appl in app_list:
         User.create_user_app(appl, current_user.id)
-    User.update_field("id", current_user.id, "user", "domain_name", domain_name)
     for appl in app_list:
         if appl not in User.get_all("apps", "name"):
             #create subscription to notify quantumleap in order to data in crateDB

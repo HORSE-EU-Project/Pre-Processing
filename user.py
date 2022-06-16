@@ -79,6 +79,17 @@ class User(UserMixin):
         dataList = list(set(dataList))
         return dataList
 
+    def get_all_cond(table, field, cond_field, cond, path=None):
+        db = get_db(path)
+        query = "SELECT " + field + " FROM " + table + " WHERE " + cond_field + "= ?"
+        data = db.execute(query, (cond,)).fetchall()
+        dataList=[]
+        for row in data:
+            dataList.append(row[0])
+        # remove duplicates
+        dataList = list(set(dataList))
+        return dataList
+
     def get_history(user_id):
         db = get_db()
         history_data = db.execute(
@@ -114,13 +125,6 @@ class User(UserMixin):
         else:
             return -1
         return data
-
-    def add_app_org(user_id, application, organization):
-        db = get_db()
-        db.execute(
-            "UPDATE user SET application = ?, organization = ? WHERE id = ?", (application, organization, user_id), 
-        )
-        db.commit()
 
     @staticmethod
     def get_app_org(user_id):
