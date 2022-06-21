@@ -18,8 +18,8 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = ("23a8072b-5fd2-412d-b485-287243c5e486")
-KEYROCK_CLIENT_SECRET = ("79745999-794b-46a1-9c59-8508c9a96c63")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID") or "23a8072b-5fd2-412d-b485-287243c5e486"
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET") or "79745999-794b-46a1-9c59-8508c9a96c63"
 
 KEYROCK_DISCOVERY_URL = (
     "https://cloud-20-nic.8bellsresearch.com:443"
@@ -83,9 +83,7 @@ def push_app_org():
     app_list=[]
     i=1
     appl = request.form.get("app"+str(i))
-    print('--->',appl)
     while appl!=None:
-        
         if re.match("^[a-zA-Z0-9_]+$", str(appl)):
             if appl not in app_list:
                 app_list.append(appl)
@@ -94,11 +92,9 @@ def push_app_org():
             return render_template('modal.html', message=message)
         i += 1
         appl = request.form.get("app"+str(i))
-        print('--->',appl)
-    print(appl)
     User.update_field("id", current_user.id, "user", "organization", org)
     User.update_field("id", current_user.id, "user", "domain_name", domain_name)
-    #when a new user-app entry is created in the apps db, a new subscription must be created to QL !!!
+    #when a new user-app entry is created in the apps db, a new subscription must be created to QL
     for appl in app_list:
         User.create_user_app(appl, current_user.id)
     for appl in app_list:

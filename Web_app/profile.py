@@ -24,7 +24,6 @@ def edit_profile():
             if request.form.get('Save') == 'Save':
                 new_url=request.form.get("domain_name")
                 new_org=request.form.get("organization")
-                print(new_org, new_url)
                 new_app_list = []
                 i=1
                 appl = request.form.get("app"+str(i))
@@ -43,8 +42,6 @@ def edit_profile():
                         User.delete_app_user(current_user.id, app)
                     else:
                         temp_list.append(app)
-                
-                print('temp_list',temp_list)
                 for app in new_app_list:
                     if app not in temp_list:
                         User.create_user_app(app, current_user.id)
