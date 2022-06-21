@@ -82,15 +82,19 @@ def push_app_org():
     domain_name = request.form['domain_name']
     app_list=[]
     i=1
+    appl = request.form.get("app"+str(i))
+    print('--->',appl)
     while appl!=None:
-        appl = request.form.get("app"+str(i))
-        i += 1
-        if re.match("^*[a-zA-Z0-9_]+*$", appl):
+        
+        if re.match("^[a-zA-Z0-9_]+$", str(appl)):
             if appl not in app_list:
                 app_list.append(appl)
         else:
             message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
-            return render_template('index.html', message=message)
+            return render_template('modal.html', message=message)
+        i += 1
+        appl = request.form.get("app"+str(i))
+        print('--->',appl)
     print(appl)
     User.update_field("id", current_user.id, "user", "organization", org)
     User.update_field("id", current_user.id, "user", "domain_name", domain_name)

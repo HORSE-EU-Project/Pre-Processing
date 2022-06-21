@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, flash, Blueprint, current_app
+from flask import render_template, request, redirect, flash, Blueprint
 import os
 import re
 import sys
@@ -19,37 +19,45 @@ def edit_profile():
         token = User.get_field("id", current_user.id, "user", "token") 
         old_app_list = User.get_all_cond("apps", "name", "user", current_user.id)
         if request.method == 'POST':
-            if request.form.get('Cancel') == 'Cancel':
-                print("cancel time")       
+            if request.form.get('Cancel') == 'Cancel':   
                 return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)
             if request.form.get('Save') == 'Save':
                 new_url=request.form.get("domain_name")
                 new_org=request.form.get("organization")
+                print(new_org, new_url)
                 new_app_list = []
                 i=1
+                appl = request.form.get("app"+str(i))
                 while appl!=None:
-                    appl = request.form.get("app"+str(i))
-                    i += 1
-                    if re.match("^*[a-zA-Z0-9_]+*$", appl):
+                    if re.match("^[a-zA-Z0-9_]+$", appl):
                         if appl not in new_app_list:
                             new_app_list.append(appl)
                     else:
                         message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
-                        return render_template('profile.html', message=message)
-
-                print("----------->",new_url,new_app_list,new_org)
+                        return render_template('profile.html',name=current_user.name,email = current_user.email,old_app_list=old_app_list, old_app_list_len=len(old_app_list), organization = current_user.organization,domain_name = current_user.domain_name, tkn = token, message=message)
+                    i += 1
+                    appl = request.form.get("app"+str(i))
                 temp_list=[]
                 for app in old_app_list:
                     if app not in new_app_list:
                         User.delete_app_user(current_user.id, app)
                     else:
                         temp_list.append(app)
+                
+                print('temp_list',temp_list)
                 for app in new_app_list:
-                    if i not in temp_list:
+                    if app not in temp_list:
                         User.create_user_app(app, current_user.id)
-                return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)
 
-        return render_template("profile.html", name=current_user.name,email = current_user.email,application = current_user.application,organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)
+                User.update_field("id", current_user.id, "user", "domain_name", new_url)
+                User.update_field("id", current_user.id, "user", "organization", new_org)
+
+                current_user.organization = new_org
+                current_user.domain_name = new_url
+
+                return render_template("profile.html", name=current_user.name,email = current_user.email,old_app_list=new_app_list,old_app_list_len=len(new_app_list),organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)
+
+        return render_template("profile.html", name=current_user.name,email = current_user.email,old_app_list=old_app_list,old_app_list_len=len(old_app_list),organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)
     else:
         flash('You should login first!', 'error')
         return redirect('/')

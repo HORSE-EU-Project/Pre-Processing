@@ -80,92 +80,85 @@ text-align: center;
                         </div>
 
 
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="organization">Organization</label><br>
-                            <select id="organization" class="form-control" name="organization" required>
-                                {% if current_user.organization == "org1"%}
-                                    <option selected value="org1">8BELLS</option>
-                                    <option value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                {% elif current_user.organization == "org2"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option selected value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org3"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option selected value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org4"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option selected value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org5"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option selected value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org6"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option selected value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org7"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option selected value="org7">ROB</option>
-                                    <option value="org8">CLS</option>
-                                    {% elif current_user.organization == "org8"%}
-                                    <option  value="org1">8BELLS</option>
-                                    <option  value="org2">PROBO</option>
-                                    <option value="org3">PRO</option>
-                                    <option value="org4">VICOM</option>
-                                    <option value="org5">VPF</option>
-                                    <option value="org6">ATM</option>
-                                    <option value="org7">ROB</option>
-                                    <option selected value="org8">CLS</option>
-                                {%endif%}
-                            </select>
-                        
-                        </div>
-
                         <div class="row mb-4">
                             <div class="col">
                               <div class="form-outline">
-                                  <label class="form-label" for="application">Application</label>
-                                  <input type="text" id="application" class="form-control" name="application" value="{{application}}"  />
-                                
+                                <label class="form-label" for="organization">Organization</label><br>
+                                <select id="organization" class="form-control" name="organization" required>
+                                    {% if current_user.organization == "org1"%}
+                                        <option selected value="org1">8BELLS</option>
+                                        <option value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                    {% elif current_user.organization == "org2"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option selected value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org3"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option selected value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org4"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option selected value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org5"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option selected value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org6"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option selected value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org7"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option selected value="org7">ROB</option>
+                                        <option value="org8">CLS</option>
+                                        {% elif current_user.organization == "org8"%}
+                                        <option  value="org1">8BELLS</option>
+                                        <option  value="org2">PROBO</option>
+                                        <option value="org3">PRO</option>
+                                        <option value="org4">VICOM</option>
+                                        <option value="org5">VPF</option>
+                                        <option value="org6">ATM</option>
+                                        <option value="org7">ROB</option>
+                                        <option selected value="org8">CLS</option>
+                                    {%endif%}
+                                </select>
                               </div>
                             </div>
                             <div class="col">
@@ -179,56 +172,70 @@ text-align: center;
                         </div>
                         
 
-                        <INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />  
-                            <TABLE id="dataTable" width="350px" border="1">  
-                                <TR>  
-                                    <TD><input type="button" name="button1" value="Delete" onclick="removeRow('button1')"></TD>  
-                                    <TD>1</TD>  
-                                    <TD><input type="text" value="" name="nameTxt"></TD>  
-                                </TR>  
-                            </TABLE>  
-                            
-                            <SCRIPT language="javascript">  
-                                function addRow(tableID) {  
-                                    var table = document.getElementById(tableID);  
-                                    var rowCount = table.rows.length;  
-                                    var row = table.insertRow(rowCount);  
-                                    //Column 1  
-                                    var cell1 = row.insertCell(0);  
-                                    var element1 = document.createElement("input");  
-                                    element1.type = "button";  
-                                    var btnName = "button" + (rowCount + 1);  
-                                    element1.name = btnName;  
-                                    element1.setAttribute('value', 'Delete'); // or element1.value = "button";  
-                                    element1.onclick = function () { removeRow(btnName); }  
-                                    cell1.appendChild(element1);  
-                                    //Column 2    
-                                    var cell2 = row.insertCell(1);  
-                                    cell2.innerHTML = rowCount + 1;  
-                                    //Column 3  
-                                    var cell3 = row.insertCell(2);  
-                                    var element3 = document.createElement("input");  
-                                    element3.type = "text";  
-                                    cell3.appendChild(element3);  
-                                }  
-                                function removeRow(btnName) {  
-                                    try {  
-                                        var table = document.getElementById('dataTable');  
+                        <INPUT type="button" value="Add Application" onclick="addRow('dataTable')" />  
+                        {% if message %}
+                            <p style="color:red;">{{message}} </p>
+                        {% endif %}
+
+                        <table id="dataTable" width="350px"> 
+                            {% for i in range(1, (old_app_list_len+1)) %} 
+                            <tr>    
+                                <td><input type="button" name="button{{i}}" value="Delete" onclick="removeRow('button{{i}}')"></td>  
+                                <td><input type="text" value="{{old_app_list[i-1]}}" name="app{{i}}"></td>   
+                            </tr>  
+                            {% endfor %}
+                        </table>  
+
+                        <SCRIPT language="javascript">  
+                                    function addRow(tableID) {  
+                                        var table = document.getElementById(tableID);  
                                         var rowCount = table.rows.length;  
-                                        for (var i = 0; i < rowCount; i++) {  
-                                            var row = table.rows[i];  
-                                            var rowObj = row.cells[0].childNodes[0];  
-                                            if (rowObj.name == btnName) {  
-                                                table.deleteRow(i);  
-                                                rowCount--;  
-                                            }  
+                                        var row = table.insertRow(rowCount);  
+                                        //Column 1  
+                                        var cell1 = row.insertCell(0);  
+                                        var element1 = document.createElement("input");  
+                                        element1.type = "button";  
+                                        var btnName = "button" + (rowCount + 1);  
+                                        element1.name = btnName;  
+                                        element1.setAttribute('value', 'Delete'); // or element1.value = "button";  
+                                        element1.onclick = function () { removeRow(btnName); }  
+                                        cell1.appendChild(element1);  
+
+                                        //Column 3  
+                                        var cell2 = row.insertCell(1);  
+                                        var element2 = document.createElement("input");
+                                        element2.type = "text";  
+                                        element2.name = "app"+ (rowCount + 1);  
+                                        cell2.appendChild(element2);  
+                                    }  
+                                    function removeRow(btnName) {  
+                                        try {  
+                                            var table = document.getElementById('dataTable');  
+                                            var rowCount = table.rows.length;  
+                                            var target=0
+                                            for (var i = 0; i < rowCount; i++) {  
+                                                var row = table.rows[i];  
+                                                var rowObj = row.cells[0].childNodes[0];  
+                                                if (rowObj.name == btnName) {  
+                                                    table.deleteRow(i);  
+                                                    rowCount--;  
+                                                    target=i
+                                                }  
+                                            }
+                                            for (var i = 0; i < rowCount; i++) {  
+                                                var row = table.rows[i];  
+                                                var rowObj = row.cells[0].childNodes[0];
+                                                var rowObj2 = row.cells[1].childNodes[0];  
+                                                rowObj.name="button"+ (i + 1);
+                                                rowObj2.name="app"+ (i + 1);
+
+                                            } 
+                                        }  
+                                        catch (e) {  
+                                            alert(e);  
                                         }  
                                     }  
-                                    catch (e) {  
-                                        alert(e);  
-                                    }  
-                                }  
-                             </SCRIPT>
+                        </SCRIPT>
 
 
                         <!-- Submit button -->

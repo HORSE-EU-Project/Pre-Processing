@@ -39,10 +39,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label style="width: 110px;" for="application">Application</label>
-                        <input type="text" id="application" name="application" required><br><br>
-                    </div>
-                    <div class="form-group">
                         <label style="width: 110px;" for="domain_name">Domain name</label>
                         <input type="url" id="domain_name" name="domain_name" placeholder="https://example.com"><br><br>
                     </div>
@@ -51,6 +47,9 @@
 
 
                         <INPUT type="button" value="Add Application" onclick="addRow('dataTable')" />  
+                        {% if message %}
+                            <p style="color:red;">{{message}} </p>
+                        {% endif %}
                         <TABLE id="dataTable" width="350px">  
                             <TR>  
                                 <TD ><input type="button" name="button1" value="Delete" onclick="removeRow('button1')"></TD>  
@@ -78,26 +77,37 @@
                                         var cell2 = row.insertCell(1);  
                                         var element2 = document.createElement("input");
 
-                                        element2.type = "app"+ (rowCount + 1);  
+                                        element2.type = "text";  
+                                        element2.name = "app"+ (rowCount + 1);  
                                         cell2.appendChild(element2);  
                                     }  
                                     function removeRow(btnName) {  
                                         try {  
                                             var table = document.getElementById('dataTable');  
                                             var rowCount = table.rows.length;  
+                                            var target=0
                                             for (var i = 0; i < rowCount; i++) {  
                                                 var row = table.rows[i];  
                                                 var rowObj = row.cells[0].childNodes[0];  
                                                 if (rowObj.name == btnName) {  
                                                     table.deleteRow(i);  
                                                     rowCount--;  
+                                                    target=i
                                                 }  
-                                            }  
+                                            }
+                                            for (var i = 0; i < rowCount; i++) {  
+                                                var row = table.rows[i];  
+                                                var rowObj = row.cells[0].childNodes[0];
+                                                var rowObj2 = row.cells[1].childNodes[0];  
+                                                rowObj.name="button"+ (i + 1);
+                                                rowObj2.name="app"+ (i + 1);
+
+                                            } 
                                         }  
                                         catch (e) {  
                                             alert(e);  
                                         }  
-                                    }  
+                                    } 
                         </SCRIPT>
                     </div>
                     
