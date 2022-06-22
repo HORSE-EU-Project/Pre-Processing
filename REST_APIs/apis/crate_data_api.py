@@ -210,6 +210,6 @@ class GetTypeDataPerTimeIndex(Resource):
                 if r.status_code != 200:
                     abort(r.status_code, "An error occurred while retrieving data from the database")
                 else:
-                    #return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
-                    return {"message":r.json()}, 200
+                    return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
+                    #return {"message":r.json()}, 200
         abort(401, "You are not allowed to delete data from an application you do not owe.")
