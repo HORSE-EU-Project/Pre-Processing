@@ -55,7 +55,7 @@ def edit_profile():
                 current_user.organization = new_org
                 current_user.domain_name = new_url
 
-                return render_template("profile.html", name=current_user.name,email = current_user.email,old_app_list=new_app_list,old_app_list_len=len(new_app_list),organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)
+                return redirect("/")
 
         return render_template("profile.html", name=current_user.name,email = current_user.email,old_app_list=old_app_list,old_app_list_len=len(old_app_list),organization = current_user.organization,domain_name = current_user.domain_name, tkn = token)
     else:
