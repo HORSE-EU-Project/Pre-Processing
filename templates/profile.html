@@ -46,9 +46,6 @@ text-align: center;
     <div class="content">
         <div class="content-inside ">
             <div class="row" style="padding:5%">
-
-                
-            
                 <div class="column" style="width: 50%; margin: 0 auto;">
                     <h3 style="text-align:center;">Edit your Profile</h3>
                     <form method=post>
@@ -180,7 +177,7 @@ text-align: center;
                         <table id="dataTable" width="350px"> 
                             {% for i in range(1, (old_app_list_len+1)) %} 
                             <tr>    
-                                <td><input type="button" name="button{{i}}" value="Delete" onclick="removeRow('button{{i}}')"></td>  
+                                <td><input type="button" name="button{{i}}" value="Delete" onclick="removeRow(this)"></td>  
                                 <td><input type="text" value="{{old_app_list[i-1]}}" name="app{{i}}"></td>   
                             </tr>  
                             {% endfor %}
@@ -198,7 +195,7 @@ text-align: center;
                                         var btnName = "button" + (rowCount + 1);  
                                         element1.name = btnName;  
                                         element1.setAttribute('value', 'Delete'); // or element1.value = "button";  
-                                        element1.onclick = function () { removeRow(btnName); }  
+                                        element1.onclick = function () { removeRow(this); }  
                                         cell1.appendChild(element1);  
 
                                         //Column 3  
@@ -208,20 +205,21 @@ text-align: center;
                                         element2.name = "app"+ (rowCount + 1);  
                                         cell2.appendChild(element2);  
                                     }  
-                                    function removeRow(btnName) {  
+                                    function removeRow(ele) {  
+                                        btnName=ele.name;
                                         try {  
                                             var table = document.getElementById('dataTable');  
                                             var rowCount = table.rows.length;  
-                                            var target=0
+
                                             for (var i = 0; i < rowCount; i++) {  
                                                 var row = table.rows[i];  
                                                 var rowObj = row.cells[0].childNodes[0];  
                                                 if (rowObj.name == btnName) {  
                                                     table.deleteRow(i);  
                                                     rowCount--;  
-                                                    target=i
                                                 }  
                                             }
+                                            
                                             for (var i = 0; i < rowCount; i++) {  
                                                 var row = table.rows[i];  
                                                 var rowObj = row.cells[0].childNodes[0];
@@ -243,18 +241,8 @@ text-align: center;
                                 <button type="submit" class="btn btn-danger  " name="Cancel" value="Cancel">Cancel</button>
                                 <button type="submit" class="btn btn-primary " name="Save" value="Save">Save</button>
                             </div>
-                        
-                        
-
-
-                      
-                        
-                      
 
                       </form>
-                    
-                    
-                    
                 </div>
             </div>
         </div>
