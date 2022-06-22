@@ -47,7 +47,7 @@ def edit_profile():
                 for app in new_app_list:
                     if app not in temp_list:
                         if app not in all_apps:
-                            createRequest(appl, "http://quantumleap:8668/v2/notify")
+                            createRequest(app, "http://quantumleap:8668/v2/notify")
                         User.create_user_app(app, current_user.id)
 
                 User.update_field("id", current_user.id, "user", "domain_name", new_url)
