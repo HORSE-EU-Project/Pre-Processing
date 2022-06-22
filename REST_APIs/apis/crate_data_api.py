@@ -195,6 +195,8 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         dType = request.args["inputType"]
         userId=user.User.get_field("token", token, "user", "id", "../../DFF_Web_App/")
+        if userId==-1:
+            abort(500, "Please get a fresh token!")
         app_list=user.User.get_all_cond("apps", "name", "user", userId, "../../DFF_Web_App/")
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
@@ -204,9 +206,10 @@ class GetTypeDataPerTimeIndex(Resource):
             if app.lower() == dType.lower():
                 body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
                 r = requests.delete(url=url, headers=header, data=body, verify=False)
+                print(r.json(), r.status_code)
                 if r.status_code != 200:
                     abort(r.status_code, "An error occurred while retrieving data from the database")
                 else:
-                    return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
-            else:
-                abort(401, "You are not allowed to delete data from an application you do not owe.")
+                    #return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
+                    return {"message":r.json()}, 200
+        abort(401, "You are not allowed to delete data from an application you do not owe.")
