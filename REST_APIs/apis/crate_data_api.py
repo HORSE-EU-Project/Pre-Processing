@@ -24,7 +24,7 @@ getDataSchema = DataPerIndexQuerySchema()
 
 class DeletDataSchema(Schema):
     inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
-    entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=True)
+    entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=False)
 
 deleteDataSchema = DeletDataSchema()
 
@@ -194,17 +194,19 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type": "application/json"
         }
         dType = request.args["inputType"]
-        app=user.User.get_field("token", token, "user", "application", "../../DFF_Web_App/")
+        userId=user.User.get_field("token", token, "user", "id", "../../DFF_Web_App/")
+        app_list=user.User.get_all_cond("apps", "name", "user", userId, "../../DFF_Web_App/")
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"
         checkIfTableExists(url, header, table)
-        if app.lower() == dType.lower():
-            body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
-            r = requests.delete(url=url, headers=header, data=body, verify=False)
-            if r.status_code != 200:
-                abort(r.status_code, "An error occurred while retrieving data from the database")
+        for app in app_list:
+            if app.lower() == dType.lower():
+                body = "{\"stmt\":\"DELETE FROM doc." + table + " WHERE entity_id = \'" + entityId + "\';\"}"
+                r = requests.delete(url=url, headers=header, data=body, verify=False)
+                if r.status_code != 200:
+                    abort(r.status_code, "An error occurred while retrieving data from the database")
+                else:
+                    return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
             else:
-                return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
-        else:
-            abort(401, "You are not allowed to delete data from an application you do not owe.")
+                abort(401, "You are not allowed to delete data from an application you do not owe.")

@@ -11,6 +11,7 @@ from flask_login import (
 profile = Blueprint('profile', __name__, template_folder='../templates')
 
 from .decoratorApp import decoratorCheckAppOrg
+from .subscription import createRequest
 
 @profile.route("/profile", methods= ['GET', 'POST'])
 @decoratorCheckAppOrg
@@ -22,6 +23,7 @@ def edit_profile():
             if request.form.get('Cancel') == 'Cancel':   
                 return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)
             if request.form.get('Save') == 'Save':
+                all_apps = User.get_all("apps", "name")
                 new_url=request.form.get("domain_name")
                 new_org=request.form.get("organization")
                 new_app_list = []
@@ -44,6 +46,8 @@ def edit_profile():
                         temp_list.append(app)
                 for app in new_app_list:
                     if app not in temp_list:
+                        if app not in all_apps:
+                            createRequest(appl, "http://quantumleap:8668/v2/notify")
                         User.create_user_app(app, current_user.id)
 
                 User.update_field("id", current_user.id, "user", "domain_name", new_url)
