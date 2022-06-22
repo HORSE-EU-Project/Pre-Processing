@@ -47,11 +47,7 @@ def createRequest(dbName, endpoint):
 #Sending a request to fiware       
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
-        print(matchPostURL)
-        print(headersDict)
-        print(json.dumps(matchPayload))
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
-        print(r.status_code)
         if r.status_code == 201:
             flash('Subscription completed successfully','success')
         #elif r.status_code == 409:
