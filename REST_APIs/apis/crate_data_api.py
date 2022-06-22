@@ -24,7 +24,7 @@ getDataSchema = DataPerIndexQuerySchema()
 
 class DeletDataSchema(Schema):
     inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
-    entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=False)
+    entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=True)
 
 deleteDataSchema = DeletDataSchema()
 
