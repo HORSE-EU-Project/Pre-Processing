@@ -14,7 +14,7 @@ import user
 api = Namespace('dffData', description='Crate data related operations')
 
 class DataPerIndexQuerySchema(Schema):
-    inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
+    inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9_]+$"), required=True)
     entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=False)
     lastN = marshmallow.fields.Integer(required=False)
     fromDate = marshmallow.fields.String(validate=validate.Regexp("^\"*\d{4}-\d\d-\d\d(T\d\d:\d\d:\d\d(\.\d+)?(([ -]\d\d:\d\d)|Z)?)*\"*$"), required=False)
@@ -23,7 +23,7 @@ class DataPerIndexQuerySchema(Schema):
 getDataSchema = DataPerIndexQuerySchema()
 
 class DeletDataSchema(Schema):
-    inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z]+$"), required=True)
+    inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9_]+$"), required=True)
     entityId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z_0-9]+$"), required=True)
 
 deleteDataSchema = DeletDataSchema()
