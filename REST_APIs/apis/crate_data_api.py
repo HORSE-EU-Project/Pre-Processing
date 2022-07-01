@@ -163,6 +163,7 @@ class GetTypeDataPerTimeIndex(Resource):
     parserP.add_argument('data', help="The data you wish to send to DFF", location='json')
     @api.doc(parser=parserP)
     @api.response(200, 'OK', okay_response_post)
+    @api.response(500, 'While trying to connect to the database an error occurred.')
     def post(self):
         token = request.headers.get('X-Auth-token') 
         body = request.get_json()
@@ -173,7 +174,7 @@ class GetTypeDataPerTimeIndex(Resource):
         try:
             mydb = keyrockdb.keyrockdb_connect()
         except:
-            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+            abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
         name=user.User.get_field("id", user_id, "user", "name", "../../DFF_Web_App/")
@@ -192,6 +193,7 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(400, 'Validation error')
     @api.response(404, 'The application you have entered does not exist')
     @api.response(401, 'You are not allowed to delete data from an application you do not owe.')
+    @api.response(500, 'While trying to connect to the database an error occurred.')
     def delete(self):
         token = request.headers.get('X-Auth-token') 
         errors = deleteDataSchema.validate(request.args)
@@ -204,7 +206,7 @@ class GetTypeDataPerTimeIndex(Resource):
         try:
             mydb = keyrockdb.keyrockdb_connect()
         except:
-            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+            abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
         app_list=user.User.get_all_cond("apps", "name", "user", user_id, "../../DFF_Web_App/")

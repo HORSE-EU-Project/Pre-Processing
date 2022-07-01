@@ -51,7 +51,7 @@ class orionSubscriptions(Resource):
     @api.response(400, 'This method does not accept any parameters.')
     @api.response(403, 'Either your domain name is not registered in the DFF Web App or you need to get a fresh token.')
     @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
-    @api.response(500, 'While trying to connect to MongoDB, an error occurred.')
+    @api.response(500, 'While trying to connect to the database an error occurred.')
     def get(self):
         if request.args:
             abort(400, "This method does not accept any parameters.")
@@ -59,7 +59,7 @@ class orionSubscriptions(Resource):
         try:
             mydb = keyrockdb.keyrockdb_connect()
         except:
-            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+            abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
         domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
@@ -70,7 +70,7 @@ class orionSubscriptions(Resource):
         try:
             client = oriondb.mongoConnect(db)
         except:
-            abort(500, 'While trying to connect to MongoDB, an error occurred.')
+            abort(500, 'While trying to connect to the database an error occurred.')
         subs = oriondb.getSubscriptions(client, db, col, "reference", domain, None)
         oriondb.mongoCloseConnection(client)
         if subs:
@@ -100,7 +100,7 @@ class orionSubscriptions(Resource):
     @api.response(401, "Either the requested entity does not exist or you are not authorized to delete it.")
     @api.response(403, 'You are not registered in the database: you need to login through the DFF Web App first.')
     @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
-    @api.response(500, 'While trying to connect to MongoDB, an error occurred.')
+    @api.response(500, 'While trying to connect to the database an error occurred.')
     @api.response(502, "The deletion was unsuccessful.")
     def delete(self):
         errors = deleteSubSchema.validate(request.args)
@@ -110,7 +110,7 @@ class orionSubscriptions(Resource):
         try:
             mydb = keyrockdb.keyrockdb_connect()
         except:
-            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+            abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
         domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
@@ -123,7 +123,7 @@ class orionSubscriptions(Resource):
         try:
             client = oriondb.mongoConnect(db)
         except:
-            abort(500, 'While trying to connect to MongoDB, an error occurred.')
+            abort(500, 'While trying to connect to the database an error occurred.')
         for d in oriondb.getSubscriptions(client, db, col, "reference", domain, "_id"):
             if subId in d.values():
                 result = oriondb.deleteSubscription(client, db, col, "_id", subId)
