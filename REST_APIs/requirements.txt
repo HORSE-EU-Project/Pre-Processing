@@ -4,3 +4,4 @@ flask_restx
 marshmallow
 pymongo
 jsonify
+mysql-connector-python

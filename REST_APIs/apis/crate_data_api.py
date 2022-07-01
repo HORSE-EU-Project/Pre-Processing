@@ -8,6 +8,9 @@ import os
 from marshmallow import Schema, validate
 import marshmallow
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import keyrockdb
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 
@@ -167,9 +170,13 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type" : "application/json",
             "X-Auth-token" : token
         }
-        name=user.User.get_field("token", token, "user", "name", "../../DFF_Web_App/")
-        if name==-1:
-            abort(500, "Please, get a fresh token!")
+        try:
+            mydb = keyrockdb.keyrockdb_connect()
+        except:
+            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
+        print(user_id)
+        name=user.User.get_field("id", user_id, "user", "name", "../../DFF_Web_App/")
         dffMetadata = {"type": "user", "value": name}
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
@@ -194,10 +201,13 @@ class GetTypeDataPerTimeIndex(Resource):
             "Content-Type": "application/json"
         }
         dType = request.args["inputType"]
-        userId=user.User.get_field("token", token, "user", "id", "../../DFF_Web_App/")
-        if userId==-1:
-            abort(500, "Please get a fresh token!")
-        app_list=user.User.get_all_cond("apps", "name", "user", userId, "../../DFF_Web_App/")
+        try:
+            mydb = keyrockdb.keyrockdb_connect()
+        except:
+            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
+        print(user_id)
+        app_list=user.User.get_all_cond("apps", "name", "user", user_id, "../../DFF_Web_App/")
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"

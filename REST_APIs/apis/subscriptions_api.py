@@ -13,6 +13,8 @@ import user
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import oriondb
 import requests
+import keyrockdb
+
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
@@ -54,7 +56,13 @@ class orionSubscriptions(Resource):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
-        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
+        try:
+            mydb = keyrockdb.keyrockdb_connect()
+        except:
+            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
+        print(user_id)
+        domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
         elif domain==None:
@@ -99,7 +107,13 @@ class orionSubscriptions(Resource):
         if errors:
             abort(400, 'Validation error')
         token = request.headers.get('X-Auth-token')
-        domain = user.User.get_field("token", token, "user", "domain_name", path = "../../DFF_Web_App/")
+        try:
+            mydb = keyrockdb.keyrockdb_connect()
+        except:
+            abort(500, "While trying to connect with Keyrock DB an error occurred.")
+        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
+        print(user_id)
+        domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
         if domain==-1:
             abort(403, "You are not registered in the database: you need to login through the DFF Web App first.")
         elif domain==None:
