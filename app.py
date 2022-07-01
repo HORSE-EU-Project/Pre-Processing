@@ -3,6 +3,7 @@ import socket
 import os
 import requests
 import json
+import re
 import sqlite3
 from flask_login import (
     LoginManager,
@@ -32,12 +33,14 @@ from Web_app.subscription import subscription, createRequest
 from Web_app.data_ingestion import data_ingestion
 from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg
+from Web_app.profile import profile
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
 app.register_blueprint(view_history)
+app.register_blueprint(profile)
 
 # User session management setup
 login_manager = LoginManager()
@@ -75,16 +78,29 @@ def push_app_org():
     if not current_user.is_authenticated:
         flash('You should login first!', 'error')
         return index()
-    appl = request.form['application']
     org = request.values.get('org')
     domain_name = request.form['domain_name']
+    app_list=[]
+    i=1
+    appl = request.form.get("app"+str(i))
+    while appl!=None:
+        if re.match("^[a-zA-Z0-9_]+$", str(appl)):
+            if appl not in app_list:
+                app_list.append(appl)
+        else:
+            message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
+            return render_template('modal.html', message=message)
+        i += 1
+        appl = request.form.get("app"+str(i))
     User.update_field("id", current_user.id, "user", "organization", org)
-    #when a new user-app entry is created in the apps db, a new subscription must be created to QL !!!
-    User.create_user_app(appl, current_user.id)
     User.update_field("id", current_user.id, "user", "domain_name", domain_name)
-    if appl not in User.get_all("apps", "name"):
-        #create subscription to notify quantumleap in order to data in crateDB
-        createRequest(appl, "http://quantumleap:8668/v2/notify")
+    #when a new user-app entry is created in the apps db, a new subscription must be created to QL
+    for appl in app_list:
+        User.create_user_app(appl, current_user.id)
+    for appl in app_list:
+        if appl not in User.get_all("apps", "name"):
+            #create subscription to notify quantumleap in order to data in crateDB
+            createRequest(appl, "http://quantumleap:8668/v2/notify")
     return redirect("/")
 
 @app.route('/login')
