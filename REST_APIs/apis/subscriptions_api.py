@@ -64,7 +64,7 @@ class orionSubscriptions(Resource):
         except:
             abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
-        print(user_id)
+        #print(user_id)
         domain = user.User.get_field("id", user_id, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")

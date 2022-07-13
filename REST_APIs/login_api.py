@@ -51,8 +51,8 @@ class Login(Resource):
         r = requests.post(url=KEYROCK_DISCOVERY_URL+"/oauth2/token", headers=header, data=body, verify=False)
         json = r.json()
         token = json["access_token"]
-        print(r, r.status_code, token)
-        user.User.update_field("email", email, "user", "token", token, path = SQLITE_DB_URL)
+        #print(r, r.status_code, token)
+        #user.User.update_field("email", email, "user", "token", token, path = SQLITE_DB_URL)
         return token
 
 if __name__ == '__main__':
