@@ -20,6 +20,7 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Deploy images to VM'
+                        sh "docker-compose down"
                         sh "docker-compose up"
                     }
                 }
