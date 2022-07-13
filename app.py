@@ -18,12 +18,9 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID") or "23a8072b-5fd2-412d-b485-287243c5e486"
-KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET") or "79745999-794b-46a1-9c59-8508c9a96c63"
-
-KEYROCK_DISCOVERY_URL = (
-    "https://cloud-20-nic.8bellsresearch.com:443"
-)
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID") or "7b2da230-de6f-476c-8353-99523c88c1d3"
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET") or "a8f46bca-ccb8-4fa4-bdb2-4ed945d7f88f"
+KEYROCK_DISCOVERY_URL = os.environ.get("KEYROCK_DISCOVERY_URL") or "https://dff.8bellsresearch.com:443"
 
 app = Blueprint('app', __name__, template_folder='templates')
 
@@ -48,7 +45,7 @@ login_manager.init_app(app)
 
 #we assume that app.py and sqlite_db are on the same directory
 #initialize db only if it does not exist yet
-if 'sqlite_db' not in os.listdir():
+if 'sqlite_db' not in os.listdir("sqlite_data/"):
     init_db_command()
 
 # OAuth 2 client setup
@@ -107,7 +104,6 @@ def push_app_org():
 def login():
     # Find out what URL to hit for Keyrock login
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
-    print("Within login", request.base_url+ "/callback")
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri= request.base_url + "/callback", #"https://jenkins.8bellsresearch.com:443/login/callback"
@@ -131,7 +127,8 @@ def callback():
         #prompt='login',
         code=code
     )
- 
+    print(token_url, headers, body)
+
     token_response = requests.post(
         token_url,
         headers=headers,
@@ -139,6 +136,7 @@ def callback():
         auth=(KEYROCK_CLIENT_ID, KEYROCK_CLIENT_SECRET),
         verify=False
     )
+    print("HERE------------->", token_response.json())
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))
@@ -154,6 +152,7 @@ def get_user_info():
     uri2 = KEYROCK_DISCOVERY_URL + "/user?access_token=" + token
     userinfo_response = requests.get(uri2, verify=False)
     unique_id = userinfo_response.json()["id"]
+    print("THE ID:", unique_id)
     user_email = userinfo_response.json()["email"]
     user_name = userinfo_response.json()["username"]
 
@@ -175,6 +174,5 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-
     ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(ssl_context="adhoc", host=ipV4IP)

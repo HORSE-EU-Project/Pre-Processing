@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environment {
+      VM_DEV01 = "tcp://10.10.10.13:2375"
+    }
+
+    stages {
+        stage('Build images') {
+            steps {
+                echo 'Starting to build docker images'
+                script {
+                    docker.withServer("$VM_DEV01") {    
+                        sh "docker-compose build"
+                    }
+                }
+            }
+        }
+        stage('Deploy containers') {
+            steps {
+                script {
+                    docker.withServer("$VM_DEV01") {
+                        echo 'Deploy images to VM'
+                        sh "docker-compose up"
+                    }
+                }
+            }
+        }
+    }
+}

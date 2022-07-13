@@ -1,0 +1,63 @@
+version: "3"
+
+networks:
+  dff-network:
+  
+services:
+  dff-app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: dff-app:latest
+    container_name: "dff-app"
+    environment:
+      - "KEYROCK_CLIENT_ID=$KEYROCK_ID"
+      - "KEYROCK_CLIENT_SECRET=$KEYROCK_SECRET"
+      - "KEYROCK_DISCOVERY_URL=$KEYROCK_URL"
+    networks: 
+      - dff-network
+    ports:
+      - 5000:5000
+    volumes:
+      - sqlite_data:/dff/sqlite_data
+
+  dff-login:
+    build:
+      dockerfile: Dockerfile.loginapi
+      context: .
+    image: dff-login:latest
+    container_name: "dff-login"
+    environment: 
+      - "KEYROCK_CLIENT_ID=$KEYROCK_ID"
+      - "KEYROCK_CLIENT_SECRET=$KEYROCK_SECRET"
+      - "KEYROCK_DISCOVERY_URL=$KEYROCK_URL"
+      - "SQLITE_DB_URL=$SQLITE_URL"
+    networks: 
+      - dff-network
+    ports:
+      - 5001:5001
+    depends_on:
+      - dff-app
+    volumes:
+      - sqlite_data:/sqlite_data
+
+  dff-api:
+    build:
+      dockerfile: Dockerfile.api
+      context: .
+    image: dff-api:latest
+    container_name: "dff-api"
+    environment:
+      - "SQLITE_DB_URL=$SQLITE_URL"
+    ports:
+      - 5003:5003
+    networks: 
+      - dff-network
+    depends_on:
+      - dff-login
+      - dff-app
+    volumes:
+      - sqlite_data:/sqlite_data
+
+volumes:
+  sqlite_data:

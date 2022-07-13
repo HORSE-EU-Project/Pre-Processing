@@ -1,4 +1,6 @@
 from flask import abort, request
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restx import Resource, Namespace, reqparse, fields
 from marshmallow import Schema, validate
 import marshmallow
@@ -15,6 +17,7 @@ import oriondb
 import requests
 import keyrockdb
 
+SQLITE_DB_URL = os.environ.get("SQLITE_URL") or "../../DFF_Web_App/"
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
@@ -62,7 +65,7 @@ class orionSubscriptions(Resource):
             abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
-        domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
+        domain = user.User.get_field("id", user_id, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
         elif domain==None:
@@ -113,7 +116,7 @@ class orionSubscriptions(Resource):
             abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
-        domain = user.User.get_field("id", user_id, "user", "domain_name", path = "../../DFF_Web_App/")
+        domain = user.User.get_field("id", user_id, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "You are not registered in the database: you need to login through the DFF Web App first.")
         elif domain==None:

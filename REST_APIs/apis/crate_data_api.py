@@ -1,4 +1,6 @@
 from flask import abort, request
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask_restx import Namespace, Resource, reqparse, fields
 import requests
 import json
@@ -13,6 +15,8 @@ import keyrockdb
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
+
+SQLITE_DB_URL = os.environ.get("SQLITE_URL") or None
 
 api = Namespace('dffData', description='Crate data related operations')
 
@@ -177,7 +181,7 @@ class GetTypeDataPerTimeIndex(Resource):
             abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
-        name=user.User.get_field("id", user_id, "user", "name", "../../DFF_Web_App/")
+        name=user.User.get_field("id", user_id, "user", "name", SQLITE_DB_URL)
         dffMetadata = {"type": "user", "value": name}
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
@@ -209,7 +213,7 @@ class GetTypeDataPerTimeIndex(Resource):
             abort(500, "While trying to connect to the database an error occurred.")
         user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
         print(user_id)
-        app_list=user.User.get_all_cond("apps", "name", "user", user_id, "../../DFF_Web_App/")
+        app_list=user.User.get_all_cond("apps", "name", "user", user_id, SQLITE_DB_URL)
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
         url = "http://10.0.18.77:4200/_sql"

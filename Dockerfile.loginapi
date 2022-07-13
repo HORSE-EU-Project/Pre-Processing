@@ -1,0 +1,12 @@
+FROM python:3.9.12
+
+WORKDIR /REST_APIs
+
+COPY ./REST_APIs/login_api.py .
+COPY ./REST_APIs/requirements.txt .
+COPY db.py ../
+COPY user.py ../
+
+RUN pip --no-cache-dir install -r requirements.txt
+
+CMD ["python3", "login_api.py"]

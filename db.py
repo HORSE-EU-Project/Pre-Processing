@@ -7,7 +7,7 @@ from flask.cli import with_appcontext
 
 def get_db(path=None):
     if path is None:
-        path = ""
+        path = "sqlite_data/"
     if "db" not in g:
         g.db = sqlite3.connect(
            path + "sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES

@@ -1,7 +1,12 @@
 requests==2.21.0
-Flask==1.0.2
+Werkzeug==2.0.0 
+#flask.scaffold
+Flask==2.0.3
+Flask-Login==0.4.1
 flask_restx
 marshmallow
 pymongo
 jsonify
 mysql-connector-python
+pandas
+# psycopg2==2.7
