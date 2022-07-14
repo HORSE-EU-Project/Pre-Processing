@@ -5,12 +5,23 @@ pipeline {
     }
 
     stages {
+        stage('Clean up') {
+            steps {
+                script {
+                    docker.withServer("$VM_DEV01") {    
+                        echo 'Stopping old containers...'
+                        sh 'docker-compose down'
+                        echo 'Removing old containers...'
+                        sh 'docker rm dff-app dff-api dff-login'
+                    }
+                }
+            }
+        }
         stage('Deploy containers') {
             steps {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Deploy images to VM'
-                        sh "docker-compose down"
                         sh "docker-compose up"
                     }
                 }
