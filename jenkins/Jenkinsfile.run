@@ -12,7 +12,9 @@ pipeline {
                         echo 'Stopping old containers...'
                         sh 'docker-compose down'
                         echo 'Removing old containers...'
-                        sh 'docker rm dff-*'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-app") || true'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-api") || true'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-login") || true'
                     }
                 }
             }
