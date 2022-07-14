@@ -56,7 +56,7 @@ def ingest_data():
         return redirect("/")
 
 def PostOrion(json_dict, timestamp, filename, text):
-    url = "http://10.0.20.174:1027/v2/op/update"
+    url = "http://10.10.10.13:1027/v2/op/update"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_field("id", current_user.id, "user", "token"))}
     body = json_dict
     sendRequestToOrion(url, headersDict, body, timestamp, filename, text)

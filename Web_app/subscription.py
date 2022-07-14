@@ -34,7 +34,7 @@ def subscriptionSubmission():
         return redirect("/")
 
 def createRequest(dbName, endpoint):
-    url = "http://10.0.20.174:1027/v2/subscriptions/"
+    url = "http://10.10.10.13:1027/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field("id", current_user.id, "user", "token")}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
