@@ -12,7 +12,7 @@ pipeline {
                         echo 'Stopping old containers...'
                         sh 'docker-compose down'
                         echo 'Removing old containers...'
-                        sh 'docker rm dff-app dff-api dff-login'
+                        sh 'docker rm dff-*'
                     }
                 }
             }
