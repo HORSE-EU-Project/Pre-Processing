@@ -10,13 +10,11 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {    
                         echo 'Stopping old containers...'
-                        sh 'docker stop $(docker ps -a -q --filter="name=dff-app")'
-                        sh 'docker stop $(docker ps -a -q --filter="name=dff-api")'
-                        sh 'docker stop $(docker ps -a -q --filter="name=dff-login")'
+                        sh 'docker-compose down'
                         echo 'Removing old containers...'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-app")'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-api")'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-login")'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-app") || true'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-api") || true'
+                        sh 'docker rm $(docker ps -a -q --filter="name=dff-login") || true'
                     }
                 }
             }
