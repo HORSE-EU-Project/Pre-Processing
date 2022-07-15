@@ -123,8 +123,8 @@ def login():
 def callback():
     # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
-    # token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
-    token_endpoint = 'https://dff-platform.8bellsresearch.com/oauth2/token'
+    token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
+    # token_endpoint = 'https://dff-platform.8bellsresearch.com/oauth2/token'
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
