@@ -107,7 +107,7 @@ def push_app_org():
 @app.route('/login')
 def login():
     # Find out what URL to hit for Keyrock login
-    authorization_endpoint = KEYROCK_DISCOVERY_URL + 'oauth2/authorize'
+    authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri= request.base_url + "/callback", #"https://jenkins.8bellsresearch.com:443/login/callback"
@@ -123,7 +123,8 @@ def login():
 def callback():
     # Get authorization code Keyrock sent back to you
     code = request.args.get("code")
-    token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
+    # token_endpoint = KEYROCK_DISCOVERY_URL+'/oauth2/token'
+    token_endpoint = 'https://dff-platform.8bellsresearch.com/oauth2/token'
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
