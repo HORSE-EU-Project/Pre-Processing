@@ -18,13 +18,13 @@ from db import init_db_command
 from user import User
 
 # Configure Keyrock as the IDM
-# KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
-# KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
-# KEYROCK_DISCOVERY_URL = os.environ.get("KEYROCK_DISCOVERY_URL")
+KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
+KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
+KEYROCK_DISCOVERY_URL = os.environ.get("KEYROCK_DISCOVERY_URL")
 
-KEYROCK_CLIENT_ID = "4f416467-ca03-4385-824d-8bf380f390d7"
-KEYROCK_CLIENT_SECRET = "68829c80-b581-48b9-a028-80d74ab765fa"
-KEYROCK_DISCOVERY_URL = "https://dff-platform.8bellsresearch.com/"
+# KEYROCK_CLIENT_ID = "4f416467-ca03-4385-824d-8bf380f390d7"
+# KEYROCK_CLIENT_SECRET = "68829c80-b581-48b9-a028-80d74ab765fa"
+# KEYROCK_DISCOVERY_URL = "https://dff-platform.8bellsresearch.com/"
 
 app = Blueprint('app', __name__, template_folder='templates')
 
