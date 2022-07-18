@@ -67,6 +67,7 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 @app.route('/', methods= ["GET"])
 @decoratorCheckAppOrg
 def index():
+    print(KEYROCK_CLIENT_SECRET)
     if current_user.is_authenticated:
         #Successfully authenticated
         token = User.get_field("id", current_user.id, "user", "token")
