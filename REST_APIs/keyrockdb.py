@@ -2,7 +2,7 @@ import mysql.connector
 
 def keyrockdb_connect():
     mydb = mysql.connector.connect(
-        host="cloud-19-nic.8bellsresearch.com",
+        host="cloud-20-nic.8bellsresearch.com",
         user="root",
         password="pass",
         database="idm"
