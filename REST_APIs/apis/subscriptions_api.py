@@ -90,7 +90,7 @@ class orionSubscriptions(Resource):
             "Content-Type" : "application/json",
             "X-Auth-token" : token
         }
-        r = requests.post(url="http://10.0.20.174:1027/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url="http://10.10.10.13:1027/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
