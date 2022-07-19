@@ -22,6 +22,9 @@ KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
 KEYROCK_DISCOVERY_URL = os.environ.get("KEYROCK_DISCOVERY_URL")
 
+# KEYROCK_CLIENT_ID = "4f416467-ca03-4385-824d-8bf380f390d7"
+# KEYROCK_DISCOVERY_URL = "https://dff-platform.8bellsresearch.com/"
+
 app = Blueprint('app', __name__, template_folder='templates')
 
 # Referencing the file __name__
@@ -173,5 +176,5 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    ipV4IP = socket.gethostbyname(socket.gethostname())
+    ipV4IP = socket.gethostbyname(socket.e())
     app.run(ssl_context="adhoc", host=ipV4IP)

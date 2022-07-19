@@ -2,7 +2,7 @@ requests==2.21.0
 Werkzeug==2.0.0
 Flask==2.0.3
 oauthlib==3.0.1
-pyOpenSSL==19.0.0
+pyOpenSSL==22.0.0
 Flask-Login==0.4.1
 plotly==4.14.3
 numpy
