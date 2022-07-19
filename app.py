@@ -106,12 +106,11 @@ def login():
     authorization_endpoint = KEYROCK_DISCOVERY_URL + '/oauth2/authorize'
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri= request.base_url + "/callback", #"https://jenkins.8bellsresearch.com:443/login/callback"
+        redirect_uri= request.base_url + "/callback",
         state="xyz",
         scope=["openid", "email", "profile"],
         #prompt='login',
         verify=False,
-    
     )
     return redirect(request_uri)
 
@@ -136,7 +135,7 @@ def callback():
         auth=(KEYROCK_CLIENT_ID, KEYROCK_CLIENT_SECRET),
         verify=False
     )
-    print("HERE------------->", token_response.json())
+
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
     return redirect(url_for("get_user_info"))

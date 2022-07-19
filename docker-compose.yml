@@ -31,7 +31,6 @@ services:
       - "KEYROCK_CLIENT_ID=$KEYROCK_ID"
       - "KEYROCK_CLIENT_SECRET=$KEYROCK_SECRET"
       - "KEYROCK_DISCOVERY_URL=$KEYROCK_URL"
-      - "SQLITE_DB_URL=$SQLITE_URL"
     networks: 
       - dff-network
     ports:

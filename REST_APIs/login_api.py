@@ -18,13 +18,12 @@ import user
 KEYROCK_CLIENT_ID = os.environ.get("KEYROCK_CLIENT_ID")
 KEYROCK_CLIENT_SECRET = os.environ.get("KEYROCK_CLIENT_SECRET")
 KEYROCK_DISCOVERY_URL = os.environ.get("KEYROCK_DISCOVERY_URL")
-SQLITE_DB_URL = os.environ.get("SQLITE_URL") or None
 
 app = Flask(__name__)
 api = Api(app)
 
 class LoginQuerySchema(Schema):
-    email = marshmallow.fields.Email(required=True)
+    email = marshmallow.fields.String(required=True)
     password = marshmallow.fields.String(required=True)
     
 loginSchema = LoginQuerySchema()
