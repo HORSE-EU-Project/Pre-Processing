@@ -176,5 +176,5 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    ipV4IP = socket.gethostbyname(socket.e())
+    ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(ssl_context="adhoc", host=ipV4IP)
