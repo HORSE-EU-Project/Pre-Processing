@@ -215,7 +215,7 @@ class GetTypeDataPerTimeIndex(Resource):
         app_list=user.User.get_all_cond("apps", "name", "user", user_id, SQLITE_DB_URL)
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
-        url = "http://10.0.18.77:4200/_sql"
+        url = "http://cloud-20-nic.8bellsresearch.com:4200/_sql"
         checkIfTableExists(url, header, table)
         for app in app_list:
             if app.lower() == dType.lower():
