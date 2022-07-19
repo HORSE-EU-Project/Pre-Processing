@@ -17,7 +17,7 @@ import oriondb
 import requests
 import keyrockdb
 
-SQLITE_DB_URL = os.environ.get("SQLITE_URL")
+SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
 
 api = Namespace('subscriptions', description='Subscription related operations')
 

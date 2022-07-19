@@ -16,7 +16,7 @@ import keyrockdb
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 
-SQLITE_DB_URL = os.environ.get("SQLITE_URL") or None
+SQLITE_DB_URL = "../"
 
 api = Namespace('dffData', description='Crate data related operations')
 
