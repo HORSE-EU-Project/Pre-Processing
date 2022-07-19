@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 # USER = os.getenv("USER")
 # PASS = os.getenv("PASS")
-DB_URL = "mongodb://10.10.10.13:27017/"
+DB_URL = "mongodb://cloud-20-nic.8bellsresearch.com:27017/"
 
 def mongoConnect(database):
     client = MongoClient(DB_URL+database, directConnection=True)

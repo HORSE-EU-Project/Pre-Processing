@@ -108,7 +108,7 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         dType = request.args["inputType"]
         table = "et" + dType.lower()
-        url = "http://10.10.10.13:4200/_sql"
+        url = "http://10.0.18.77:4200/_sql"
         checkIfTableExists(url, header, table)
         if fromD==None and toD==None:
             if lastN==None and entityId==None:
@@ -185,7 +185,7 @@ class GetTypeDataPerTimeIndex(Resource):
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
         print("hello")
-        r = requests.post(url="http://10.10.10.13:1027/v2/op/update", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url="http://jenkins.8bellsresearch.com:1027/v2/op/update", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==204):
             return {"message": "Data posted successfully."}, 200
         else:
@@ -215,7 +215,7 @@ class GetTypeDataPerTimeIndex(Resource):
         app_list=user.User.get_all_cond("apps", "name", "user", user_id, SQLITE_DB_URL)
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
-        url = "http://10.10.10.13:4200/_sql"
+        url = "http://10.0.18.77:4200/_sql"
         checkIfTableExists(url, header, table)
         for app in app_list:
             if app.lower() == dType.lower():
