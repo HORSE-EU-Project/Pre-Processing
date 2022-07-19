@@ -108,7 +108,7 @@ class GetTypeDataPerTimeIndex(Resource):
         }
         dType = request.args["inputType"]
         table = "et" + dType.lower()
-        url = "http://10.0.18.77:4200/_sql"
+        url = "http://cloud-20-nic.8bellsresearch.com:4200/_sql"
         checkIfTableExists(url, header, table)
         if fromD==None and toD==None:
             if lastN==None and entityId==None:
