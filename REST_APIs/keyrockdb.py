@@ -1,10 +1,13 @@
 import mysql.connector
+import os
+
+MYSQL_PASS = os.environ.get("MYSQL_PASS")
 
 def keyrockdb_connect():
     mydb = mysql.connector.connect(
         host="cloud-20-nic.8bellsresearch.com",
         user="root",
-        password="pass",
+        password=MYSQL_PASS,
         database="idm"
     )
     return mydb

@@ -48,6 +48,7 @@ services:
     container_name: "dff-api"
     environment:
       - "SQLITE_DB_URL=$SQLITE_URL"
+      - "MYSQL_PASS=$MYSQL_DB_PASS"
     ports:
       - 5003:5003
     networks: 
