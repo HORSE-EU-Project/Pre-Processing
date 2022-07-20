@@ -12,6 +12,8 @@ from flask_login import (
     current_user
 )
 
+ORION_PROXY_URL = "http://jenkins.8bellsresearch.com:1027"
+
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templates')
 
 from .decoratorApp import decoratorCheckAppOrg
@@ -56,7 +58,7 @@ def ingest_data():
         return redirect("/")
 
 def PostOrion(json_dict, timestamp, filename, text):
-    url = "http://jenkins.8bellsresearch.com:1027/v2/op/update"
+    url = ORION_PROXY_URL+"/v2/op/update"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_field("id", current_user.id, "user", "token"))}
     body = json_dict
     sendRequestToOrion(url, headersDict, body, timestamp, filename, text)

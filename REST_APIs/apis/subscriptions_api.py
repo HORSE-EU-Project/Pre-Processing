@@ -18,6 +18,7 @@ import requests
 import keyrockdb
 
 SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
+ORION_PROXY_URL = "http://jenkins.8bellsresearch.com:1027"
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
@@ -90,7 +91,7 @@ class orionSubscriptions(Resource):
             "Content-Type" : "application/json",
             "X-Auth-token" : token
         }
-        r = requests.post(url="http://jenkins.8bellsresearch.com:1027/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url=ORION_PROXY_URL+"/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:

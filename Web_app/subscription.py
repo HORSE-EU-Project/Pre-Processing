@@ -12,6 +12,8 @@ from .decoratorApp import decoratorCheckAppOrg
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
 
+ORION_PROXY_URL = "http://jenkins.8bellsresearch.com:1027"
+
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
 @subscription.route('/subscribe', methods=['GET', 'POST'])
@@ -34,7 +36,7 @@ def subscriptionSubmission():
         return redirect("/")
 
 def createRequest(dbName, endpoint):
-    url = "http://jenkins.8bellsresearch.com:1027/v2/subscriptions/"
+    url = ORION_PROXY_URL+"/v2/subscriptions/"
     headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field("id", current_user.id, "user", "token")}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
