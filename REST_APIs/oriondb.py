@@ -5,7 +5,7 @@ DB_URL = "mongodb://cloud-20-nic.8bellsresearch.com:27017/"
 MONGO_DB_PASS=os.getenv("MONGO_DB_PASS")
 
 def mongoConnect(database):
-    client = MongoClient(DB_URL, username='user', password=MONGO_DB_PASS, authSource=database, directConnection=True)
+    client = MongoClient(DB_URL, username='orionUser', password=MONGO_DB_PASS, authSource=database, directConnection=True)
     return client
   
 def mongoCloseConnection(client):
