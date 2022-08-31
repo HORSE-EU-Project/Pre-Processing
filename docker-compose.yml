@@ -11,7 +11,7 @@ services:
     image: dff-app-keycloak:latest
     container_name: "dff-app-keycloak"
     networks: 
-      - dff-network
+      - dff-network-v2
     ports:
       - 5004:5004
     volumes:
@@ -26,7 +26,7 @@ services:
     environment: 
       - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     networks: 
-      - dff-network
+      - dff-network-v2
     ports:
       - 5005:5005
     depends_on:
@@ -47,7 +47,7 @@ services:
     ports:
       - 5006:5006
     networks: 
-      - dff-network
+      - dff-network-v2
     depends_on:
       - dff-login-keycloak
       - dff-app-keycloak
