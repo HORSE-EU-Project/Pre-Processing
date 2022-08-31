@@ -1,58 +1,58 @@
 version: "3"
 
 networks:
-  dff-network:
+  dff-network-v2:
   
 services:
-  dff-app:
+  dff-app-keycloak:
     build:
       dockerfile: Dockerfile
       context: .
-    image: dff-app:latest
+    image: dff-app-keycloak:latest
     container_name: "dff-app-keycloak"
     networks: 
       - dff-network
     ports:
-      - 5000:5000
+      - 5004:5004
     volumes:
-      - sqlite_data:/dff/sqlite_data
+      - sqlite_data_v2:/dff/sqlite_data
 
-  dff-login:
+  dff-login-keycloak:
     build:
       dockerfile: Dockerfile.loginapi
       context: .
-    image: dff-login:latest
+    image: dff-login-keycloak:latest
     container_name: "dff-login-keycloak"
     environment: 
       - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     networks: 
       - dff-network
     ports:
-      - 5001:5001
+      - 5005:5005
     depends_on:
-      - dff-app
+      - dff-app-keycloak
     volumes:
-      - sqlite_data:/sqlite_data
+      - sqlite_data_v2:/sqlite_data
 
-  dff-api:
+  dff-api-keycloak:
     build:
       dockerfile: Dockerfile.api
       context: .
-    image: dff-api:latest
+    image: dff-api-keycloak:latest
     container_name: "dff-api-keycloak"
     environment:
       - "SQLITE_DB_URL=$SQLITE_URL"
       - "MYSQL_PASS=$MYSQL_DB_PASS"
       - "MONGO_DB_PASS=$MONGO_PASS"
     ports:
-      - 5003:5003
+      - 5006:5006
     networks: 
       - dff-network
     depends_on:
-      - dff-login
-      - dff-app
+      - dff-login-keycloak
+      - dff-app-keycloak
     volumes:
-      - sqlite_data:/sqlite_data
+      - sqlite_data_v2:/sqlite_data
 
 volumes:
-  sqlite_data:
+  sqlite_data_v2:

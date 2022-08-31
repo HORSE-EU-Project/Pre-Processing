@@ -10,4 +10,4 @@ api.init_app(app)
 
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host=ipV4IP, port=5003)
+    app.run(host=ipV4IP, port=5006)

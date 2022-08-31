@@ -55,4 +55,4 @@ class Login(Resource):
 
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host=ipV4IP, port=5001)
+    app.run(host=ipV4IP, port=5005)
