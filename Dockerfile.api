@@ -3,7 +3,7 @@ FROM python:3.9.12
 WORKDIR /REST_APIs
 
 ADD ./REST_APIs/apis ./apis
-
+COPY ./REST_APIs/apis/validate_token.py ./apis/validate_token.py
 COPY ./REST_APIs/api.py .
 COPY ./REST_APIs/oriondb.py .
 COPY ./REST_APIs/requirements.txt .
