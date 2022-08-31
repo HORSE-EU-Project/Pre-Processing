@@ -21,9 +21,11 @@ pipeline {
         }
         stage('Configure client_secret in client_secrets.json'){
             steps {
-                script {
+                dir("../"){
+                    sh "pwd"
                     sh """sed -i -e 's#CLIENT_SECRET_VALUE#${KEYCLOAK_SECRET}#' ../client_secrets.json"""
                 }
+            sh "pwd"
             }
         }
         stage('Build images') {
