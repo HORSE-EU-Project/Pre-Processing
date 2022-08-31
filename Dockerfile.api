@@ -5,7 +5,6 @@ WORKDIR /REST_APIs
 ADD ./REST_APIs/apis ./apis
 
 COPY ./REST_APIs/api.py .
-COPY ./REST_APIs/keyrockdb.py .
 COPY ./REST_APIs/oriondb.py .
 COPY ./REST_APIs/requirements.txt .
 COPY user.py ../

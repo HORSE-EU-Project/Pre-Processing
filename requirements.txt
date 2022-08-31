@@ -11,3 +11,4 @@ flask_restful
 marshmallow
 flask_oidc
 oauth2client
+itsdangerous<2.1
