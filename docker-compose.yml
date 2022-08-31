@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
       context: .
     image: dff-app:latest
-    container_name: "dff-app"
+    container_name: "dff-app-keycloak"
     networks: 
       - dff-network
     ports:
@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile.loginapi
       context: .
     image: dff-login:latest
-    container_name: "dff-login"
+    container_name: "dff-login-keycloak"
     environment: 
       - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     networks: 
@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile.api
       context: .
     image: dff-api:latest
-    container_name: "dff-api"
+    container_name: "dff-api-keycloak"
     environment:
       - "SQLITE_DB_URL=$SQLITE_URL"
       - "MYSQL_PASS=$MYSQL_DB_PASS"
