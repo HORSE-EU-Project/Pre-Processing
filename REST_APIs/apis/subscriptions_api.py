@@ -10,6 +10,8 @@ import json
 from bson import json_util
 from bson.objectid import ObjectId
 
+from validate_token import validateToken
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,7 +20,8 @@ import requests
 import keyrockdb
 
 SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
-ORION_PROXY_URL = "http://jenkins.8bellsresearch.com:1027"
+ORION_URL = "10.10.10.13:1026"
+KEYCLOAK_USERINFO_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/userinfo"
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
@@ -60,13 +63,12 @@ class orionSubscriptions(Resource):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
-        try:
-            mydb = keyrockdb.keyrockdb_connect()
-        except:
-            abort(500, "While trying to connect to the database an error occurred.")
-        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
-        #print(user_id)
-        domain = user.User.get_field("id", user_id, "user", "domain_name", path = SQLITE_DB_URL)
+        r = validateToken(token, KEYCLOAK_USERINFO_URL)
+        if r.status_code!=200:
+            abort(401, "Token invalid.")
+        data = r.json("")
+        username = data["username"]
+        domain = user.User.get_field("name", username, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
         elif domain==None:
@@ -85,13 +87,14 @@ class orionSubscriptions(Resource):
     @api.doc(parser=parser)
     @api.response(200, "OK", okay_response_post)
     def post(self):
-        token = request.headers.get('X-Auth-token') 
+        token = request.headers.get('X-Auth-token')
+        if validateToken(token, KEYCLOAK_USERINFO_URL).status_code!=200:
+            abort(401, "Token invalid.")
         body = request.get_json()
         header = {
             "Content-Type" : "application/json",
-            "X-Auth-token" : token
         }
-        r = requests.post(url=ORION_PROXY_URL+"/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url=ORION_URL+"/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
@@ -107,17 +110,17 @@ class orionSubscriptions(Resource):
     @api.response(500, 'While trying to connect to the database an error occurred.')
     @api.response(502, "The deletion was unsuccessful.")
     def delete(self):
+        token = request.headers.get('X-Auth-token')
+        r = validateToken(token, KEYCLOAK_USERINFO_URL)
+        if r.status_code!=200:
+            abort(401, "Token invalid.")
+        data = r.json("")
+        username = data["username"]
         errors = deleteSubSchema.validate(request.args)
         if errors:
             abort(400, 'Validation error')
         token = request.headers.get('X-Auth-token')
-        try:
-            mydb = keyrockdb.keyrockdb_connect()
-        except:
-            abort(500, "While trying to connect to the database an error occurred.")
-        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
-        print(user_id)
-        domain = user.User.get_field("id", user_id, "user", "domain_name", path = SQLITE_DB_URL)
+        domain = user.User.get_field("name", username, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "You are not registered in the database: you need to login through the DFF Web App first.")
         elif domain==None:

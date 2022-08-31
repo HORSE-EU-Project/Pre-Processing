@@ -19,6 +19,13 @@ pipeline {
                 }
             }
         }
+        stage('Configure client_secret in client_secrets.json'){
+            steps {
+                script {
+                    sh """sed -i -e 's#CLIENT_SECRET_VALUE#${KEYCLOAK_SECRET}#' ../client_secrets.json"""
+                }
+            }
+        }
         stage('Build images') {
             steps {
                 echo 'Starting to build docker images'

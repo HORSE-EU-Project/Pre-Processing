@@ -9,16 +9,15 @@ import os
 
 from marshmallow import Schema, validate
 import marshmallow
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import keyrockdb
+from validate_token import validateToken
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 
 SQLITE_DB_URL = "../"
-CRATE_DB_URL = "http://cloud-20-nic.8bellsresearch.com:4200/_sql"
-ORION_PROXY_URL = "http://jenkins.8bellsresearch.com:1027"
+CRATE_DB_URL = "10.10.10.13:4200/_sql"
+ORION_URL = "10.10.10.13:1026"
+KEYCLOAK_USERINFO_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/userinfo"
 
 api = Namespace('dffData', description='Crate data related operations')
 
@@ -81,6 +80,9 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(400, 'Validation error')
     @api.response(404, 'The application you have entered does not exist')
     def get(self):
+        token=request.headers.get('X-Auth-token')
+        if validateToken(token, KEYCLOAK_USERINFO_URL).status_code == 200:
+            abort(401, "Token invalid.")
         if "fromDate" in request.args and "toDate" in request.args:
             fromD = request.args["fromDate"].replace(" ", "+")
             toD = request.args["toDate"].replace(" ", "+")
@@ -171,23 +173,24 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(200, 'OK', okay_response_post)
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def post(self):
-        token = request.headers.get('X-Auth-token') 
+        token=request.headers.get('X-Auth-token')
+        r = validateToken(token, KEYCLOAK_USERINFO_URL)
+        if r.status_code!=200:
+            abort(401, "Token invalid.")
+        data = r.json("")
+        username = data["username"]
+        dffMetadata = {"type": "user", "value": username}
         body = request.get_json()
+        for i in range(0, len(body["entities"])):
+            body["entities"][i]["dfm_metadata"] = dffMetadata
         header = {
             "Content-Type" : "application/json",
-            "X-Auth-token" : token
         }
-        try:
-            mydb = keyrockdb.keyrockdb_connect()
-        except:
-            abort(500, "While trying to connect to the database an error occurred.")
-        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
-        name=user.User.get_field("id", user_id, "user", "name", SQLITE_DB_URL)
-        dffMetadata = {"type": "user", "value": name}
+        dffMetadata = {"type": "user", "value": username}
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
         print("hello")
-        r = requests.post(url=ORION_PROXY_URL+"/v2/op/update", headers=header, data=json.dumps(body), verify=False)
+        r = requests.post(url=ORION_URL+"/v2/op/update", headers=header, data=json.dumps(body), verify=False)
         if(r.status_code==204):
             return {"message": "Data posted successfully."}, 200
         else:
@@ -200,20 +203,22 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(401, 'You are not allowed to delete data from an application you do not owe.')
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def delete(self):
-        token = request.headers.get('X-Auth-token') 
+        token=request.headers.get('X-Auth-token')
+        r = validateToken(token, KEYCLOAK_USERINFO_URL)
+        if r.status_code!=200:
+            abort(401, "Token invalid.")
+        data = r.json("")
+        username = data["username"]
+
         errors = deleteDataSchema.validate(request.args)
         if errors:
             abort(400, 'Validation error')
+
         header={
             "Content-Type": "application/json"
         }
         dType = request.args["inputType"]
-        try:
-            mydb = keyrockdb.keyrockdb_connect()
-        except:
-            abort(500, "While trying to connect to the database an error occurred.")
-        user_id = keyrockdb.keyrockdb_get(mydb, "user_id", "oauth_access_token", "access_token", token)
-        print(user_id)
+        user_id = user.User.get_field("name", username, "user", "id", SQLITE_DB_URL)
         app_list=user.User.get_all_cond("apps", "name", "user", user_id, SQLITE_DB_URL)
         entityId = request.args["entityId"]
         table = "et" + dType.lower()
@@ -228,5 +233,4 @@ class GetTypeDataPerTimeIndex(Resource):
                     abort(r.status_code, "An error occurred while retrieving data from the database")
                 else:
                     return {"message": "No. of row(s) deleted: " + str(r.json()["rowcount"])}, 200
-                    #return {"message":r.json()}, 200
         abort(401, "You are not allowed to delete data from an application you do not owe.")

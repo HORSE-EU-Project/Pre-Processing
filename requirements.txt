@@ -9,3 +9,5 @@ numpy
 pandas==1.2.4
 flask_restful
 marshmallow
+flask_oidc
+oauth2client
