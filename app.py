@@ -29,6 +29,7 @@ app.config.update({
     'TESTING': True,
     'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
+    'OIDC_CALLBACK_ROUTE': '/*',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
     'OIDC_USER_INFO_ENABLED': True,
@@ -70,7 +71,6 @@ def index():
         token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
-        print("----------------> this is a test!")
         return render_template('index.html')
 
 # @app.route('/callback', methods= ["GET"])
@@ -81,7 +81,6 @@ def index():
 @app.route('/login', methods=["GET"])
 @oidc.require_login
 def login():
-    print("------------->hello all!!!!")
     info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
     unique_id = info.get('sub')
     user_email = info.get('email')
