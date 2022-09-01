@@ -72,7 +72,7 @@ def index():
     else:
         return render_template('index.html')
 
-@app.route('/oidc_callback', methods= ["GET"])
+@app.route('/callback', methods= ["GET"])
 @decoratorCheckAppOrg
 def custom_callback():
     return redirect("/")
