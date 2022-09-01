@@ -74,7 +74,7 @@ def index():
 
 @app.route('/oidc_callback', methods= ["GET"])
 @decoratorCheckAppOrg
-def oidc_callback():
+def custom_callback():
     return redirect("/")
 
 @app.route('/login')
