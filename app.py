@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint, flash
+from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for
 from flask_oidc import OpenIDConnect
 import socket
 import os
@@ -98,7 +98,7 @@ def login():
     else:
         User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
-    return redirect("/")
+    return redirect(url_for('/'))
 
 @app.route("/logout")
 @login_required
