@@ -70,6 +70,7 @@ def index():
         token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
+        print("----------------> this is a test!")
         return render_template('index.html')
 
 # @app.route('/callback', methods= ["GET"])
@@ -80,6 +81,7 @@ def index():
 @app.route('/login', methods=["GET"])
 @oidc.require_login
 def login():
+    print("------------->hello all!!!!")
     info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
     unique_id = info.get('sub')
     user_email = info.get('email')
