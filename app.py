@@ -72,10 +72,10 @@ def index():
     else:
         return render_template('index.html')
 
-@app.route('/callback', methods= ["GET"])
-@decoratorCheckAppOrg
-def custom_callback():
-    return redirect("/")
+# @app.route('/callback', methods= ["GET"])
+# @decoratorCheckAppOrg
+# def custom_callback():
+#     return redirect("/")
 
 @app.route('/login')
 @oidc.require_login
