@@ -98,7 +98,7 @@ def login():
     else:
         User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
-    return redirect(url_for('/'))
+    return redirect(url_for('index'))
 
 @app.route("/logout")
 @login_required
