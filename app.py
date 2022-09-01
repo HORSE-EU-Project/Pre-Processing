@@ -74,7 +74,7 @@ def index():
 
 @app.route('/oidc_callback', methods= ["GET"])
 @decoratorCheckAppOrg
-def callback():
+def oidc_callback():
     if current_user.is_authenticated:
         #Successfully authenticated
         token = User.get_field("id", current_user.id, "user", "token")
