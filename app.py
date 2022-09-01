@@ -77,7 +77,7 @@ def index():
 # def custom_callback():
 #     return redirect("/")
 
-@app.route('/login')
+@app.route('/login', methods=["GET"])
 @oidc.require_login
 def login():
     info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
@@ -98,7 +98,7 @@ def login():
     else:
         User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
-    return redirect(url_for('index'))
+    return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
 
 @app.route("/logout")
 @login_required
