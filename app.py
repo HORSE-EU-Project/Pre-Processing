@@ -45,81 +45,61 @@ app.register_blueprint(data_ingestion)
 app.register_blueprint(view_history)
 app.register_blueprint(profile)
 
-# User session management setup
-# login_manager = LoginManager()
-# login_manager.init_app(app)
+#User session management setup
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 #we assume that app.py and sqlite_db are on the same directory
 #initialize db only if it does not exist yet
 if 'sqlite_db' not in os.listdir("sqlite_data/"):
     init_db_command()
 
-# Flask-Login helper to retrieve a user from our db
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.get(user_id)
+#Flask-Login helper to retrieve a user from our db
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 # Upload folder
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 @app.route('/')
-@oidc.require_login
 @decoratorCheckAppOrg
 def index():
-    info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
-    unique_id = info.get('sub')
-    user_email = info.get('email')
-    user_name = info.get('preferred_username')
-
-    if unique_id in oidc.credentials_store:
-        token = OAuth2Credentials.from_json(oidc.credentials_store[unique_id]).access_token
-        print("access_token: ", token)
-
-    user = User(
-    id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
-    )
-    # Doesn't exist? Add it to the database.
-    if not User.get(unique_id): 
-        User.create(unique_id, user_name, user_email, token, None, None)
+    if current_user.is_authenticated:
+        #Successfully authenticated
+        token = User.get_field("id", current_user.id, "user", "token")
+        return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
-        User.update_field("id", unique_id, "user", "token", token)
-    login_user(user)
-    return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
-    # if current_user.is_authenticated:
-    #     #Successfully authenticated
-    #     token = User.get_field("id", current_user.id, "user", "token")
-    #     return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
-    # else:
-    #     return render_template('index.html')
+        return render_template('index.html')
 
 # @app.route('/callback', methods= ["GET"])
 # @decoratorCheckAppOrg
 # def custom_callback():
 #     return redirect("/")
 
-# @app.route('/login', methods=["GET"])
-# @oidc.require_login
-# def login():
-#     info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
-#     unique_id = info.get('sub')
-#     user_email = info.get('email')
-#     user_name = info.get('preferred_username')
+@app.route('/login', methods=["GET"])
+@oidc.require_login
+def login():
+    return render_template('index.html')
+    # info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
+    # unique_id = info.get('sub')
+    # user_email = info.get('email')
+    # user_name = info.get('preferred_username')
 
-#     if unique_id in oidc.credentials_store:
-#         token = OAuth2Credentials.from_json(oidc.credentials_store[unique_id]).access_token
-#         print("access_token: ", token)
+    # if unique_id in oidc.credentials_store:
+    #     token = OAuth2Credentials.from_json(oidc.credentials_store[unique_id]).access_token
 
-#     user = User(
-#     id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
-#     )
-#     # Doesn't exist? Add it to the database.
-#     if not User.get(unique_id): 
-#         User.create(unique_id, user_name, user_email, token, None, None)
-#     else:
-#         User.update_field("id", unique_id, "user", "token", token)
-#     login_user(user)
-#     return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+    # user = User(
+    # id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
+    # )
+    # # Doesn't exist? Add it to the database.
+    # if not User.get(unique_id): 
+    #     User.create(unique_id, user_name, user_email, token, None, None)
+    # else:
+    #     User.update_field("id", unique_id, "user", "token", token)
+    # login_user(user)
+    # return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
 
 @app.route("/logout")
 @login_required
