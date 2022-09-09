@@ -28,7 +28,7 @@ app.config.update({
     'SECRET_KEY': 'SomethingNotEntirelySecret',
     'TESTING': True,
     'DEBUG': True,
-    'OIDC_CLIENT_SECRETS': 'client_secrets_test.json',
+    'OIDC_CLIENT_SECRETS': 'client_secrets_nikos.json',
     'OIDC_CALLBACK_ROUTE': '/*',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
