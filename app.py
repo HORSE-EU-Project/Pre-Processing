@@ -30,7 +30,7 @@ app.config.update({
     'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
     #'OIDC_CALLBACK_ROUTE': '/',
-    'OVERWRITE_REDIRECT_URI':'https://dff.8bellsresearch.com/callback',
+    'OVERWRITE_REDIRECT_URI':'https://dff.8bellsresearch.com/bbbb',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
     'OIDC_USER_INFO_ENABLED': True,
@@ -74,10 +74,27 @@ def index():
     else:
         return render_template('index.html')
 
-@app.route('/callback', methods= ["GET"])
+@app.route('/bbbb', methods= ["GET"])
 @decoratorCheckAppOrg
 def custom_callback():
-    return render_template('index.html')
+    info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
+    unique_id = info.get('sub')
+    user_email = info.get('email')
+    user_name = info.get('preferred_username')
+
+    if unique_id in oidc.credentials_store:
+        token = OAuth2Credentials.from_json(oidc.credentials_store[unique_id]).access_token
+
+    user = User(
+    id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
+    )
+    # Doesn't exist? Add it to the database.
+    if not User.get(unique_id): 
+        User.create(unique_id, user_name, user_email, token, None, None)
+    else:
+        User.update_field("id", unique_id, "user", "token", token)
+    login_user(user)
+    return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
 
 @app.route('/login', methods=["GET"])
 @oidc.require_login
