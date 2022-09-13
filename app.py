@@ -137,7 +137,7 @@ def push_app_org():
             #create subscription to notify quantumleap in order to data in crateDB
             createRequest(appl, "http://quantumleap:8668/v2/notify")
     return redirect("/")
-
+# EDW TI FASH?????
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(ssl_context="adhoc", host=ipV4IP, port=5007)
