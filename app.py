@@ -29,7 +29,7 @@ app.config.update({
     'TESTING': True,
     'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
-    'OIDC_CALLBACK_ROUTE': 'https:dff.8bellsresearch.com/*',
+    'OIDC_CALLBACK_ROUTE': 'https://dff.8bellsresearch.com/*',
     #'OVERWRITE_REDIRECT_URI':'https://dff.8bellsresearch.com/',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
