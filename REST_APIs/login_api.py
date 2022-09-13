@@ -27,7 +27,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', location='args', help='The username of your Keycloak user.', required=True)
 parser.add_argument('password', location='args', help='The password of your Keycloak user.', required=True)
 
-KEYCLOAK_DISCOVERY_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/token"
+#KEYCLOAK_DISCOVERY_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/token"
 #KEYCLOAK_DISCOVERY_URL="https://dff.8bellsresearch.com/auth/realms/master/protocol/openid-connect/token"
 
 @api.route('/login')
