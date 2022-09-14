@@ -30,7 +30,7 @@ app.config.update({
     'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
     #'OIDC_CALLBACK_ROUTE': '',
-    #'OVERWRITE_REDIRECT_URI':'https://dff.8bellsresearch.com/bbbb',
+    'OVERWRITE_REDIRECT_URI':'https://dff.8bellsresearch.com/oidc_callback/',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
     'OIDC_USER_INFO_ENABLED': True,
