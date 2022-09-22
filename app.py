@@ -29,7 +29,7 @@ app.config.update({
     'TESTING': True,
     'DEBUG': True,
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
-    'OIDC_CALLBACK_ROUTE': '/',
+    'OIDC_CALLBACK_ROUTE': '/*',
     #'OVERWRITE_REDIRECT_URI':'https://10.10.10.13:5007/*',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
