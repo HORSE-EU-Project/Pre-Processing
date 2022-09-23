@@ -23,7 +23,7 @@ from Web_app.decoratorApp import decoratorCheckAppOrg
 from Web_app.profile import profile
 
 app = Flask(__name__)
-#test
+
 app.config.update({
     'SECRET_KEY': 'SomethingNotEntirelySecret',
     'TESTING': True,
