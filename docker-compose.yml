@@ -46,7 +46,7 @@ services:
     networks: 
       - dff-network
     ports:
-      - 5007:5007
+      - 8090:8090
     volumes:
       - sqlite_data_v2:/dff/sqlite_data
     depends_on:
