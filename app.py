@@ -97,7 +97,7 @@ def index():
 #     return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
 
 @app.route('/login', methods=["GET"])
-@oidc.require_login
+#@oidc.require_login
 def login():
     info = oidc.user_getinfo(['preferred_username', 'email', 'sub'])
     unique_id = info.get('sub')
