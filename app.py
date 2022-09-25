@@ -157,5 +157,5 @@ def push_app_org():
 # EDW TI FASH?????
 if __name__ == "__main__":
     ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(ssl_context="adhoc", host=ipV4IP, port=8090)
+    app.run(ssl_context=None, host=ipV4IP, port=8090)
     #app.run(host=ipV4IP, port=8090)
