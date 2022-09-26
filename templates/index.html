@@ -25,18 +25,39 @@
 
   <div class="content">
       <div class="content-inside ">
-            
+          
           <h1 style="color:black;text-align: center;margin-top: 2%;"><strong>Welcome to DFF!</strong></h1>  
           
           <div class="row" style="border-radius:20px;display: flex; margin-bottom: 5%; margin: 5%; box-shadow: 1px 5px 20px #888888; margin-top: 2%; margin-left: auto;margin-right: auto;  width:70%;">
           
             <div class="column" style="border-radius: 20px 0px 0px 20px;width: 50%;padding: 20px;">
+              <h2 style="color:black;text-align: center;">Log in</h2>
+
+              <form method="post">
+                {% if m in error_message %}
+                <p>{{m}}</p>
+              {% endif %}
+                <label for="username">Username</label> 
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i></span>
+                  <input type="text" class="form-control" id="username"  name="username" placeholder="Enter username" required>
+                </div>
+                
+                <label for="password">Password</label>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-key" aria-hidden="true"></i></span>
+                  <input type="password" class="form-control" id="password" name="password"  placeholder="Enter password" required>
+                </div>
+
+                <center><button type="submit" style="background-color: #025573;" class="btn btn-primary">Log in</button></center>
+                
+              </form>
+              <!--
                   <h2 style="color:black;text-align: center;">Log in</h2>
                   <div class="column text-center" >
                       <button class="btn btn-lg" style="width: 80%; margin:5%; background-color: #5cadb3;" role="button" data-bs-toggle="button" onclick='window.location.href="/login"'>Log in</button>
                   </div>
-
-                
+              -->
               </div>
               <div class="column" style="border-radius: 0px 20px 20px 0px;width: 50%;padding: 20px; background-image: url('../static/back.jpg');">
                   <h2 style="color:black;text-align: center; color:white;">What we do!</h2>  

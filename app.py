@@ -64,15 +64,27 @@ def load_user(user_id):
 UPLOAD_FOLDER = 'static/json'
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
-@app.route('/')
+@app.route('/', methods= ['GET', 'POST'])
 @decoratorCheckAppOrg
 def index():
+
+    # do anything you want
     if current_user.is_authenticated:
         #Successfully authenticated
         token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+    
     else:
-        return render_template('index.html')
+        if request.method == 'POST':
+            username_data = request.form.get('username')
+            password_data = request.form.get('password')
+            print(username_data,password_data)
+
+            return render_template('index.html')
+
+        else:
+
+            return render_template('index.html')
 
 # @app.route('/bbbb', methods= ["GET"])
 # @decoratorCheckAppOrg
