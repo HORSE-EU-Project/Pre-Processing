@@ -10,18 +10,16 @@ import json
 from bson import json_util
 from bson.objectid import ObjectId
 
-from validate_token import validateToken
-
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
+from keycloak_requests import get_kc_userinfo
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import oriondb
 import requests
-import keyrockdb
 
 SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
 ORION_URL = "10.10.10.13:1026"
-KEYCLOAK_USERINFO_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/userinfo"
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
@@ -63,11 +61,10 @@ class orionSubscriptions(Resource):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
-        r = validateToken(token, KEYCLOAK_USERINFO_URL)
-        if r.status_code!=200:
+        data = get_kc_userinfo(token) 
+        if data == None:
             abort(401, "Token invalid.")
-        data = r.json("")
-        username = data["username"]
+        username = data[0]
         domain = user.User.get_field("name", username, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
@@ -88,7 +85,7 @@ class orionSubscriptions(Resource):
     @api.response(200, "OK", okay_response_post)
     def post(self):
         token = request.headers.get('X-Auth-token')
-        if validateToken(token, KEYCLOAK_USERINFO_URL).status_code!=200:
+        if get_kc_userinfo(token) == None:
             abort(401, "Token invalid.")
         body = request.get_json()
         header = {
@@ -111,11 +108,10 @@ class orionSubscriptions(Resource):
     @api.response(502, "The deletion was unsuccessful.")
     def delete(self):
         token = request.headers.get('X-Auth-token')
-        r = validateToken(token, KEYCLOAK_USERINFO_URL)
-        if r.status_code!=200:
+        data = get_kc_userinfo(token) 
+        if data == None:
             abort(401, "Token invalid.")
-        data = r.json("")
-        username = data["username"]
+        username = data[0]
         errors = deleteSubSchema.validate(request.args)
         if errors:
             abort(400, 'Validation error')

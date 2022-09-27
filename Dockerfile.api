@@ -9,6 +9,7 @@ COPY ./REST_APIs/oriondb.py .
 COPY ./REST_APIs/requirements.txt .
 COPY user.py ../
 COPY db.py ../
+COPY keycloak_requests ../
 
 RUN pip --no-cache-dir install -r requirements.txt
 

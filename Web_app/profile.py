@@ -62,3 +62,33 @@ def edit_profile():
     else:
         flash('You should login first!', 'error')
         return redirect('/')
+
+@profile.route('/profile/store_user_profile', methods= ["POST"])
+def store_user_profile():
+    if not current_user.is_authenticated:
+        flash('You should login first!', 'error')
+        return redirect('/')
+    org = request.values.get('org')
+    domain_name = request.form['domain_name']
+    app_list=[]
+    i=1
+    app = request.form.get("app"+str(i))
+    while app!=None:
+        if re.match("^[a-zA-Z0-9_]+$", str(app)):
+            if app not in app_list:
+                app_list.append(app)
+        else:
+            message = "Application name not allowed. You can use the following characters: [a-z], [A-Z], [0-9] and _"
+            return render_template('modal.html', message=message)
+        i += 1
+        app = request.form.get("app"+str(i))
+    User.update_field("id", current_user.id, "user", "organization", org)
+    User.update_field("id", current_user.id, "user", "domain_name", domain_name)
+    #when a new user-app entry is created in the apps db, a new subscription must be created to QL
+    for app in app_list:
+        User.create_user_app(app, current_user.id)
+    for app in app_list:
+        if app not in User.get_all("apps", "name"):
+            #create subscription to notify quantumleap in order to data in crateDB
+            createRequest(app, "http://quantumleap:8668/v2/notify")
+    return redirect("/")

@@ -46,7 +46,7 @@ services:
     networks: 
       - dff-network
     ports:
-      - 8090:8090
+      - 5005:5005
     volumes:
       - sqlite_data_v2:/dff/sqlite_data
     depends_on:
@@ -63,7 +63,7 @@ services:
     networks: 
       - dff-network
     ports:
-      - 5005:5005
+      - 5006:5006
     depends_on:
       - dff-app-keycloak
       - keycloak
@@ -81,7 +81,7 @@ services:
       - "MYSQL_PASS=$MYSQL_DB_PASS"
       - "MONGO_DB_PASS=$MONGO_PASS"
     ports:
-      - 5006:5006
+      - 5007:5007
     networks: 
       - dff-network
     depends_on:

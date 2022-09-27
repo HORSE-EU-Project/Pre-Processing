@@ -9,15 +9,14 @@ import os
 
 from marshmallow import Schema, validate
 import marshmallow
-from validate_token import validateToken
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
+from keycloak_requests import get_kc_userinfo
 
 SQLITE_DB_URL = "../"
 CRATE_DB_URL = "10.10.10.13:4200/_sql"
 ORION_URL = "10.10.10.13:1026"
-KEYCLOAK_USERINFO_URL="https://dff.8bellsresearch.com:40446/auth/realms/master/protocol/openid-connect/userinfo"
 
 api = Namespace('dffData', description='Crate data related operations')
 
@@ -81,7 +80,7 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(404, 'The application you have entered does not exist')
     def get(self):
         token=request.headers.get('X-Auth-token')
-        if validateToken(token, KEYCLOAK_USERINFO_URL).status_code == 200:
+        if get_kc_userinfo(token) == None:
             abort(401, "Token invalid.")
         if "fromDate" in request.args and "toDate" in request.args:
             fromD = request.args["fromDate"].replace(" ", "+")
@@ -174,11 +173,10 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def post(self):
         token=request.headers.get('X-Auth-token')
-        r = validateToken(token, KEYCLOAK_USERINFO_URL)
-        if r.status_code!=200:
+        data = get_kc_userinfo(token) 
+        if data == None:
             abort(401, "Token invalid.")
-        data = r.json("")
-        username = data["username"]
+        username = data[0]
         dffMetadata = {"type": "user", "value": username}
         body = request.get_json()
         for i in range(0, len(body["entities"])):
@@ -204,11 +202,10 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def delete(self):
         token=request.headers.get('X-Auth-token')
-        r = validateToken(token, KEYCLOAK_USERINFO_URL)
-        if r.status_code!=200:
+        data = get_kc_userinfo(token) 
+        if data== None:
             abort(401, "Token invalid.")
-        data = r.json("")
-        username = data["username"]
+        username = data[0]
 
         errors = deleteDataSchema.validate(request.args)
         if errors:

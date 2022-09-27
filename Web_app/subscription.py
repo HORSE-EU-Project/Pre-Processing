@@ -41,7 +41,7 @@ def createRequest(dbName, endpoint):
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
-                     )
+                    )
     payload["subject"]["entities"] = [{"idPattern": ".*","type":dbName}]
     payload["notification"]["http"]["url"] = endpoint
     sendRequestToFiware(url, headersDict, payload)

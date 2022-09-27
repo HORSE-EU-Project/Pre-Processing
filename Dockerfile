@@ -2,7 +2,7 @@ FROM python:3.9.12
 
 WORKDIR /dff
 
-COPY requirements.txt schema.sql user.py db.py app.py client_secrets.json ./
+COPY requirements.txt schema.sql user.py db.py app.py keycloak_requests ./
 COPY ./Web_app ./Web_app
 COPY ./templates ./templates
 COPY ./static ./static
