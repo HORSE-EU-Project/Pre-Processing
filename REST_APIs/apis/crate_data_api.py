@@ -15,8 +15,8 @@ import user
 from keycloak_requests import get_kc_userinfo
 
 SQLITE_DB_URL = "../"
-CRATE_DB_URL = "10.10.10.13:4200/_sql"
-ORION_URL = "10.10.10.13:1026"
+CRATE_DB_URL = "http://10.10.10.13:4200/_sql"
+ORION_URL = "http://10.10.10.13:1026"
 
 api = Namespace('dffData', description='Crate data related operations')
 

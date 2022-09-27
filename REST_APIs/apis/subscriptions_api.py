@@ -19,7 +19,7 @@ import oriondb
 import requests
 
 SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
-ORION_URL = "10.10.10.13:1026"
+ORION_URL = "http://10.10.10.13:1026"
 
 api = Namespace('subscriptions', description='Subscription related operations')
 
