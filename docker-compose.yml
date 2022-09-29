@@ -46,7 +46,7 @@ services:
     networks: 
       - dff-network
     environment:
-      - PYTHONUNBUFFERED=0
+      - PYTHONUNBUFFERED=1
     ports:
       - 5005:5005
     volumes:
