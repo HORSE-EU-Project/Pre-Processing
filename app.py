@@ -78,13 +78,13 @@ def index():
 def get_userinfo():
     token = request.args['messages']
     print(token)
-    userinfo = get_kc_userinfo(token)
-    if userinfo == None:
-        flash('Keycloak is not responding. Try again later!', 'error')
+    response = get_kc_userinfo(token)
+    if response.status_code != 200:
+        flash('Keycloak is not responding. Status code: ' + response.status_code + ' Try again later!', 'error')
         return render_template('index.html')
-    user_name = userinfo[0]
-    user_email = userinfo[1]
-    unique_id = userinfo[2]
+    user_name = response.json()["preferred_username"]
+    user_email = response.json()["email"]
+    unique_id = response.json()["sub"]
     user = User(
     id_=unique_id, name=user_name, email=user_email, token=token, organization=None, domain_name=None
     )

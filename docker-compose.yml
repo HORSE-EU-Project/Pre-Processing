@@ -47,6 +47,7 @@ services:
       - dff-network
     environment:
       - PYTHONUNBUFFERED=1
+      - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     ports:
       - 5005:5005
     volumes:
