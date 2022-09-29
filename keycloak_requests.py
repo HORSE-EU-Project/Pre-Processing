@@ -38,7 +38,7 @@ def get_kc_token(username, password):
         return 0
     json = r.json()
     token = json["access_token"]
-    return token
+    return [token, username, password]
 
 def get_kc_userinfo(token):
     payload={}

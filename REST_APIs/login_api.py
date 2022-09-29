@@ -39,11 +39,11 @@ class Login(Resource):
         username = request.args["username"]
         password = request.args["password"]
         token = get_kc_token(username, password)
-        if token == None:
+        if token[0] == None:
             abort(401)
-        elif token == 0:
+        elif token[0] == 0:
             abort(500)
-        return token, 200
+        return [token[0], token[1], token[2]], 200
 
 if __name__ == '__main__':
     ipV4IP = socket.gethostbyname(socket.gethostname())
