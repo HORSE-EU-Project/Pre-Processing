@@ -38,11 +38,10 @@ class Login(Resource):
             abort(400, str(errors))
         username = request.args["username"]
         password = request.args["password"]
-        token = get_kc_token(username, password)
-        if token == None:
-            abort(401)
-        elif token == 0:
-            abort(500)
+        response = get_kc_token(username, password)
+        if response.status_code != 200:
+            abort(response.status_code)
+        token = response.json()["access_token"]
         return token, 200
 
 if __name__ == '__main__':

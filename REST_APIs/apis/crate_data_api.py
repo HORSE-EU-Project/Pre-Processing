@@ -80,8 +80,9 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(404, 'The application you have entered does not exist')
     def get(self):
         token=request.headers.get('X-Auth-token')
-        if get_kc_userinfo(token) == None:
-            abort(401, "Token invalid.")
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
         if "fromDate" in request.args and "toDate" in request.args:
             fromD = request.args["fromDate"].replace(" ", "+")
             toD = request.args["toDate"].replace(" ", "+")
@@ -173,10 +174,10 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def post(self):
         token=request.headers.get('X-Auth-token')
-        data = get_kc_userinfo(token) 
-        if data == None:
-            abort(401, "Token invalid.")
-        username = data[0]
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
+        username = response.json()["preferred_username"]
         dffMetadata = {"type": "user", "value": username}
         body = request.get_json()
         for i in range(0, len(body["entities"])):
@@ -202,15 +203,13 @@ class GetTypeDataPerTimeIndex(Resource):
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def delete(self):
         token=request.headers.get('X-Auth-token')
-        data = get_kc_userinfo(token) 
-        if data== None:
-            abort(401, "Token invalid.")
-        username = data[0]
-
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
+        username = response.json()["preferred_username"]
         errors = deleteDataSchema.validate(request.args)
         if errors:
             abort(400, 'Validation error')
-
         header={
             "Content-Type": "application/json"
         }

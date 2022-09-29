@@ -32,13 +32,7 @@ def get_kc_token(username, password):
     }
     r = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=False)
     print("In get token: ", r.status_code)
-    if r.status_code == 401:
-        return None
-    if r.status_code != 200:
-        return 0
-    json = r.json()
-    token = json["access_token"]
-    return token
+    return r
 
 def get_kc_userinfo(token):
     payload={}
@@ -48,7 +42,4 @@ def get_kc_userinfo(token):
     }
     r= http.get(KEYCLOAK_USERINFO_URL, headers=headers, data=payload)
     print("In get userinfo: ", r.status_code)
-    if r.status_code != 200:
-        return None
-    userinfo = r.json()
-    return [userinfo['preferred_username'], userinfo['email'], userinfo['sub']]
+    return r

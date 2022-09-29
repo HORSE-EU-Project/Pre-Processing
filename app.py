@@ -63,16 +63,13 @@ def index():
             password = request.form.get('password')
             # flash('Invalid credentials: ' + username + password + '!', 'error')
             # return render_template('index.html')
-            token = get_kc_token(username, password)
-            if token == None:
-                flash('Invalid credentials!', 'error')
+            response = get_kc_token(username, password)
+            if response.status_code != 200:
+                flash('We got: ' + response.status_code + 'from Keycloak.', 'error')
                 return render_template('index.html')
-            elif token == 0:
-                flash('Keycloak is not responding. Try again later!', 'error')
-                return render_template('index.html')
-            else:
-                session["messages"] = token
-                return redirect(url_for('get_userinfo', messages=token))
+            token = response.json()["access_token"]
+            session["messages"] = token
+            return redirect(url_for('get_userinfo', messages=token))
         else:
             return render_template('index.html')
 

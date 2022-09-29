@@ -61,10 +61,10 @@ class orionSubscriptions(Resource):
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
-        data = get_kc_userinfo(token) 
-        if data == None:
-            abort(401, "Token invalid.")
-        username = data[0]
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
+        username = response.json()["preferred_username"]
         domain = user.User.get_field("name", username, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
             abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
@@ -85,8 +85,9 @@ class orionSubscriptions(Resource):
     @api.response(200, "OK", okay_response_post)
     def post(self):
         token = request.headers.get('X-Auth-token')
-        if get_kc_userinfo(token) == None:
-            abort(401, "Token invalid.")
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
         body = request.get_json()
         header = {
             "Content-Type" : "application/json",
@@ -108,10 +109,10 @@ class orionSubscriptions(Resource):
     @api.response(502, "The deletion was unsuccessful.")
     def delete(self):
         token = request.headers.get('X-Auth-token')
-        data = get_kc_userinfo(token) 
-        if data == None:
-            abort(401, "Token invalid.")
-        username = data[0]
+        response = get_kc_userinfo(token)
+        if response.status_code != 200:
+            abort(response.status_code)
+        username = response.json()["preferred_username"]
         errors = deleteSubSchema.validate(request.args)
         if errors:
             abort(400, 'Validation error')
