@@ -20,6 +20,7 @@ http.mount("https://", adapter)
 http.mount("http://", adapter)
 
 def get_kc_token(username, password):
+    print(username,password)
     header={
         "Content-Type": "application/x-www-form-urlencoded"
     }
