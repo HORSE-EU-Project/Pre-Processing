@@ -45,6 +45,8 @@ services:
     container_name: "dff-app-keycloak"
     networks: 
       - dff-network
+    environment:
+      - PYTHONUNBUFFERED=0
     ports:
       - 5005:5005
     volumes:
