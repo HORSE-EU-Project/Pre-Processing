@@ -23,7 +23,7 @@ from Web_app.profile import profile
 app = Flask(__name__)
 
 app.config.update({
-    'SECRET_KEY': 'SomethingNotEntirelySecret',
+    'SECRET_KEY': 'yFlgfJN5yrI72yCQczSEG2ztDwjQqvIv',
     'TESTING': True,
     'DEBUG': True
 })
@@ -61,7 +61,7 @@ def index():
         if request.method == 'POST':
             username = request.form.get('username')
             password = request.form.get('password')
-            # flash('Invalid credentials: ' + username + password + '!', 'error')
+            # flash('Invalid credentials: ' + username + password + '!', 'error')   
             # return render_template('index.html')
             response = get_kc_token(username, password)
             if response.status_code != 200:
