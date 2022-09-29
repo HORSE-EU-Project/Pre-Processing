@@ -65,7 +65,7 @@ def index():
             # return render_template('index.html')
             response = get_kc_token(username, password)
             if response.status_code != 200:
-                flash('We got: ' + response.status_code + 'from Keycloak.', 'error')
+                flash('We got: ' + str(response.status_code) + 'from Keycloak.', 'error')
                 return render_template('index.html')
             token = response.json()["access_token"]
             session["messages"] = token
