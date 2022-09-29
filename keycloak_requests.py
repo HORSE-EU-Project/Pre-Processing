@@ -3,8 +3,8 @@ import os
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-KEYCLOAK_TOKEN_URL="http://10.10.10.13:8080/auth/realms/master/protocol/openid-connect/token"
-KEYCLOAK_USERINFO_URL="http://10.10.10.13:8080/auth/realms/master/protocol/openid-connect/userinfo"
+KEYCLOAK_TOKEN_URL="http://10.10.10.13:8080/auth/realms/DFF/protocol/openid-connect/token"
+KEYCLOAK_USERINFO_URL="http://10.10.10.13:8080/auth/realms/DFF/protocol/openid-connect/userinfo"
 SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 #Define retry strategy and http adapter for requests
