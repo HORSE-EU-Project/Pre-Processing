@@ -23,7 +23,7 @@ from Web_app.profile import profile
 app = Flask(__name__)
 
 app.config.update({
-    'SECRET_KEY': 'yFlgfJN5yrI72yCQczSEG2ztDwjQqvIv',
+    'SECRET_KEY': 'kEGoPX0E5Pn18ZY5EXCKtW1TUTjeY5c8',
     'TESTING': True,
     'DEBUG': True
 })
