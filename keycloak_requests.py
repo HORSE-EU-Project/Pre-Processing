@@ -20,7 +20,6 @@ http.mount("https://", adapter)
 http.mount("http://", adapter)
 
 def get_kc_token(username, password):
-    print(username,password)
     header={
         "Content-Type": "application/x-www-form-urlencoded"
     }
@@ -32,7 +31,6 @@ def get_kc_token(username, password):
         "grant_type": "password"
     }
     r = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=False)
-    print("In get token: ", r.status_code)
     return r
 
 def get_kc_userinfo(token):
@@ -42,5 +40,4 @@ def get_kc_userinfo(token):
     'Authorization': 'Bearer ' + token
     }
     r= http.get(KEYCLOAK_USERINFO_URL, headers=headers, data=payload)
-    print("In get userinfo: ", r.status_code)
     return r

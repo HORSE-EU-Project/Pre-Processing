@@ -77,7 +77,6 @@ def index():
 @decoratorCheckAppOrg
 def get_userinfo():
     token = request.args['messages']
-    print(token)
     response = get_kc_userinfo(token)
     if response.status_code != 200:
         flash('Keycloak is not responding. Status code: ' + response.status_code + ' Try again later!', 'error')
