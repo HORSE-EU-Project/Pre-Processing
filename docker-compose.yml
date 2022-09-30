@@ -84,6 +84,7 @@ services:
       - "SQLITE_DB_URL=$SQLITE_URL"
       - "MYSQL_PASS=$MYSQL_DB_PASS"
       - "MONGO_DB_PASS=$MONGO_PASS"
+      - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     ports:
       - 5007:5007
     networks: 
