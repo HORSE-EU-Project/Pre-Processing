@@ -93,7 +93,12 @@ def get_userinfo():
     else:
         User.update_field("id", unique_id, "user", "token", token)
     login_user(user)
-    return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
+    return redirect('/home')
+
+@app.route('/home', endpoint='home')
+@decoratorCheckAppOrg
+def home():
+    return render_template('main.html', name = current_user.name, email = current_user.email, tkn = current_user.token)
 
 @app.route("/logout")
 @login_required
