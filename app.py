@@ -90,7 +90,7 @@ def get_userinfo():
     # Doesn't exist? Add it to the database.
     if not User.get(unique_id): 
         if User.create(unique_id, user_name, user_email, token, None, None) == -1:
-            flash('Username and email must be unique.')
+            flash('Username and email must be unique.', 'error')
             return render_template('index.html')
     else:
         User.update_field("id", unique_id, "user", "token", token)
