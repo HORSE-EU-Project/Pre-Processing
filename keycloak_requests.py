@@ -34,10 +34,11 @@ def get_kc_token(username, password):
     return r
 
 def get_kc_userinfo(token):
+    print(token)
     payload={}
     headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + token
+    "Content-Type": "application/json",
+    "Authorization": "Bearer {}".format(token)
     }
     r= http.get(KEYCLOAK_USERINFO_URL, headers=headers, data=payload)
     return r
