@@ -51,8 +51,8 @@ services:
     ports:
       - "${ORION_PORT}:${ORION_PORT}"
     environment:
-      - "ORION_MONGO_USER: ${MONGO_USER}"
-      - "ORION_MONGO_PASSWORD: ${MONGO_PASS}"
+      - "ORION_MONGO_USER:$MONGO_USER"
+      - "ORION_MONGO_PASSWORD:$MONGO_PASS"
     command: -dbhost mongo-db -logLevel DEBUG
     healthcheck:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
