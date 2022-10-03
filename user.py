@@ -1,6 +1,7 @@
 import pandas as pd
 from flask_login import UserMixin
 from db import get_db
+import sqlite3
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -36,11 +37,14 @@ class User(UserMixin):
     @staticmethod
     def create(id_, name, email, token, organization, domain_name):
         db = get_db()
-        db.execute(
-            "INSERT INTO user (id, name, email, token, organization, domain_name) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (id_, name, email, token, organization, domain_name,),
-        )
+        try:
+            db.execute(
+                "INSERT INTO user (id, name, email, token, organization, domain_name) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (id_, name, email, token, organization, domain_name,),
+            )
+        except sqlite3.IntegrityError:
+            return -1
         db.commit()
 
     @staticmethod

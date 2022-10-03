@@ -131,7 +131,7 @@ dmypy.json
 .env_setup.txt
 
 static/json
-sqlite_db
+sqlite_data
 pyvenv.cfg
 dffenv
 lib64

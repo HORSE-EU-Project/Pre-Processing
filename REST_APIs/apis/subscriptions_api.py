@@ -54,7 +54,7 @@ class orionSubscriptions(Resource):
     @api.doc(parser=parser)
     @api.response(204, 'Either you do not owe any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app.')
     @api.response(400, 'This method does not accept any parameters.')
-    @api.response(403, 'Either your domain name is not registered in the DFF Web App or you need to get a fresh token.')
+    @api.response(403, 'Either your domain name is not registered in the DFF Web App or there aren't any subscriptions created for your domain name.')
     @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def get(self):
@@ -67,7 +67,7 @@ class orionSubscriptions(Resource):
         username = response.json()["preferred_username"]
         domain = user.User.get_field("name", username, "user", "domain_name", path = SQLITE_DB_URL)
         if domain==-1:
-            abort(403, "Either there aren't any subscriptions created for your domain name or you need to get a fresh token.")
+            abort(403, "Either your domain name is not registered in the DFF Web App or there aren't any subscriptions created for your domain name.")
         elif domain==None:
             abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
         try:
