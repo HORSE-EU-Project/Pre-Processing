@@ -15,8 +15,6 @@ pipeline {
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-app-keycloak") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-api-keycloak") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-login-keycloak") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=keycloak") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=kc-postgres") || true'
                     }
                 }
             }

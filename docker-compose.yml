@@ -4,39 +4,6 @@ networks:
   dff-network:
   
 services:
-  kc-postgres:
-    image: postgres
-    container_name: "kc-postgres"
-    restart: unless-stopped
-    environment:
-      - "POSTGRES_DB=keycloak"
-      - "POSTGRES_USER=$POSTGRES_DB_USER"
-      - "POSTGRES_PASSWORD=$POSTGRES_DB_PASS"
-    networks: 
-      - dff-network
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-
-  keycloak:
-    image: jboss/keycloak
-    container_name: "keycloak"
-    restart: unless-stopped
-    environment:
-      - "DB_USER=$POSTGRES_DB_USER"
-      - "DB_PASSWORD=$POSTGRES_DB_PASS"
-      - "DB_VENDOR=POSTGRES"
-      - "DB_ADDR=kc-postgres"
-      - "DB_DATABASE=keycloak"
-      - "KEYCLOAK_USER=$KC_USER"
-      - "KEYCLOAK_PASSWORD=$KC_PASS"
-      - "PROXY_ADDRESS_FORWARDING=true"
-    networks: 
-      - dff-network
-    ports:
-      - 8080:8080
-    depends_on:
-      - kc-postgres
-
   dff-app-keycloak:
     build:
       dockerfile: Dockerfile
@@ -52,8 +19,6 @@ services:
       - 5005:5005
     volumes:
       - sqlite_data_v2:/dff/sqlite_data
-    depends_on:
-      - keycloak
 
   dff-login-keycloak:
     build:
@@ -70,7 +35,6 @@ services:
       - 5006:5006
     depends_on:
       - dff-app-keycloak
-      - keycloak
     volumes:
       - sqlite_data_v2:/sqlite_data
 
@@ -93,7 +57,6 @@ services:
     depends_on:
       - dff-login-keycloak
       - dff-app-keycloak
-      - keycloak
     volumes:
       - sqlite_data_v2:/sqlite_data
 

@@ -1,0 +1,141 @@
+version: "3.5"
+
+services:
+  #postgres is Keycloak's db
+  kc-postgres:
+    image: postgres
+    container_name: "kc-postgres"
+    restart: unless-stopped
+    environment:
+      - "POSTGRES_DB=keycloak"
+      - "POSTGRES_USER=$POSTGRES_DB_USER"
+      - "POSTGRES_PASSWORD=$POSTGRES_DB_PASS"
+    networks: 
+      - dff-network
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  #Keycloak is the identity provider
+  keycloak:
+    image: jboss/keycloak
+    container_name: "keycloak"
+    restart: unless-stopped
+    environment:
+      - "DB_USER=$POSTGRES_DB_USER"
+      - "DB_PASSWORD=$POSTGRES_DB_PASS"
+      - "DB_VENDOR=POSTGRES"
+      - "DB_ADDR=kc-postgres"
+      - "DB_DATABASE=keycloak"
+      - "KEYCLOAK_USER=$KC_USER"
+      - "KEYCLOAK_PASSWORD=$KC_PASS"
+      - "PROXY_ADDRESS_FORWARDING=true"
+    networks: 
+      - dff-network
+    ports:
+      - 8080:8080
+    depends_on:
+      - kc-postgres
+
+  # Orion is the context broker
+  orion:
+    image: fiware/orion:${ORION_VERSION}
+    hostname: orion
+    container_name: dff-orion
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+    networks:
+      - dff-network
+    expose:
+      - "${ORION_PORT}"
+    ports:
+      - "${ORION_PORT}:${ORION_PORT}"
+    environment:
+      - "ORION_MONGO_USER: ${MONGO_USER}"
+      - "ORION_MONGO_PASSWORD: ${MONGO_PASS}"
+    command: -dbhost mongo-db -logLevel DEBUG
+    healthcheck:
+      test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      interval: 5s
+
+  # Quantum Leap is persisting Short Term History to Crate-DB
+  quantumleap:
+    image: smartsdk/quantumleap:${QUANTUMLEAP_VERSION}
+    hostname: quantumleap
+    container_name: dff-quantumleap
+    restart: unless-stopped
+    networks:
+      - dff-network
+    ports:
+      - "${QUANTUMLEAP_PORT}:${QUANTUMLEAP_PORT}"
+    depends_on:
+      - crate-db
+      - redis-db
+    environment:
+      - CRATE_HOST=crate-db
+      - REDIS_HOST=redis-db
+      - REDIS_PORT=${REDIS_PORT}
+      - LOGLEVEL=DEBUG
+    healthcheck:
+      test: curl --fail -s http://quantumleap:${QUANTUMLEAP_PORT}/version || exit 1
+
+  # Databases
+  mongo-db:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db
+    container_name: dff-mongo
+    restart: unless-stopped
+    expose:
+      - "${MONGO_DB_PORT}"
+    ports:
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+    networks:
+      - dff-network
+    volumes:
+      - mongo-db:/data
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+  crate-db:
+    image: crate:${CRATE_VERSION}
+    hostname: crate-db
+    container_name: dff-crate
+    restart: unless-stopped
+    networks:
+      - dff-network
+    ports:
+      # Admin UI
+      - "4200:4200"
+      # Transport protocol
+      - "4300:4300"
+    command: crate -Cauth.host_based.enabled=false  -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
+    environment:
+      - CRATE_HEAP_SIZE=2g # see https://crate.io/docs/crate/howtos/en/latest/deployment/containers/docker.html#troubleshooting
+    volumes:
+      - crate-db:/data
+
+  redis-db:
+    image: redis:${REDIS_VERSION}
+    hostname: redis-db
+    container_name: dff-redis
+    networks:
+      - dff-network
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - redis-db:/data
+
+volumes:
+  mongo-db: ~
+  crate-db: ~
+  redis-db: ~
+  postgres-data: ~
+
+networks:
+  dff-network:
