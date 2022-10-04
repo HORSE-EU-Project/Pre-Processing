@@ -4,8 +4,9 @@ import os
 DB_URL = "mongodb://10.10.10.13:27017/"
 MONGO_DB_PASS=os.getenv("MONGO_DB_PASS")
 
-def mongoConnect(database):
-    client = MongoClient(DB_URL, username='orionUser', password=MONGO_DB_PASS, authSource=database, directConnection=True)
+def mongoConnect():
+    # client = MongoClient(DB_URL, username='orionUser', password=MONGO_DB_PASS, authSource=database, directConnection=True)
+    client = MongoClient(DB_URL, directConnection=True)
     return client
   
 def mongoCloseConnection(client):

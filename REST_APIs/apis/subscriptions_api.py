@@ -71,7 +71,7 @@ class orionSubscriptions(Resource):
         elif domain==None:
             abort(404, "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.")
         try:
-            client = oriondb.mongoConnect(db)
+            client = oriondb.mongoConnect()
         except:
             abort(500, 'While trying to connect to the database an error occurred.')
         subs = oriondb.getSubscriptions(client, db, col, "reference", domain, None)
@@ -125,7 +125,7 @@ class orionSubscriptions(Resource):
         inputSubId = request.args["subId"]
         subId = ObjectId(inputSubId)
         try:
-            client = oriondb.mongoConnect(db)
+            client = oriondb.mongoConnect()
         except:
             abort(500, 'While trying to connect to the database an error occurred.')
         for d in oriondb.getSubscriptions(client, db, col, "reference", domain, "_id"):
