@@ -32,6 +32,10 @@ parser = reqparse.RequestParser()
 
 parser.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
 
+parserD = reqparse.RequestParser()
+parserD.add_argument('X-Auth-token', location='headers', help='The token that you have acquired either from the DFF Web App or the DFF login api.')
+parserD.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription that you wish to delete.')
+
 okay_response_get = api.model('GET Subscriptions', {
     'subs': fields.List(fields.Raw)
 })
@@ -100,8 +104,7 @@ class orionSubscriptions(Resource):
         else:
             abort(r.status_code)
     
-    parser.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription document that you wish to delete.')
-    @api.doc(parser=parser)
+    @api.doc(parser=parserD)
     @api.response(200, "OK", okay_response_del)
     @api.response(400, 'Validation error')
     @api.response(401, "Either the requested entity does not exist or you are not authorized to delete it.")
