@@ -131,11 +131,11 @@ services:
 #     volumes:
 #       - redis-db:/data
 
-# volumes:
-#   mongo-db: ~
-#   crate-db: ~
-#   redis-db: ~
-#   postgres-data: ~
+volumes:
+  # mongo-db: ~
+  # crate-db: ~
+  # redis-db: ~
+  postgres-data: ~
 
-# networks:
-#   dff-network:
+networks:
+  dff-network:
