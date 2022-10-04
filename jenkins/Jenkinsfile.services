@@ -9,11 +9,8 @@ pipeline {
             steps {
                 script {
                     docker.withServer("$VM_DEV01") {
-                        dir("../"){
-                            sh "pwd"
-                            echo 'Stopping old containers...'
-                            sh './services stop'
-                        }  
+                        echo 'Stopping old containers...'
+                        sh './services stop'
                         echo 'Removing old containers...'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-crate") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-mongo") || true'
@@ -30,11 +27,8 @@ pipeline {
             steps {
                 script {
                     docker.withServer("$VM_DEV01") {
-                        dir("../"){
-                            sh "pwd"
-                            echo 'Deploy images to VM'
-                            sh "../services start"
-                        }
+                        echo 'Deploy images to VM'
+                        sh "./services start"
                     }
                 }
             }
