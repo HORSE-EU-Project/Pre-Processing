@@ -10,7 +10,7 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Stopping old containers...'
-                        sh './services stop'
+                        sh 'sudo ./services stop'
                         echo 'Removing old containers...'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-crate") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-mongo") || true'
@@ -28,7 +28,7 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Deploy images to VM'
-                        sh "./services start"
+                        sh "sudo ./services start"
                     }
                 }
             }
