@@ -10,13 +10,13 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Stopping old containers...'
-                        sh './services stop'
+                        sh 'docker-compose -f docker-compose-services.yml down'
                         echo 'Removing old containers...'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-crate") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-mongo") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-orion") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-quantumleap") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-redis") || true'
+                        // sh 'docker rm $(docker ps -a -q --filter="name=dff-crate") || true'
+                        // sh 'docker rm $(docker ps -a -q --filter="name=dff-mongo") || true'
+                        // sh 'docker rm $(docker ps -a -q --filter="name=dff-orion") || true'
+                        // sh 'docker rm $(docker ps -a -q --filter="name=dff-quantumleap") || true'
+                        // sh 'docker rm $(docker ps -a -q --filter="name=dff-redis") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=keycloak") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=kc-postgres") || true'
                     }
@@ -28,7 +28,7 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Deploy images to VM'
-                        sh "./services start"
+                        sh "docker-compose -f docker-compose-services.yml up -d"
                     }
                 }
             }
