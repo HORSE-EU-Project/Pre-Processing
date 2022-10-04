@@ -34,7 +34,6 @@ def get_kc_token(username, password):
     return r
 
 def get_kc_userinfo(token):
-    print(token)
     payload={}
     headers = {
     "Content-Type": "application/json",

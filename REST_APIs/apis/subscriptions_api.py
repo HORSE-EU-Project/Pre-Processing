@@ -92,7 +92,9 @@ class orionSubscriptions(Resource):
         header = {
             "Content-Type" : "application/json",
         }
+        print("i am here: ", body)
         r = requests.post(url=ORION_URL+"/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
+        print(r)
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
