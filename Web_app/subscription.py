@@ -37,7 +37,7 @@ def subscriptionSubmission():
 
 def createRequest(dbName, endpoint):
     url = ORION_URL+"/v2/subscriptions/"
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : User.get_field("id", current_user.id, "user", "token")}
+    headersDict = {"Content-Type" : "application/json"}
     payload = dict( description = dbName,
                     subject = {"entities" : [], "condition" : {"attrs" : []}},
                     notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
@@ -51,7 +51,7 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         if r.status_code == 201:
-            flash('Subscription completed successfully','success')
+            flash('Subscription created successfully','success')
         #elif r.status_code == 409:
         #    flash('Device has already been registered','info')
         else:

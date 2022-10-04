@@ -98,7 +98,7 @@ class orionSubscriptions(Resource):
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
-            abort(r.status_code, r.json())
+            abort(r.status_code)
     
     parser.add_argument('subId', type=str, location = 'args', help='The ObjectId of the subscription document that you wish to delete.')
     @api.doc(parser=parser)
