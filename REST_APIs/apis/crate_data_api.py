@@ -14,7 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import user
 from keycloak_requests import get_kc_userinfo
 
-SQLITE_DB_URL = "../"
+SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
 CRATE_DB_URL = "http://10.10.10.13:4200/_sql"
 ORION_URL = "http://10.10.10.13:1026"
 
@@ -183,7 +183,7 @@ class GetTypeDataPerTimeIndex(Resource):
         for i in range(0, len(body["entities"])):
             body["entities"][i]["dfm_metadata"] = dffMetadata
         header = {
-            "Content-Type" : "application/json",
+            "Content-Type" : "application/json"
         }
         dffMetadata = {"type": "user", "value": username}
         for i in range(0, len(body["entities"])):

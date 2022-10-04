@@ -62,6 +62,7 @@ class orionSubscriptions(Resource):
     @api.response(404, 'The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request.')
     @api.response(500, 'While trying to connect to the database an error occurred.')
     def get(self):
+        print("I'm in GET")
         if request.args:
             abort(400, "This method does not accept any parameters.")
         token = request.headers.get('X-Auth-token')
@@ -94,7 +95,7 @@ class orionSubscriptions(Resource):
             abort(response.status_code)
         body = request.get_json()
         header = {
-            "Content-Type" : "application/json",
+            "Content-Type" : "application/json"
         }
         print("i am here: ", body)
         r = requests.post(url=ORION_URL+"/v2/subscriptions/", headers=header, data=json.dumps(body), verify=False)
@@ -102,7 +103,7 @@ class orionSubscriptions(Resource):
         if(r.status_code==201):
             return {"message": "Subscription created successfully."}, 200
         else:
-            abort(r.status_code)
+            abort(r.status_code, r.json())
     
     @api.doc(parser=parserD)
     @api.response(200, "OK", okay_response_del)
