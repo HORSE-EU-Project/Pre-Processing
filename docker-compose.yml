@@ -20,23 +20,23 @@ services:
     volumes:
       - sqlite_data_v2:/dff/sqlite_data
 
-  dff-login-keycloak:
-    build:
-      dockerfile: Dockerfile.loginapi
-      context: .
-    image: dff-login-keycloak:latest
-    container_name: "dff-login-keycloak"
-    environment: 
-      - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
-      - PYTHONUNBUFFERED=1
-    networks: 
-      - dff-network
-    ports:
-      - 5006:5006
-    depends_on:
-      - dff-app-keycloak
-    volumes:
-      - sqlite_data_v2:/sqlite_data
+  # dff-login-keycloak:
+  #   build:
+  #     dockerfile: Dockerfile.loginapi
+  #     context: .
+  #   image: dff-login-keycloak:latest
+  #   container_name: "dff-login-keycloak"
+  #   environment: 
+  #     - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
+  #     - PYTHONUNBUFFERED=1
+  #   networks: 
+  #     - dff-network
+  #   ports:
+  #     - 5006:5006
+  #   depends_on:
+  #     - dff-app-keycloak
+  #   volumes:
+  #     - sqlite_data_v2:/sqlite_data
 
   dff-api-keycloak:
     build:

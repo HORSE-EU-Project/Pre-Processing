@@ -1,14 +1,13 @@
 import os
 import flask.scaffold
 flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
-from flask import abort, request, Flask
-from flask_restx import Api, Resource, reqparse
+from flask import abort, request
+from flask_restx import Namespace, Resource, reqparse
 import marshmallow
 import socket
 from marshmallow import Schema
 import sys
 import os
-from flask_swagger_ui import get_swaggerui_blueprint
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from keycloak_requests import get_kc_token
@@ -17,28 +16,7 @@ SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-app = Flask(__name__)
-
-# swagger specific configuration
-# SWAGGER_URL = '/login'
-# API_URL = '/login/doc/static/swagger-login.json'
-# SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-#     SWAGGER_URL,
-#     API_URL,
-#     config={
-#         'app_name': "DFF Login REST API"
-#     }
-# )
-
-# app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
-
-api = Api(app)
-
-api = Api(
-    title='DFF Login REST API',
-    version='1.0',
-    description='This is the DFF Login REST API.'
-)
+api = Namespace('/apis/login', description='Login API')
 
 class LoginQuerySchema(Schema):
     username = marshmallow.fields.String(required=True)
@@ -64,7 +42,3 @@ class Login(Resource):
             abort(response.status_code)
         token = response.json()["access_token"]
         return token, 200
-
-if __name__ == '__main__':
-    ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(host=ipV4IP, port=5006)
