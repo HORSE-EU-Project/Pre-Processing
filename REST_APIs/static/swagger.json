@@ -1,11 +1,334 @@
 {
-    "openapi": "3.0.0",
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+      "//apis/dffData": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "404": {
+              "description": "The application you have entered does not exist"
+            }
+          },
+          "operationId": "get_get_type_data_per_time_index",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "required": true,
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            },
+            {
+              "name": "inputType",
+              "in": "query",
+              "type": "string",
+              "required": true,
+              "description": "The application (equivalent to type in DFF) that you want to get data from, e.g. XBELLO."
+            },
+            {
+              "name": "entityId",
+              "in": "query",
+              "type": "string",
+              "description": "The id of the specific entity -belonging to this specific application- that you want to retrieve data from."
+            },
+            {
+              "name": "lastN",
+              "in": "query",
+              "type": "integer",
+              "description": "The number of last data entries that you wish to retrieve."
+            },
+            {
+              "name": "fromDate",
+              "in": "query",
+              "type": "string",
+              "description": "The date after which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC."
+            },
+            {
+              "name": "toDate",
+              "in": "query",
+              "type": "string",
+              "description": "The date until which you want to receive data for the specified application. It may be either date or datetime or datetime with timezone in the ISO-8601 format (e.g., 2022-05-31T06:57:00+0000). The default timezone is UTC."
+            }
+          ],
+          "tags": [
+            "/apis/dffData"
+          ]
+        },
+        "post": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/POST%20data"
+              }
+            },
+            "500": {
+              "description": "While trying to connect to the database an error occurred."
+            }
+          },
+          "operationId": "post_get_type_data_per_time_index",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "required": true,
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            },
+            {
+              "name": "payload",
+              "required": true,
+              "in": "body",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "tags": [
+            "/apis/dffData"
+          ]
+        },
+        "delete": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/DEL%20data"
+              }
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "401": {
+              "description": "You are not allowed to delete data from an application you do not owe."
+            },
+            "404": {
+              "description": "The application you have entered does not exist"
+            },
+            "500": {
+              "description": "While trying to connect to the database an error occurred."
+            }
+          },
+          "operationId": "delete_get_type_data_per_time_index",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "required": true,
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            },
+            {
+              "name": "inputType",
+              "in": "query",
+              "type": "string",
+              "required": true,
+              "description": "The application (equivalent to type in DFF) that you want to delete data from, e.g. XBELLO."
+            },
+            {
+              "name": "entityId",
+              "in": "query",
+              "type": "string",
+              "required": true,
+              "description": "The id of the specific entity -belonging to this specific application- whose data you want to delete."
+            }
+          ],
+          "tags": [
+            "/apis/dffData"
+          ]
+        }
+      },
+      "//apis/subscriptions": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/GET%20Subscriptions"
+              }
+            },
+            "204": {
+              "description": "Either you do not owe any subscriptions or you mistyped the domain_name that your application uses for subscriptions when you registered your app."
+            },
+            "400": {
+              "description": "This method does not accept any parameters."
+            },
+            "403": {
+              "description": "Either your domain name is not registered in the DFF Web App or there are not any subscriptions created for your domain name."
+            },
+            "404": {
+              "description": "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request."
+            },
+            "500": {
+              "description": "While trying to connect to the database an error occurred."
+            }
+          },
+          "operationId": "get_orion_subscriptions",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            }
+          ],
+          "tags": [
+            "/apis/subscriptions"
+          ]
+        },
+        "post": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/POST%20Subscriptions"
+              }
+            }
+          },
+          "operationId": "post_orion_subscriptions",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            }
+          ],
+          "tags": [
+            "/apis/subscriptions"
+          ]
+        },
+        "delete": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/DEL%20Subscriptions"
+              }
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "401": {
+              "description": "Either the requested entity does not exist or you are not authorized to delete it."
+            },
+            "403": {
+              "description": "You are not registered in the database: you need to login through the DFF Web App first."
+            },
+            "404": {
+              "description": "The domain name that your app uses for subscriptions is not set: you need to set it through the DFF Web App before attempting this request."
+            },
+            "500": {
+              "description": "While trying to connect to the database an error occurred."
+            },
+            "502": {
+              "description": "The deletion was unsuccessful."
+            }
+          },
+          "operationId": "delete_orion_subscriptions",
+          "parameters": [
+            {
+              "name": "X-Auth-token",
+              "in": "header",
+              "type": "string",
+              "description": "The token that you have acquired either from the DFF Web App or the DFF login api."
+            },
+            {
+              "name": "subId",
+              "in": "query",
+              "type": "string",
+              "description": "The ObjectId of the subscription that you wish to delete."
+            }
+          ],
+          "tags": [
+            "/apis/subscriptions"
+          ]
+        }
+      }
+    },
     "info": {
-      "description": "dff",
-      "version": "2.0.0",
-      "title": "DFF REST APIs",
-      "contact": {
-        "email": "despoina.gkatzioura@8bellsresearch.com"
+      "title": "DFF REST API",
+      "version": "0.3",
+      "description": "This is the DFF API."
+    },
+    "produces": [
+      "application/json"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "tags": [
+      {
+        "name": "/apis/dffData",
+        "description": "Crate data related operations"
+      },
+      {
+        "name": "/apis/subscriptions",
+        "description": "Subscription related operations"
+      }
+    ],
+    "definitions": {
+      "POST data": {
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DEL data": {
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "GET Subscriptions": {
+        "properties": {
+          "subs": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "POST Subscriptions": {
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DEL Subscriptions": {
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "responses": {
+      "ParseError": {
+        "description": "When a mask can't be parsed"
+      },
+      "MaskError": {
+        "description": "When any error occurs on mask"
       }
     }
   }
