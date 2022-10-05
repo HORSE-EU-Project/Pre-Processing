@@ -4,6 +4,7 @@ WORKDIR /REST_APIs
 
 COPY ./REST_APIs/login_api.py .
 COPY ./REST_APIs/requirements.txt .
+COPY ./REST_APIs/static ./static
 COPY db.py ../
 COPY user.py ../
 COPY keycloak_requests.py ../

@@ -8,6 +8,7 @@ import socket
 from marshmallow import Schema
 import sys
 import os
+from flask_swagger_ui import get_swaggerui_blueprint
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from keycloak_requests import get_kc_token
@@ -17,6 +18,20 @@ SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 app = Flask(__name__)
+
+# swagger specific configuration
+SWAGGER_URL = '/login/doc'
+API_URL = '/static/swagger-login.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "DFF Login REST API"
+    }
+)
+
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+
 api = Api(app)
 
 class LoginQuerySchema(Schema):

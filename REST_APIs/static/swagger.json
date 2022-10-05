@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "basePath": "/",
     "paths": {
-      "//apis/dffData": {
+      "/apis/dffData": {
         "get": {
           "responses": {
             "200": {
@@ -149,7 +149,7 @@
           ]
         }
       },
-      "//apis/subscriptions": {
+      "/apis/subscriptions": {
         "get": {
           "responses": {
             "200": {
