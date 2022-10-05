@@ -135,3 +135,5 @@ sqlite_data
 pyvenv.cfg
 dffenv
 lib64
+
+test.py

@@ -7,6 +7,7 @@ api = Api(
     title='DFF REST API',
     version='0.3',
     description='This is the DFF API.',
+    base_url='/apis'
 )
 
 api.add_namespace(ns1)
