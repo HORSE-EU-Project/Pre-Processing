@@ -34,6 +34,12 @@ app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 api = Api(app)
 
+api = Api(
+    title='DFF Login REST API',
+    version='1.0',
+    description='This is the DFF Login REST API.'
+)
+
 class LoginQuerySchema(Schema):
     username = marshmallow.fields.String(required=True)
     password = marshmallow.fields.String(required=True)

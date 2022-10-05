@@ -5,8 +5,8 @@ from .subscriptions_api import api as ns2
 
 api = Api(
     title='DFF REST API',
-    version='0.3',
-    description='This is the DFF API.'
+    version='1.0',
+    description='These are the DFF REST APIs to manage data and subscriptions.'
 )
 
 api.add_namespace(ns1)
