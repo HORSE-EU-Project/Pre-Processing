@@ -28,7 +28,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', location='args', help='The username of your Keycloak user.', required=True)
 parser.add_argument('password', location='args', help='The password of your Keycloak user.', required=True)
 
-@api.route('/login')
+@api.route('/')
 class Login(Resource):
     @api.doc(parser=parser)
     def get(self):
