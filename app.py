@@ -14,7 +14,7 @@ from keycloak_requests import get_kc_token, get_kc_userinfo
 
 app = Blueprint('app', __name__, template_folder='templates')
 
-from Web_app.subscription import subscription, createRequest
+from Web_app.subscription import subscription
 from Web_app.data_ingestion import data_ingestion
 from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg

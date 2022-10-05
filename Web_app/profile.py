@@ -13,6 +13,9 @@ profile = Blueprint('profile', __name__, template_folder='../templates')
 from .decoratorApp import decoratorCheckAppOrg
 from .subscription import createRequest
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from keycloak_requests import change_password
+
 @profile.route("/profile", methods= ['GET', 'POST'])
 @decoratorCheckAppOrg
 def edit_profile():
@@ -92,3 +95,17 @@ def store_user_profile():
             #create subscription to notify quantumleap in order to data in crateDB
             createRequest(app, "http://quantumleap:8668/v2/notify")
     return redirect("/")
+
+
+@profile.route('/profile/update_user_password', methods=["POST"])
+def update_user_password():
+    currentPassword = request.form.get("currentPassword")
+    newPassword = request.form.get("newPassword")
+    confirmation = request.form.get("confirmation")
+    r = change_password(currentPassword, newPassword, confirmation)
+    if r.status_code == 204:
+        flash("Password updated!", "success")
+        return redirect("/")
+    else:
+        flash("Password was not updated due to error: " + r.status_code + ". Please, try again later.", "error")
+        return redirect("/")
