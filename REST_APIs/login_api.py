@@ -20,17 +20,17 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 app = Flask(__name__)
 
 # swagger specific configuration
-SWAGGER_URL = '/login/doc'
-API_URL = '/login/doc/static/swagger-login.json'
-SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={
-        'app_name': "DFF Login REST API"
-    }
-)
+# SWAGGER_URL = '/login'
+# API_URL = '/login/doc/static/swagger-login.json'
+# SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+#     SWAGGER_URL,
+#     API_URL,
+#     config={
+#         'app_name': "DFF Login REST API"
+#     }
+# )
 
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+# app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 api = Api(app)
 
