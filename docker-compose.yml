@@ -55,7 +55,6 @@ services:
     networks: 
       - dff-network
     depends_on:
-      - dff-login-keycloak
       - dff-app-keycloak
     volumes:
       - sqlite_data_v2:/sqlite_data
