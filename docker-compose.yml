@@ -13,7 +13,6 @@ services:
     networks: 
       - dff-network
     environment:
-      - PYTHONUNBUFFERED=1
       - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
     ports:
       - 5005:5005
@@ -49,7 +48,6 @@ services:
       - "MYSQL_PASS=$MYSQL_DB_PASS"
       - "MONGO_DB_PASS=$MONGO_PASS"
       - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
-      - PYTHONUNBUFFERED=1
     ports:
       - 5007:5007
     networks: 
