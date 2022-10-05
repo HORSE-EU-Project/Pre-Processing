@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 # swagger specific configuration
 SWAGGER_URL = '/login/doc'
-API_URL = '/static/swagger-login.json'
+API_URL = '/login/doc/static/swagger-login.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
