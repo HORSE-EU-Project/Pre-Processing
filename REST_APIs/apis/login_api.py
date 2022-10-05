@@ -4,7 +4,6 @@ flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask import abort, request
 from flask_restx import Namespace, Resource, reqparse
 import marshmallow
-import socket
 from marshmallow import Schema
 import sys
 import os
@@ -28,7 +27,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', location='args', help='The username of your Keycloak user.', required=True)
 parser.add_argument('password', location='args', help='The password of your Keycloak user.', required=True)
 
-@api.route('/')
+@api.route('')
 class Login(Resource):
     @api.doc(parser=parser)
     def get(self):

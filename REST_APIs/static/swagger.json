@@ -149,7 +149,7 @@
         ]
       }
     },
-    "/apis/login/login": {
+    "/apis/login": {
       "get": {
         "responses": {
           "200": {
