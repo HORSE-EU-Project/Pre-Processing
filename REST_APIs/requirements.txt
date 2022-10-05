@@ -10,3 +10,4 @@ jsonify
 mysql-connector-python
 pandas
 # psycopg2==2.7
+flask_swagger_ui
