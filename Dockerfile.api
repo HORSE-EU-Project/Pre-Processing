@@ -7,7 +7,7 @@ ADD ./REST_APIs/apis ./apis
 COPY ./REST_APIs/api.py .
 COPY ./REST_APIs/oriondb.py .
 COPY ./REST_APIs/requirements.txt .
-COPY ./REST_APIs/static ./static
+COPY ./REST_APIs/apis/doc/static ./apis/doc/static
 COPY user.py ../
 COPY db.py ../
 COPY keycloak_requests.py ../
