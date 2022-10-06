@@ -15,7 +15,7 @@ SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-api = Namespace('apis/login', description='Login API')
+api = Namespace('apis/login/', description='Login API')
 
 class LoginQuerySchema(Schema):
     username = marshmallow.fields.String(required=True)
