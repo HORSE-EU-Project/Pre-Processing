@@ -18,7 +18,7 @@ SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
 CRATE_DB_URL = "http://10.10.10.13:4200/_sql"
 ORION_URL = "http://10.10.10.13:1026"
 
-api = Namespace('apis/login', description='Crate data related operations')
+api = Namespace('apis/dffData', description='Crate data related operations')
 
 class DataPerIndexQuerySchema(Schema):
     inputType = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9_]+$"), required=True)

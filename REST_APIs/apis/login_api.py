@@ -13,9 +13,7 @@ from keycloak_requests import get_kc_token
 
 SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-api = Namespace('apis/dffData', description='Login API')
+api = Namespace('apis/dffLogin', description='Login API')
 
 class LoginQuerySchema(Schema):
     username = marshmallow.fields.String(required=True)
