@@ -21,7 +21,7 @@ import requests
 SQLITE_DB_URL = os.environ.get("SQLITE_DB_URL")
 ORION_URL = "http://10.10.10.13:1026"
 
-api = Namespace('/apis/subscriptions', description='Subscription related operations')
+api = Namespace('apis/subscriptions', description='Subscription related operations')
 
 class deleteSubscriptionSchema(Schema):
     subId = marshmallow.fields.String(validate=validate.Regexp("^[a-zA-Z0-9]{24}$"), required=True)

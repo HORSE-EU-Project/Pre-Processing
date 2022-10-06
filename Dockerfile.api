@@ -4,7 +4,7 @@ WORKDIR /REST_APIs
 
 ADD ./REST_APIs/apis ./apis
 
-ADD ./static ../static
+ADD ./REST_APIs/static ./static
 
 COPY ./REST_APIs/api.py .
 COPY ./REST_APIs/oriondb.py .

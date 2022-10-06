@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # swagger specific configuration
 SWAGGER_URL = '/apis/doc'
-API_URL = '../static/swagger.json'
+API_URL = '/static/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
