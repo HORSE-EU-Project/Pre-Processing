@@ -20,6 +20,8 @@ services:
     image: jboss/keycloak
     container_name: "keycloak"
     restart: unless-stopped
+    volumes:
+      - ./profile.properties:/opt/jboss/keycloak/standalone/configuration/profile.properties
     environment:
       - "DB_USER=$POSTGRES_DB_USER"
       - "DB_PASSWORD=$POSTGRES_DB_PASS"
@@ -136,6 +138,7 @@ volumes:
   # crate-db: ~
   # redis-db: ~
   postgres-data: ~
+  profile.properties: ~
 
 networks:
   dff-network:
