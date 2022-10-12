@@ -92,8 +92,8 @@ def store_user_profile():
         User.create_user_app(app, current_user.id)
     for app in app_list:
         if app not in User.get_all("apps", "name"):
-            #create subscription to notify quantumleap in order to data in crateDB
-            createRequest(app, "http://quantumleap:8668/v2/notify")
+            #create subscription to notify quantumleap in order to persist data in crateDB
+            createRequest(app, "http://dff-quantumleap:8668/v2/notify")
     return redirect("/")
 
 
