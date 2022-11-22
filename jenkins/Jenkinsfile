@@ -12,11 +12,9 @@ pipeline {
                         echo 'Stopping old containers...'
                         sh 'docker stop $(docker ps -a -q --filter="name=dff-app-keycloak") || true'
                         sh 'docker stop $(docker ps -a -q --filter="name=dff-api-keycloak") || true'
-                        sh 'docker stop $(docker ps -a -q --filter="name=dff-login-keycloak") || true'
                         echo 'Removing old containers...'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-app-keycloak") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=dff-api-keycloak") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-login-keycloak") || true'
                     }
                 }
             }
