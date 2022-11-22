@@ -1,5 +1,4 @@
 # http://flask.pocoo.org/docs/1.0/tutorial/database/
-from operator import truth
 import sqlite3
 import click
 from flask import current_app, g
@@ -10,7 +9,7 @@ def get_db(path=None):
         if path is None:
             path=""
         g.db = sqlite3.connect(
-           path + "sqlite_data/sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
+            path + "sqlite_data/sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
     
