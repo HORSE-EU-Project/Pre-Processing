@@ -28,7 +28,7 @@ pipeline {
                 script {
                     docker.withServer("$VM_DEV01") {
                         echo 'Deploy images to VM'
-                        sh "docker-compose -f docker-compose-services.yml up -d"
+                        sh "docker-compose -f docker-compose-services.yml up -d --force-recreate"
                     }
                 }
             }

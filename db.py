@@ -10,7 +10,7 @@ def get_db(path=None):
         if path is None:
             path=""
         g.db = sqlite3.connect(
-           path + "sqlite_data/sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
+            path + "sqlite_data/sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
     
