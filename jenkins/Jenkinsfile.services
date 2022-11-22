@@ -8,15 +8,10 @@ pipeline {
         stage('Clean up') {
             steps {
                 script {
-                    docker.withServer("$VM_DEV01") {    
+                    docker.withServer("$VM_DEV01") {
                         echo 'Stopping old containers...'
                         sh 'docker-compose -f docker-compose-services.yml down'
                         echo 'Removing old containers...'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-crate") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-mongo") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-orion") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-quantumleap") || true'
-                        sh 'docker rm $(docker ps -a -q --filter="name=dff-redis") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=keycloak") || true'
                         sh 'docker rm $(docker ps -a -q --filter="name=kc-postgres") || true'
                     }

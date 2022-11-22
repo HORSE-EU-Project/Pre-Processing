@@ -1,5 +1,4 @@
 # http://flask.pocoo.org/docs/1.0/tutorial/database/
-from operator import truth
 import sqlite3
 import click
 from flask import current_app, g
