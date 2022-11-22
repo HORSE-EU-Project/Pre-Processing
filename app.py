@@ -12,6 +12,8 @@ from db import init_db_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 app = Blueprint('app', __name__, template_folder='templates')
 
 from Web_app.subscription import subscription
@@ -23,7 +25,7 @@ from Web_app.profile import profile
 app = Flask(__name__)
 
 app.config.update({
-    'SECRET_KEY': 'kEGoPX0E5Pn18ZY5EXCKtW1TUTjeY5c8',
+    'SECRET_KEY': SECRET_KEY,
     'TESTING': True,
     'DEBUG': True
 })
