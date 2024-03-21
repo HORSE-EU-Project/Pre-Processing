@@ -22,6 +22,9 @@ from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg
 from Web_app.profile import profile
 
+
+print("==================================== APP INIT ====================================")
+
 app = Flask(__name__)
 
 app.config.update({
