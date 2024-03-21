@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import os 
 
-DB_URL = "mongodb://10.10.10.13:27017/"
+DB_URL = "mongodb://10.10.10.14:27017/"
 MONGO_DB_PASS=os.getenv("MONGO_DB_PASS")
 
 def mongoConnect():

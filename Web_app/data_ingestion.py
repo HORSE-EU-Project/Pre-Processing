@@ -12,7 +12,7 @@ from flask_login import (
     current_user
 )
 
-ORION_URL = "http://10.10.10.13:1026"
+ORION_URL = "http://10.10.10.14:1026"
 
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templates')
 
