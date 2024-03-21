@@ -17,7 +17,7 @@ services:
 
   #Keycloak is the identity and access manager
   keycloak:
-    image: jboss/keycloak
+    image: quay.io/keycloak/keycloak:latest
     container_name: "keycloak"
     restart: unless-stopped
     volumes:
