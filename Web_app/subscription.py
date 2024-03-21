@@ -12,7 +12,7 @@ from .decoratorApp import decoratorCheckAppOrg
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
 
-ORION_URL = "http://10.10.10.13:1026"
+ORION_URL = "http://10.10.10.14:1026"
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
