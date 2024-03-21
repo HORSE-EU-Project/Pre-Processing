@@ -39,6 +39,9 @@ app.register_blueprint(profile)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
+
+
 #initialize db only if it does not exist yet
 if 'sqlite_db' not in os.listdir("sqlite_data/"):
     init_db_command()
@@ -111,5 +114,7 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
+    print("==================================== APP ====================================")
     ipV4IP = socket.gethostbyname(socket.gethostname())
     app.run(ssl_context="adhoc", host=ipV4IP, port=5005)
+    print("==================================== APP END ====================================")
