@@ -2,9 +2,10 @@ Werkzeug==2.0.0
 Flask==2.0.3
 oauthlib==3.0.1
 
-requests==2.21.0
-pyOpenSSL==19.0.0
-#cryptography #Added to fix the issue with the import get_kc_token
+requests==2.25.1
+pyOpenSSL==20.0.1
+cryptography== 3.4.7
+ #Added to fix the issue with the import get_kc_token
 
 Flask-Login==0.4.1
 plotly==4.14.3
