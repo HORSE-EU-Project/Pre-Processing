@@ -8,7 +8,7 @@ KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-conn
 KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/userinfo"
 KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/auth/realms/DFF/account/credentials/password"
 #SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
-SECRET = os.urandom(24)
+SECRET = os.getenv('SECRET_KEY')
 
 #Define retry strategy and http adapter for requests
 retry_strategy = Retry(
