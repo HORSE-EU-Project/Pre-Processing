@@ -3,40 +3,47 @@ version: "3.5"
 services:
   #postgres is Keycloak's db
   kc-postgres:
-    image: postgres
+    image: postgres:14.2
+    command: postgres -c 'max_connections=200'
     container_name: "kc-postgres"
     restart: unless-stopped
     environment:
-      - "POSTGRES_DB=keycloak"
-      - "POSTGRES_USER=$POSTGRES_DB_USER"
-      - "POSTGRES_PASSWORD=$POSTGRES_DB_PASS"
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: "exit 0"
+    ports:
+      - "5432:5432"
     networks: 
       - dff-network
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
   #Keycloak is the identity and access manager
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:18.0.0
+    command: start-dev
     container_name: "keycloak"
     restart: unless-stopped
     volumes:
       - ./profile.properties:/opt/jboss/keycloak/standalone/configuration/profile.properties
     environment:
-      - "DB_USER=$POSTGRES_DB_USER"
-      - "DB_PASSWORD=$POSTGRES_DB_PASS"
-      - "DB_VENDOR=POSTGRES"
-      - "DB_ADDR=kc-postgres"
-      - "DB_DATABASE=keycloak"
-      - "KEYCLOAK_USER=$KC_USER"
-      - "KEYCLOAK_PASSWORD=$KC_PASS"
-      - "PROXY_ADDRESS_FORWARDING=true"
-    networks: 
-      - dff-network
+      KC_DB: postgres
+      KC_DB_HOST: kc-postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_PASSWORD: password
+      KC_DB_USERNAME: keycloak
+      KC_DB_SCHEMA: public
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - 8080:8080
     depends_on:
-      - kc-postgres
+      kc-postgres:
+        condition: service_healthy
+    networks: 
+      - dff-network   
 
 volumes:
   postgres-data: ~
