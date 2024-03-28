@@ -4,11 +4,16 @@ import os
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/token"
-KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/userinfo"
-KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/auth/realms/DFF/account/credentials/password"
+#KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/token"
+#KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/userinfo"
+#KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/auth/realms/DFF/account/credentials/password"
 #SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
-SECRET = os.getenv('SECRET_KEY')
+
+KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/token"
+KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/userinfo"
+KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
+SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
+
 
 #Define retry strategy and http adapter for requests
 retry_strategy = Retry(
