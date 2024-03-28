@@ -43,8 +43,14 @@ def get_kc_token(username, password):
         "password": password,
         "grant_type": "password"
     }
-    r = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=False)
-    return r
+    try:
+        response = http.post(url=KEYCLOAK_TOKEN_URL, headers=headers, data=data, verify=True)  # Consider your SSL strategy
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.HTTPError as err:
+        flash(f"HTTP error occurred: {err}")  # or log this
+    except Exception as err:
+        flash(f"An error occurred: {err}")  # or log this
 
 def get_kc_userinfo(token):
     payload={}
