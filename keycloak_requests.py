@@ -37,7 +37,7 @@ def get_kc_token(username, password):
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {
-        "client_id": "acount",
+        "client_id": "account",
         "client_secret": SECRET,
         "username": username,
         "password": password,
