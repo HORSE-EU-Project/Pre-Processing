@@ -9,10 +9,15 @@ from requests.packages.urllib3.util.retry import Retry
 #KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/auth/realms/DFF/account/credentials/password"
 #SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
-KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/token"
-KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/userinfo"
-KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
-SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
+# Corrected Token URL
+KEYCLOAK_TOKEN_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/token"
+
+# Corrected Userinfo URL
+KEYCLOAK_USERINFO_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/userinfo"
+
+#KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
+
+SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
 
 #Define retry strategy and http adapter for requests
@@ -32,7 +37,7 @@ def get_kc_token(username, password):
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {
-        "client_id": "dff-oidc",
+        "client_id": "acount",
         "client_secret": SECRET,
         "username": username,
         "password": password,

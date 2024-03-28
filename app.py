@@ -12,7 +12,7 @@ from db import init_db_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
 app = Blueprint('app', __name__, template_folder='templates')
 
