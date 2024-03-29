@@ -26,8 +26,6 @@ app.config.update({
 })
 
 
-SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
-
 #app = Blueprint('app', __name__, template_folder='templates')
 
 from Web_app.subscription import subscription
