@@ -15,7 +15,8 @@ import secrets
 app = Flask(__name__ , template_folder='templates')
 secret = secrets.token_urlsafe(16)
 
-print("==================================== APP INIT ====================================")
+print("==================================== APP GO ====================================")
+print("==================================== APP GOGO ======================================")
 print("Flask App Secret Key: ", str(secret))
 
 app.config.update({
@@ -25,13 +26,7 @@ app.config.update({
 })
 
 
-
-
 SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
-
-
-
-
 
 #app = Blueprint('app', __name__, template_folder='templates')
 
@@ -40,12 +35,6 @@ from Web_app.data_ingestion import data_ingestion
 from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg
 from Web_app.profile import profile
-
-
-print("==================================== APP INIT ====================================")
-print("Secret Key: ")
-print("Secret Key: ", str(secret))
-
 
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
