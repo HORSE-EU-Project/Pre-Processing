@@ -15,7 +15,7 @@ import secrets
 app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
 
-print("==================================== APP GO ====================================")
+print("==================================== APP LETS ====================================")
 print("==================================== APP GOGO ======================================")
 print("Flask App Secret Key: ", str(secret))
 
