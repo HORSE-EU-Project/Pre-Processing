@@ -11,8 +11,14 @@ from flask_login import (
 from db import init_db_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
+import secrets
 
 SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
+
+
+secret = secrets.token_urlsafe(16)
+print(secret)
+
 
 app = Blueprint('app', __name__, template_folder='templates')
 
@@ -24,11 +30,11 @@ from Web_app.profile import profile
 
 
 print("==================================== APP INIT ====================================")
-print("Secret Key: ", SECRET_KEY)
+print("Secret Key: ", secret)
 app = Flask(__name__)
 
 app.config.update({
-    'SECRET_KEY': str(SECRET_KEY),
+    'SECRET_KEY': secret,
     'TESTING': True,
     'DEBUG': True
 })
