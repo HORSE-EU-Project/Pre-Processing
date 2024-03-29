@@ -12,7 +12,7 @@ from db import init_db_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
-app = Flask(__name__ , template_folder='templates')
+app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
 
 print("==================================== APP GO ====================================")
