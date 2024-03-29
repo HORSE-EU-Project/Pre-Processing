@@ -89,7 +89,7 @@ def get_userinfo():
     token = request.args['messages']
     response = get_kc_userinfo(token)
     if response.status_code != 200:
-        flash('Keycloak is not responding. Status code: ' + response.status_code + ' Try again later!', 'error')
+        flash('Keycloak is not responding. Status code: ' + str(response.status_code) + ' Try again later!', 'error')
         return render_template('index.html')
     user_name = response.json()["preferred_username"]
     user_email = response.json()["email"]
