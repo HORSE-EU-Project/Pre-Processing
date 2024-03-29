@@ -19,6 +19,7 @@ services:
       - 5005:5005
     volumes:
       - sqlite_data_v2:/dff/sqlite_data
+      - .:/dff
 
   dff-api-keycloak:
     build:
@@ -39,6 +40,7 @@ services:
       - dff-app-keycloak
     volumes:
       - sqlite_data_v2:/sqlite_data
+      - .:/dff
 
 volumes:
   sqlite_data_v2:
