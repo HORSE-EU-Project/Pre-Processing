@@ -12,15 +12,28 @@ from db import init_db_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
+app = Flask(__name__ , template_folder='templates')
+secret = secrets.token_urlsafe(16)
+
+print("==================================== APP INIT ====================================")
+print("Flask App Secret Key: ", str(secret))
+
+app.config.update({
+    'SECRET_KEY': secret,
+    'TESTING': True,
+    'DEBUG': True
+})
+
+
+
 
 SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
 
-secret = secrets.token_urlsafe(16)
-print(secret)
 
 
-app = Blueprint('app', __name__, template_folder='templates')
+
+#app = Blueprint('app', __name__, template_folder='templates')
 
 from Web_app.subscription import subscription
 from Web_app.data_ingestion import data_ingestion
@@ -32,13 +45,7 @@ from Web_app.profile import profile
 print("==================================== APP INIT ====================================")
 print("Secret Key: ")
 print("Secret Key: ", str(secret))
-app = Flask(__name__)
 
-app.config.update({
-    'SECRET_KEY': secret,
-    'TESTING': True,
-    'DEBUG': True
-})
 
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
