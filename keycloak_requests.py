@@ -45,10 +45,10 @@ def get_kc_token(username, password):
         "grant_type": "password"
     }
     try:
-        print(f"Getting token for {username}============================")
+        print("================================22222===========")
         response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
         response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response.json()
+        return response
     except requests.exceptions.HTTPError as err:
         print(f"HTTP error occurred: {err}")  # or log this
     except Exception as err:
