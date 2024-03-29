@@ -39,14 +39,14 @@ def get_kc_token(username, password):
     }
     data = {
         "client_id": "account",
-        "client_secret": str(SECRET),
+        "client_secret": SECRET,
         "username": username,
         "password": password,
         "grant_type": "password"
     }
     try:
         flash(f"Getting token for {username}============================")
-        response = http.post(url=KEYCLOAK_TOKEN_URL, headers=headers, data=data, verify=True)  # Consider your SSL strategy
+        response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
     except requests.exceptions.HTTPError as err:
