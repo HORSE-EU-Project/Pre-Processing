@@ -18,7 +18,7 @@ KEYCLOAK_USERINFO_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-conn
 #KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
 
 SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
-
+print("Secret Key keycloak request: ", SECRET_KEY)
 
 #Define retry strategy and http adapter for requests
 retry_strategy = Retry(
@@ -38,7 +38,7 @@ def get_kc_token(username, password):
     }
     data = {
         "client_id": "account",
-        "client_secret": SECRET,
+        "client_secret": str(SECRET),
         "username": username,
         "password": password,
         "grant_type": "password"

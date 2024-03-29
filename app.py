@@ -24,11 +24,11 @@ from Web_app.profile import profile
 
 
 print("==================================== APP INIT ====================================")
-
+print("Secret Key: ", SECRET_KEY)
 app = Flask(__name__)
 
 app.config.update({
-    'SECRET_KEY': SECRET_KEY,
+    'SECRET_KEY': str(SECRET_KEY),
     'TESTING': True,
     'DEBUG': True
 })
@@ -72,6 +72,8 @@ def index():
             # flash('Invalid credentials: ' + username + password + '!', 'error')   
             # return render_template('index.html')
             response = get_kc_token(username, password)
+            flash('Response: ' + str(response.status_code) + '!', 'error')
+            
             if response.status_code != 200:
                 flash('We got: ' + str(response.status_code) + 'from Keycloak.', 'error')
                 return render_template('index.html')
