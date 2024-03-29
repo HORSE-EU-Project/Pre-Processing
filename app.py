@@ -30,7 +30,8 @@ from Web_app.profile import profile
 
 
 print("==================================== APP INIT ====================================")
-print("Secret Key: ", secret)
+print("Secret Key: ")
+print("Secret Key: ", str(secret))
 app = Flask(__name__)
 
 app.config.update({
