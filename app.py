@@ -10,8 +10,7 @@ from flask_login import (
 )
 from db import init_db_command
 from user import User
-#from keycloak_requests import get_kc_token, get_kc_userinfo
-import keycloak_requests
+from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
 app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
@@ -73,7 +72,7 @@ def index():
             password = request.form.get('password')
             # flash('Invalid credentials: ' + username + password + '!', 'error')   
             # return render_template('index.html')
-            response = keycloak_requests.get_kc_token(username, password)
+            response = get_kc_token(username, password)
             print('Response: ' + str(response.status_code) + '!', 'error')
             if response.status_code != 200:
                 flash('We got: ' + str(response.status_code) + 'from Keycloak.', 'error')
