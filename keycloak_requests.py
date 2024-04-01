@@ -18,7 +18,7 @@ KEYCLOAK_USERINFO_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-conn
 
 #KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
 
-SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
+#SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
 SECRET = "kp17oYqbZdWoPn4b5XrI4bDWj0vSbndA"
 
