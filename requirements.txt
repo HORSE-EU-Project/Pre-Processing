@@ -5,7 +5,6 @@ oauthlib==3.0.1
 requests==2.25.1
 pyOpenSSL==20.0.1
 cryptography== 3.4.7
- #Added to fix the issue with the import get_kc_token
 
 Flask-Login==0.4.1
 plotly==4.14.3

@@ -3,6 +3,11 @@ Werkzeug==2.0.0
 #flask.scaffold
 Flask==2.0.3
 Flask-Login==0.4.1
+
+requests==2.25.1
+pyOpenSSL==20.0.1
+cryptography== 3.4.7
+
 flask_restx
 marshmallow
 pymongo
