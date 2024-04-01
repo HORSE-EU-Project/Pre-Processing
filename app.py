@@ -72,7 +72,7 @@ def index():
             password = request.form.get('password')
             # flash('Invalid credentials: ' + username + password + '!', 'error')   
             # return render_template('index.html')
-            response = get_kc_token(username, password)
+            response = keycloak_requests.get_kc_token(username, password)
             print('Response: ' + str(response.status_code) + '!', 'error')
             if response.status_code != 200:
                 flash('We got: ' + str(response.status_code) + 'from Keycloak.', 'error')
