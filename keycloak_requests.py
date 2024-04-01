@@ -46,7 +46,8 @@ def get_kc_token(username, password):
         "client_secret": SECRET,
         "username": username,
         "password": password,
-        "grant_type": "password"
+        "grant_type": "password",
+        "scope": "openid"
     }
     try:
         print("==============================22222222=============================")
