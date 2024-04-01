@@ -49,15 +49,12 @@ def get_kc_token(username, password):
         "grant_type": "password",
         "scope": "openid"
     }
-    try:
-        print("==============================22222222=============================")
-        response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
-        response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response
-    except requests.exceptions.HTTPError as err:
-        print(f"HTTP error occurred: {err}")  # or log this
-    except Exception as err:
-        print(f"An error occurred: {err}")  # or log this
+
+    print("==============================22222222=============================")
+    response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
+    response.raise_for_status()  # Raises an HTTPError for bad responses
+    
+    return response
 
 def get_kc_userinfo(token):
     payload={}
