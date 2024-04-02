@@ -44,7 +44,34 @@ services:
     networks:
       - dff-network
 
+  orion:
+    image: fiware/orion
+    container_name: "orion"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: -dbhost mongo -logLevel DEBUG
+    ports:
+      - "1026:1026"
+    networks:
+      - dff-network
+
+  mongo:
+    image: mongo:4.2
+    container_name: "mongo"
+    command: --nojournal
+    networks:
+      - dff-network
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 volumes:
+  mongo-data: ~
   postgres-data: ~
   profile.properties: ~
 
