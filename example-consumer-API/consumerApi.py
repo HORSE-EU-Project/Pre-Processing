@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 import socket
 import csv
 import os
+import json
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,36 +23,34 @@ class ReceiveDFF(Resource):
 api.add_resource(ReceiveDFF, '/dff-data')
 
 def store_dff_data_in_csv(dff_data):
-    # Check if 'type' key exists in the data
-    if 'type' not in dff_data:
-        print("The data does not contain a 'type' field.")
-        return
-
-    # Prepare the directory path
-    dir_path = './subscription_data'
+    # Ensure the subscription_data directory exists
+    dir_path = "./subscription_data"
     os.makedirs(dir_path, exist_ok=True)
-
-    # Prepare the file path
-    file_name = f"{dff_data['type']}.csv"
-    file_path = os.path.join(dir_path, file_name)
-
-    # Determine if the file exists to choose write mode
-    write_mode = 'a' if os.path.exists(file_path) else 'w'
-
-    # Define CSV headers based on dff_data keys
-    headers = list(dff_data.keys())
-
-    with open(file_path, mode=write_mode, newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=headers)
-        
-        # Write header only if creating the file new
-        if write_mode == 'w':
-            writer.writeheader()
-        
-        writer.writerow(dff_data)
-
-    print(f"Data successfully stored in {file_path}")
-
+    
+    # Iterate through each item in the 'data' list
+    for item in dff_data.get("data", []):
+        # Extract the type (X) to name the CSV file
+        csv_type = item.get("type")
+        if csv_type:
+            file_path = os.path.join(dir_path, f"{csv_type}.csv")
+            
+            # Check if the CSV file needs headers (new file)
+            needs_header = not os.path.exists(file_path)
+            
+            # Open (or create) the CSV file for appending
+            with open(file_path, 'a', newline='') as csv_file:
+                # Define the CSV column names (keys of the JSON data)
+                fieldnames = item.keys()
+                
+                # Create a DictWriter object with the fieldnames
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                
+                # Write header if the file is new
+                if needs_header:
+                    writer.writeheader()
+                
+                # Write the JSON data as a row in the CSV
+                writer.writerow(item)
 
 
 if __name__ == '__main__':
