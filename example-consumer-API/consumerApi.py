@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 import socket
 import csv
 import os
+import pandas as pd
 import json
 
 app = Flask(__name__)
@@ -13,7 +14,7 @@ class ReceiveDFF(Resource):
         dff_data = request.get_json()
         if isinstance(dff_data, dict):
             print("I received your data!")
-            print(dff_data)
+            #print(dff_data)
             store_dff_data_in_csv(dff_data)
             return {"message": "I received you data!"}, 200
         else:
@@ -22,35 +23,33 @@ class ReceiveDFF(Resource):
 
 api.add_resource(ReceiveDFF, '/dff-data')
 
-def store_dff_data_in_csv(dff_data):
-    # Ensure the subscription_data directory exists
-    dir_path = "./subscription_data"
-    os.makedirs(dir_path, exist_ok=True)
-    
-    # Iterate through each item in the 'data' list
-    for item in dff_data.get("data", []):
-        # Extract the type (X) to name the CSV file
-        csv_type = item.get("type")
-        if csv_type:
-            file_path = os.path.join(dir_path, f"{csv_type}.csv")
-            
-            # Check if the CSV file needs headers (new file)
-            needs_header = not os.path.exists(file_path)
-            
-            # Open (or create) the CSV file for appending
-            with open(file_path, 'a', newline='') as csv_file:
-                # Define the CSV column names (keys of the JSON data)
-                fieldnames = item.keys()
-                
-                # Create a DictWriter object with the fieldnames
-                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-                
-                # Write header if the file is new
-                if needs_header:
-                    writer.writeheader()
-                
-                # Write the JSON data as a row in the CSV
-                writer.writerow(item)
+def store_data_in_csv(json_data):
+    # Assuming json_data is a dictionary that has been parsed from a JSON payload
+    # For example: json_data = {"data": [{"type": "X", "value": "example data"}]}
+
+    # Extract the "type" from the first item in the "data" list as the file name
+    file_name = json_data["data"][0]["type"] + ".csv"
+
+    # Define the folder path
+    folder_path = "./subscription_data"
+    file_path = os.path.join(folder_path, file_name)
+
+    # Ensure the folder exists
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Convert the JSON data to a pandas DataFrame
+    df = pd.DataFrame(json_data["data"])
+
+    # Check if the CSV file already exists
+    if os.path.isfile(file_path):
+        # If it exists, append without writing the header
+        df.to_csv(file_path, mode='a', header=False, index=False)
+    else:
+        # If it does not exist, write with the header
+        df.to_csv(file_path, mode='w', header=True, index=False)
+
+    print(f"Data stored in {file_path}")
 
 
 if __name__ == '__main__':
