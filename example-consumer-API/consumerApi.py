@@ -15,7 +15,7 @@ class ReceiveDFF(Resource):
         if isinstance(dff_data, dict):
             print("I received your data!")
             #print(dff_data)
-            store_dff_data_in_csv(dff_data)
+            store_data_in_csv(dff_data)
             return {"message": "I received you data!"}, 200
         else:
             print("Data not in json format.") 
