@@ -70,3 +70,4 @@ volumes:
 
 networks:
   dff-network:
+    external: true

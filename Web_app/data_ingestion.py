@@ -13,7 +13,7 @@ from flask_login import (
 )
 
 # Update with your Elasticsearch URL
-ELASTICSEARCH_URL = "http://localhost:9200"
+ELASTICSEARCH_URL = "http://elasticsearch:9200"
 INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
 
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templates')
