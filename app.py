@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session
+from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session, current_app
 import socket
 import os
 from flask_login import (
@@ -65,6 +65,8 @@ def index():
     if current_user.is_authenticated:
         #Successfully authenticated
         print("Current user is authenticated===============================")
+        current_app.logger.debug("Current user is authenticated===============================")
+        current_app.logger.debug('This is a debug message')
         token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
