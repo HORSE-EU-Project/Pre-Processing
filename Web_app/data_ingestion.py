@@ -1,4 +1,5 @@
 import requests
+import subprocess
 from flask import render_template, request, redirect, flash, Blueprint, current_app
 import os
 import json
@@ -53,23 +54,34 @@ def ingest_data():
         return redirect("/")
 
 def PostToElasticsearch(json_dict, timestamp, filename, text):
-    # Elasticsearch expects a slightly different JSON structure, 
-    # modify json_dict as needed before sending.
-    
-    # For demonstration, sending as-is might require modifications based on your Elasticsearch schema
-    url = f"{ELASTICSEARCH_URL}/{INDEX_NAME}/_doc/"  # URL to your Elasticsearch index
+    # Elasticsearch URL and INDEX_NAME should be defined
+    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{INDEX_NAME}/_doc/"
     headersDict = {"Content-Type": "application/json"}
     
-    # Assuming json_dict is the document you want to index
-    # You might need to add/modify json_dict to match your Elasticsearch schema
+    # Convert the Python dictionary to a JSON string for the curl command
+    json_data = json.dumps(json_dict)
+    
+    # Prepare the curl command
+    curl_cmd = f"curl -X POST '{url}' -H 'Content-Type: application/json' -d'{json_data}'"
+    
     try:
-        response = requests.post(url, headers=headersDict, json=json_dict, timeout=10)
+        # Log the curl command
+        current_app.logger.debug(f"Executing curl command: {curl_cmd}")
+        
+        # Execute the curl command
+        subprocess.run(curl_cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        # Perform the request using the requests library
+        response = requests.post(url, headers=headersDict, json=json_dict, timeout=30)
         current_app.logger.debug(f"Response from Elasticsearch: {response.text}")
-        if response.status_code in [200, 201]:  # Successful insertion
+        
+        if response.status_code in [200, 201]:
             flash('File uploaded and indexed successfully', 'success')
             User.insert_in_history(current_user.id, timestamp, filename, text)
         else:
             flash(f'Failed to index document: {response.text}', 'error')
+    except subprocess.CalledProcessError as e:
+        current_app.logger.error(f"Error executing curl command: {e}")
     except requests.exceptions.RequestException as e:
+        current_app.logger.error(f"Error posting to Elasticsearch: {e}")
         flash('Internal error')
-        raise SystemExit(e)
