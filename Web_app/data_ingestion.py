@@ -62,14 +62,14 @@ def PostToElasticsearch(json_dict, timestamp, filename, text):
     json_data = json.dumps(json_dict)
     
     # Prepare the curl command
-    curl_cmd = f"curl -X POST '{url}' -H 'Content-Type: application/json' -d'{json_data}'"
+    #curl_cmd = f"curl -X POST '{url}' -H 'Content-Type: application/json' -d'{json_data}'"
     
     try:
         # Log the curl command
-        current_app.logger.debug(f"Executing curl command: {curl_cmd}")
+        #current_app.logger.debug(f"Executing curl command: {curl_cmd}")
         
         # Execute the curl command
-        subprocess.run(curl_cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #subprocess.run(curl_cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         # Perform the request using the requests library
         response = requests.post(url, headers=headersDict, json=json_dict, timeout=30)
@@ -80,8 +80,8 @@ def PostToElasticsearch(json_dict, timestamp, filename, text):
             User.insert_in_history(current_user.id, timestamp, filename, text)
         else:
             flash(f'Failed to index document: {response.text}', 'error')
-    except subprocess.CalledProcessError as e:
-        current_app.logger.error(f"Error executing curl command: {e}")
+    #except subprocess.CalledProcessError as e:
+    #    current_app.logger.error(f"Error executing curl command: {e}")
     except requests.exceptions.RequestException as e:
         current_app.logger.error(f"Error posting to Elasticsearch: {e}")
         flash('Internal error')
