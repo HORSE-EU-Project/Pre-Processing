@@ -63,8 +63,8 @@ def PostToElasticsearch(json_dict, timestamp, filename, text):
     # Assuming json_dict is the document you want to index
     # You might need to add/modify json_dict to match your Elasticsearch schema
     try:
-        response = requests.post(url, headers=headersDict, json=json_dict)
-        current_app.logger.debug("Response from Elasticsearch: ", response.text)
+        response = requests.post(url, headers=headersDict, json=json_dict, timeout=10)
+        current_app.logger.debug(f"Response from Elasticsearch: {response.text}")
         if response.status_code in [200, 201]:  # Successful insertion
             flash('File uploaded and indexed successfully', 'success')
             User.insert_in_history(current_user.id, timestamp, filename, text)
