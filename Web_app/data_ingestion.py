@@ -2,7 +2,6 @@ import requests
 from flask import render_template, request, redirect, flash, Blueprint, current_app
 import os
 import json
-import requests
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
@@ -12,7 +11,9 @@ from flask_login import (
     current_user
 )
 
-ORION_URL = "http://10.10.10.14:1026"
+# Update with your Elasticsearch URL
+ELASTICSEARCH_URL = "http://localhost:9200"
+INDEX_NAME = "your_index_name"  # Update with the name of your Elasticsearch index
 
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templates')
 
@@ -24,50 +25,48 @@ def ingest_data():
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
-            text=request.form['description']
+            text = request.form['description']
             if file.filename == '':
-                flash('No file was selected','error')
+                flash('No file was selected', 'error')
                 return redirect(request.url)
-            # ensure that uploaded file is valid json
-            if file and (file.content_type=="application/json" or file.content_type=="text/plain"):
+            if file and (file.content_type == "application/json" or file.content_type == "text/plain"):
                 fileContents = file.read()
-                try:    
-                    json_dict=json.loads(fileContents)
+                try:
+                    json_dict = json.loads(fileContents)
                 except:
-                    flash('Incorrect file type. Please upload a valid json file.','error')
-                    return redirect(request.url)  
+                    flash('Incorrect file type. Please upload a valid json file.', 'error')
+                    return redirect(request.url)
                 timestamp = get_timestamp()
                 filename = secure_filename(file.filename)
-                dffMetadata = {"type": "user", "value": current_user.name}
-                for i in range(0, len(json_dict["entities"])):
-                    json_dict["entities"][i]["dfm_metadata"] = dffMetadata
-                PostOrion(json_dict, timestamp, filename, text)
-                return redirect(request.url)    
+                PostToElasticsearch(json_dict, timestamp, filename, text)
+                return redirect(request.url)
             else:
-                flash('Incorrect file type. Please upload a file with content type application/json.','error')
-                return redirect(request.url)    
+                flash('Incorrect file type. Please upload a file with content type application/json.', 'error')
+                return redirect(request.url)
         else:
             token = User.get_field("id", current_user.id, "user", "token")
-            return render_template('upload.html',name = current_user.name, email = current_user.email, tkn = token)
+            return render_template('upload.html', name=current_user.name, email=current_user.email, tkn=token)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
 
-def PostOrion(json_dict, timestamp, filename, text):
-    url = ORION_URL+"/v2/op/update"
-    headersDict = {"Content-Type" : "application/json", "X-Auth-token" : str(User.get_field("id", current_user.id, "user", "token"))}
-    body = json_dict
-    sendRequestToOrion(url, headersDict, body, timestamp, filename, text)
-    return
-
-def sendRequestToOrion(matchPostURL,headersDict,matchBody, timestamp, filename, text):
+def PostToElasticsearch(json_dict, timestamp, filename, text):
+    # Elasticsearch expects a slightly different JSON structure, 
+    # modify json_dict as needed before sending.
+    
+    # For demonstration, sending as-is might require modifications based on your Elasticsearch schema
+    url = f"{ELASTICSEARCH_URL}/{INDEX_NAME}/_doc/"  # URL to your Elasticsearch index
+    headersDict = {"Content-Type": "application/json"}
+    
+    # Assuming json_dict is the document you want to index
+    # You might need to add/modify json_dict to match your Elasticsearch schema
     try:
-        r = requests.post(matchPostURL,headers = headersDict,data= json.dumps(matchBody))
-        if r.status_code == 204:
-            flash('File uploaded and stored successfully','success')
+        response = requests.post(url, headers=headersDict, json=json_dict)
+        if response.status_code in [200, 201]:  # Successful insertion
+            flash('File uploaded and indexed successfully', 'success')
             User.insert_in_history(current_user.id, timestamp, filename, text)
         else:
-            flash('While trying to store the uploaded data en error occurred','error')
-    except requests.exceptions.RequestException as e: 
+            flash(f'Failed to index document: {response.text}', 'error')
+    except requests.exceptions.RequestException as e:
         flash('Internal error')
         raise SystemExit(e)
