@@ -64,6 +64,7 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
+        print("Current user is authenticated===============================")
         token = User.get_field("id", current_user.id, "user", "token")
         return render_template('main.html', name = current_user.name, email = current_user.email, tkn = token)
     else:
