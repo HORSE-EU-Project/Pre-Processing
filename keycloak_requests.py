@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session
+from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session, current_app
 from flask_login import current_user
 import requests
 import os
@@ -37,7 +37,7 @@ http.mount("https://", adapter)
 http.mount("http://", adapter)
 
 def get_kc_token(username, password):
-    print("================================111111111=============================")
+    current_app.logger.debug("get_kc_token===============================")
     header={
         "Content-Type": "application/x-www-form-urlencoded"
     }
@@ -50,7 +50,7 @@ def get_kc_token(username, password):
         "scope": "openid"
     }
 
-    print("==============================22222222=============================")
+    current_app.logger.debug("get_kc_token===============================")
     response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
     response.raise_for_status()  # Raises an HTTPError for bad responses
     
