@@ -1,8 +1,6 @@
 version: "3"
 
-networks:
-  dff-network:
-    external: true
+
   
 services:
   dff-app-keycloak:
@@ -42,6 +40,10 @@ services:
     volumes:
       - sqlite_data_v2:/sqlite_data
       - .:/dff
+
+networks:
+  dff-network:
+    external: true
 
 volumes:
   sqlite_data_v2:
