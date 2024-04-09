@@ -17,4 +17,4 @@ COPY ./templates ./templates
 COPY ./static ./static
 
 # Run app.py when the container launches
-CMD ["python3", "app.py"]
+CMD ["python3", "-u", "app.py"]
