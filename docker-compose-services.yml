@@ -1,5 +1,9 @@
 version: "3.5"
 
+
+networks:
+  dff-network:
+
 services:
   #postgres is Keycloak's db
   kc-postgres:
@@ -68,6 +72,4 @@ volumes:
   profile.properties: ~
   es-data: ~
 
-networks:
-  dff-network:
-    external: true
+

@@ -2,7 +2,6 @@ version: "3"
 
 networks:
   dff-network:
-    external: true
   
 services:
   dff-app-keycloak:
