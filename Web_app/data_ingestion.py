@@ -22,6 +22,7 @@ from .decoratorApp import decoratorCheckAppOrg
 @data_ingestion.route("/upload", methods= ['GET', 'POST'])
 @decoratorCheckAppOrg
 def ingest_data():
+    print("In ingest_data===============================")
     if current_user.is_authenticated:
         if request.method == 'POST':
             file = request.files['jsonFile']
