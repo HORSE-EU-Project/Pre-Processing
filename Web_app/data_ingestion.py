@@ -38,6 +38,7 @@ def ingest_data():
                     return redirect(request.url)
                 timestamp = get_timestamp()
                 filename = secure_filename(file.filename)
+                print("Sending data to Elasticsearch===============================")
                 PostToElasticsearch(json_dict, timestamp, filename, text)
                 return redirect(request.url)
             else:
@@ -62,6 +63,7 @@ def PostToElasticsearch(json_dict, timestamp, filename, text):
     # You might need to add/modify json_dict to match your Elasticsearch schema
     try:
         response = requests.post(url, headers=headersDict, json=json_dict)
+        print("Response from Elasticsearch: ", response.text)
         if response.status_code in [200, 201]:  # Successful insertion
             flash('File uploaded and indexed successfully', 'success')
             User.insert_in_history(current_user.id, timestamp, filename, text)
