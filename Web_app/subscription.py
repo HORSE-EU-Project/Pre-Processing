@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, flash, Blueprint, current_app
 import requests
+from urllib.parse import urlparse
 import json
 from flask_login import (
     current_user
