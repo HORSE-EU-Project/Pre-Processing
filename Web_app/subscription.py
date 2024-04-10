@@ -98,7 +98,7 @@ def createElasticsearchWatch(Entity_type, endpoint, dbName=INDEX_NAME):
     }
     # Replace with the actual logic to extract host and path from 'endpoint'
     # And update 'notify_endpoint' in the payload accordingly
-
+    current_app.logger.debug("Sending req to ES===============================")
     sendRequestToElasticsearch(url, headersDict, payload)
 
 # Adjusted function to send request to Elasticsearch
