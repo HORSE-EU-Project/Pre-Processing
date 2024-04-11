@@ -20,6 +20,11 @@ INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
 
 ELASTALERT_RULES_DIRECTORY = "/etc/elastalert/rules"  # Adjust as necessary
 
+#create folder if it does not exist
+if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
+    os.makedirs(ELASTALERT_RULES_DIRECTORY)
+
+
 # Set the ElastAlert rules directory to be relative to the current working directory
 ELASTALERT_RULES_DIRECTORY = os.path.join(os.getcwd(), "elastalert/rules")
 
