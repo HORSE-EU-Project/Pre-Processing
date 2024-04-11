@@ -15,7 +15,7 @@ COPY schema.sql user.py db.py app.py keycloak_requests.py ./
 COPY ./Web_app ./Web_app
 COPY ./templates ./templates
 COPY ./static ./static
-COPY ./config.yaml ./elastalert/config.yaml  
+COPY ./elastalert/config.yaml ./elastalert/config.yaml  
 # Assuming you have this file ready
 
 # Create the folder for ElastAlert rules
