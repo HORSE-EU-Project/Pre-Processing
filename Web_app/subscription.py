@@ -80,6 +80,7 @@ def createAlert(index_name, webhook_url):
     try:
         with open(rule_file_path, "w") as rule_file:
             yaml.dump(rule_config, rule_file)
+        flash('Subscription added successfully', 'success')
     except Exception as e:
         current_app.logger.error(f"Error writing rule configuration to file: {e}")
         flash(f"Error writing rule configuration to file: {e}", "error")
