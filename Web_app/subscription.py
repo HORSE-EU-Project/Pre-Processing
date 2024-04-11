@@ -18,7 +18,9 @@ from user import User
 ELASTICSEARCH_URL = "http://elasticsearch:9200"  # Adjust as necessary
 INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
 
-ELASTALERT_RULES_DIRECTORY = "/etc/elastalert/rules"  # Adjust as necessary
+#set ElastAlert rules directory
+ELASTALERT_RULES_DIRECTORY = os.path.join(os.getcwd(), "elastalert/rules")
+
 
 #create folder if it does not exist
 if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
@@ -80,5 +82,6 @@ def createAlert(index_name, webhook_url):
             yaml.dump(rule_config, rule_file)
     except Exception as e:
         current_app.logger.error(f"Error writing rule configuration to file: {e}")
+        flash(f"Error writing rule configuration to file: {e}", "error")
         return
     
