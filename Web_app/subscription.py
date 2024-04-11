@@ -74,3 +74,11 @@ def createAlert(index_name, webhook_url):
         }
     }
     
+    # Write the rule configuration to the rule file with error handling
+    try:
+        with open(rule_file_path, "w") as rule_file:
+            yaml.dump(rule_config, rule_file)
+    except Exception as e:
+        current_app.logger.error(f"Error writing rule configuration to file: {e}")
+        return
+    
