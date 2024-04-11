@@ -1,5 +1,5 @@
 # ElastAlert Configuration
-rules_folder: /path/to/elastalert/rules
+rules_folder: /DFF/elastalert/rules
 # The run_every setting dictates how often ElastAlert will query Elasticsearch
 # for documents matching each rule:
 run_every:
