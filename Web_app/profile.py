@@ -11,7 +11,7 @@ from flask_login import (
 profile = Blueprint('profile', __name__, template_folder='../templates')
 
 from .decoratorApp import decoratorCheckAppOrg
-from .subscription import createRequest
+#from .subscription import createRequest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from keycloak_requests import change_password
@@ -49,8 +49,8 @@ def edit_profile():
                         temp_list.append(app)
                 for app in new_app_list:
                     if app not in temp_list:
-                        if app not in all_apps:
-                            createRequest(app, "http://dff-quantumleap:8668/v2/notify")
+                        #if app not in all_apps:
+                        #    createRequest(app, "http://dff-quantumleap:8668/v2/notify")
                         User.create_user_app(app, current_user.id)
 
                 User.update_field("id", current_user.id, "user", "domain_name", new_url)
@@ -93,7 +93,8 @@ def store_user_profile():
     for app in app_list:
         if app not in User.get_all("apps", "name"):
             #create subscription to notify quantumleap in order to persist data in crateDB
-            createRequest(app, "http://dff-quantumleap:8668/v2/notify")
+            #createRequest(app, "http://dff-quantumleap:8668/v2/notify")
+            pass
     return redirect("/")
 
 
