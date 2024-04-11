@@ -45,7 +45,7 @@ def subscriptionSubmission():
                 temp_url="url_"+str(list_apps[i])
                 if request.form.get(temp_id)=="1":
                     current_app.logger.debug("Calling createElasticsearchWatch===============================")
-                    createAlert(list_apps[i],request.form.get(temp_url))
+                    createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME)
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
@@ -55,7 +55,7 @@ def subscriptionSubmission():
 
 
 
-def createAlert(index_name, webhook_url):
+def createAlert(entity_type, webhook_url, index_name):
     # Define the rule name based on the index name
     rule_name = f"{index_name}_alert_rule.yaml"
 
