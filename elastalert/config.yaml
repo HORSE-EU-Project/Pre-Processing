@@ -1,0 +1,39 @@
+# ElastAlert Configuration
+rules_folder: /path/to/elastalert/rules
+# The run_every setting dictates how often ElastAlert will query Elasticsearch
+# for documents matching each rule:
+run_every:
+  minutes: 1
+
+# The buffer_time option controls the size of the query window, stretching backwards
+# from the time each query is run. This is the default size of the window, which
+# can be overridden on a per-rule basis.
+buffer_time:
+  minutes: 15
+
+# The Elasticsearch hostname for metadata writeback
+# Note: Replace localhost with elasticsearch if ElastAlert is running in a Docker container
+# and needs to communicate with Elasticsearch over the dff-network Docker network
+es_host: elasticsearch
+
+# The Elasticsearch port
+es_port: 9200
+
+# Optional basic-auth username and password for Elasticsearch
+# es_username: someusername
+# es_password: somepassword
+
+# The index on Elasticsearch to write ElastAlert alerts to
+# This index is created automatically when ElastAlert runs for the first time
+writeback_index: elastalert_status
+
+# If you use a custom timestamp field in your Elasticsearch data, you can specify
+# it here. By default, ElastAlert uses the @timestamp field.
+# timestamp_field: "@timestamp"
+
+# Use local time for timestamps
+use_local_time: true
+
+# Custom settings for alerting
+alert_time_limit:
+  days: 2

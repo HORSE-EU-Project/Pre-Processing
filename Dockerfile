@@ -15,6 +15,14 @@ COPY schema.sql user.py db.py app.py keycloak_requests.py ./
 COPY ./Web_app ./Web_app
 COPY ./templates ./templates
 COPY ./static ./static
+COPY ./config.yaml ./elastalert/config.yaml  
+# Assuming you have this file ready
 
-# Run app.py when the container launches
-CMD ["python3", "-u", "app.py"]
+# Create the folder for ElastAlert rules
+RUN mkdir -p ./elastalert/rules
+
+# Copy your ElastAlert rules if you have them ready
+# COPY path_to_your_rules/*.yaml ./elastalert/rules/
+
+# Start ElastAlert in the background & then start the Flask app
+CMD elastalert --config ./elastalert/config.yaml & python3 -u app.py
