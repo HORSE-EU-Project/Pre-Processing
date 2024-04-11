@@ -27,4 +27,4 @@ RUN mkdir -p ./elastalert/rules
 # Start ElastAlert in the background & then start the Flask app
 #CMD elastalert --verbose --config ./elastalert/config.yaml & python3 -u app.py
 
-CMD elastalert --verbose --config ./elastalert/config.yaml
+CMD python3 -u app.py & elastalert --verbose --config ./elastalert/config.yaml
