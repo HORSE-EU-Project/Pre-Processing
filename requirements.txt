@@ -16,5 +16,5 @@ flask_oidc
 oauth2client
 itsdangerous<2.1
 
-yaml == 5.4.1
+yaml >=5.1
 elastalert == 0.2.4
