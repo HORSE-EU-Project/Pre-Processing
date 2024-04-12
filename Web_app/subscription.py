@@ -69,24 +69,28 @@ def createAlert(entity_type, webhook_url, index_name):
         }
     }
 
-    # Making a GET request
-    response = requests.get(url, headers=headersDict, data=json.dumps(data))
+    try:
+        # Making a GET request to Elasticsearch
+        response = requests.get(elasticsearch_url, headers=headersDict, data=json.dumps(data))
 
-    # Check if the Elasticsearch query was successful
-    if response.status_code == 200:
-        count = response.json().get('count', 0)
-        # Preparing the data to send to the webhook
-        alert_data = {
-            "message": f"Total documents with 'actionType': '{entity_type}': {count}"
-        }
-        # Sending a PUT request to the webhook URL
-        webhook_response = requests.put(webhook_url, headers=headers, data=json.dumps(alert_data))
-        if webhook_response.status_code == 200:
-            flash("Alert sent successfully to the webhook.")
+        # Check if the Elasticsearch query was successful
+        if response.status_code == 200:
+            count = response.json().get('count', 0)
+            # Preparing the data to send to the webhook
+            alert_data = {
+                "message": f"Total documents with 'actionType': '{entity_type}': {count}"
+            }
+            # Sending a PUT request to the webhook URL
+            webhook_response = requests.put(webhook_url, headers=headersDict, data=json.dumps(alert_data))
+            if webhook_response.status_code == 200:
+                flash("Alert sent successfully to the webhook.")
+            else:
+                flash(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
         else:
-            flash(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
-    else:
-        flash(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
+            flash(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}")
 
 
     
