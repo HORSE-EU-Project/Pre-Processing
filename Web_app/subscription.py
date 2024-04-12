@@ -82,11 +82,11 @@ def createAlert(entity_type, webhook_url, index_name):
         # Sending a PUT request to the webhook URL
         webhook_response = requests.put(webhook_url, headers=headers, data=json.dumps(alert_data))
         if webhook_response.status_code == 200:
-            print("Alert sent successfully to the webhook.")
+            current_app.logger.error("Alert sent successfully to the webhook.")
         else:
-            print(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
+            current_app.logger.error(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
     else:
-        print(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
+        current_app.logger.error(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
 
 
     
