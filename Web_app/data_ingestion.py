@@ -61,16 +61,7 @@ def PostToElasticsearch(json_dict, timestamp, filename, text):
     # Convert the Python dictionary to a JSON string for the curl command
     json_data = json.dumps(json_dict)
     
-    # Prepare the curl command
-    #curl_cmd = f"curl -X POST '{url}' -H 'Content-Type: application/json' -d'{json_data}'"
-    
-    try:
-        # Log the curl command
-        #current_app.logger.debug(f"Executing curl command: {curl_cmd}")
-        
-        # Execute the curl command
-        #subprocess.run(curl_cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
+    try:        
         # Perform the request using the requests library
         response = requests.post(url, headers=headersDict, json=json_dict, timeout=30)
         current_app.logger.debug(f"Response from Elasticsearch: {response.text}")
