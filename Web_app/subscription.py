@@ -86,7 +86,7 @@ def createAlert(entity_type, webhook_url, index_name):
         else:
             flash(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
     else:
-        current_app.logger.error(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
+        flash(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
 
 
     
