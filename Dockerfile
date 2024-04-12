@@ -25,6 +25,6 @@ RUN mkdir -p ./elastalert/rules
 # COPY path_to_your_rules/*.yaml ./elastalert/rules/
 
 # Start ElastAlert in the background & then start the Flask app
-CMD [python3, -u, app.py]
+CMD ["python3", "-u", "app.py"]
 
 
