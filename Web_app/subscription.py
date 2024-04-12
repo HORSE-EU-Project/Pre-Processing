@@ -71,7 +71,7 @@ def createAlert(entity_type, webhook_url, index_name):
 
     try:
         # Making a GET request to Elasticsearch
-        response = requests.get(elasticsearch_url, headers=headersDict, data=json.dumps(data))
+        response = requests.get(url, headers=headersDict, data=json.dumps(data))
 
         # Check if the Elasticsearch query was successful
         if response.status_code == 200:
