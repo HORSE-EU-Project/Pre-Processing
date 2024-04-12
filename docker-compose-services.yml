@@ -2,7 +2,6 @@ version: "3.5"
 
 networks:
   dff-network:
-    external: true
 
 services:
   # Postgres is Keycloak's db
