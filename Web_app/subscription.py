@@ -56,33 +56,37 @@ def subscriptionSubmission():
 
 
 def createAlert(entity_type, webhook_url, index_name):
-    # Define the rule name based on the index name
-    rule_name = f"{index_name}_alert_rule.yaml"
-
-    # Path to the rule file
-    rule_file_path = os.path.join(ELASTALERT_RULES_DIRECTORY, rule_name)
-
-    # Define the rule configuration
-    rule_config = {
-        "name": f"Alert for {index_name}",
-        "type": "any",
-        "index": index_name,
-        "alert": "webhook",
-        "alert_text_type": "alert_text_only",
-        "alert_subject": f"Change detected in {index_name}",
-        "alert_text": "Change detected at @timestamp. Document: @doc.",
-        "webhook": {
-            "http_post_url": webhook_url,
+    # Elasticsearch URL and INDEX_NAME should be defined
+    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{INDEX_NAME}/_doc/"
+    headersDict = {"Content-Type": "application/json"}
+    
+    # The query payload
+    data = {
+        "query": {
+            "match": {
+            "actionType": "APPEND"
+            }
         }
     }
-    
-    # Write the rule configuration to the rule file with error handling
-    try:
-        with open(rule_file_path, "w") as rule_file:
-            yaml.dump(rule_config, rule_file)
-        flash('Subscription added successfully', 'success')
-    except Exception as e:
-        current_app.logger.error(f"Error writing rule configuration to file: {e}")
-        flash(f"Error writing rule configuration to file: {e}", "error")
-        return
+
+    # Making a GET request
+    response = requests.get(url, headers=headers, data=json.dumps(data))
+
+    # Check if the Elasticsearch query was successful
+    if response.status_code == 200:
+        count = response.json().get('count', 0)
+        # Preparing the data to send to the webhook
+        alert_data = {
+            "message": f"Total documents with 'actionType': '{entity_type}': {count}"
+        }
+        # Sending a PUT request to the webhook URL
+        webhook_response = requests.put(webhook_url, headers=headers, data=json.dumps(alert_data))
+        if webhook_response.status_code == 200:
+            print("Alert sent successfully to the webhook.")
+        else:
+            print(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
+    else:
+        print(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
+
+
     
