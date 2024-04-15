@@ -87,10 +87,13 @@ def createAlert(entity_type, webhook_url, index_name):
         with open(config_file_path, 'r') as file:
             config_data = json.load(file)
             
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError) as e:
         config_data = {}
-        current_app.logger.debug("Could not open Alerts file")
-        flash("Could not open Alerts file", 'error')
+        current_app.logger.error("Could not open or parse the Alerts file: " + str(e))
+        flash("Could not open or parse the Alerts file", 'error')
+        # Optionally, create a new file or repair the existing file
+        with open(config_file_path, 'w') as file:
+            json.dump({"rules": []}, file, indent=4)  # Create a new file with empty rules
 
     # Append the new rule
     if 'rules' not in config_data:
@@ -98,10 +101,14 @@ def createAlert(entity_type, webhook_url, index_name):
     config_data['rules'].append(rule)
 
     # Save the updated configuration back to the file
-    with open(config_file_path, 'w') as file:
-        json.dump(config_data, file, indent=4)
-        current_app.logger.debug("Alert added successfully to the rules file.")
-        flash("Alert sent successfully to the webhook.", 'success')
+    try:
+        with open(config_file_path, 'w') as file:
+            json.dump(config_data, file, indent=4)
+            current_app.logger.debug("Alert added successfully to the rules file.")
+            flash("Alert sent successfully to the webhook.", 'success')
+    except Exception as e:
+        current_app.logger.error("Failed to write to the Alerts file: " + str(e))
+        flash("Failed to write to the Alerts file", 'error')
 
 
 
