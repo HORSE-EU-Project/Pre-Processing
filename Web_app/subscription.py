@@ -81,7 +81,7 @@ def createAlert(entity_type, webhook_url, index_name):
                 "message": f"Total documents with 'actionType': '{entity_type}': {count}"
             }
             # Sending a PUT request to the webhook URL
-            webhook_response = requests.put(webhook_url, headers=headersDict, data=json.dumps(alert_data))
+            webhook_response = requests.post(webhook_url, headers=headersDict, data=json.dumps(alert_data))
             if webhook_response.status_code == 200:
                 current_app.logger.error("Alert sent successfully to the webhook.")
                 flash("Alert sent successfully to the webhook.")
