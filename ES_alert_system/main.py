@@ -13,7 +13,7 @@ class ConfigReader:
     def read_config(config_file):
         with open(config_file, 'r') as file:
             data = json.load(file)
-            return [ElasticQuery(**item) for item in data["queries"]]
+            return [ElasticQuery(**item) for item in data["rules"]]
 
 def schedule_query(query):
     while True:
