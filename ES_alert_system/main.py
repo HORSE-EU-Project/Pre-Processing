@@ -35,7 +35,7 @@ def schedule_query(query):
 
 def main():
     try:
-        queries = ConfigReader.read_config('config.json')
+        queries = ConfigReader.read_config('./ES_alert_system/config.json')
         threads = []
         for query in queries:
             t = threading.Thread(target=schedule_query, args=(query,))
