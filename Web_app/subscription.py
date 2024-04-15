@@ -90,7 +90,7 @@ def createAlert(entity_type, webhook_url, index_name):
     except (FileNotFoundError, json.JSONDecodeError) as e:
         config_data = {}
         current_app.logger.error("Could not open or parse the Alerts file: " + str(e))
-        flash("Could not open or parse the Alerts file", 'error')
+        flash("Could not open or parse the Alerts file -- Error: "+ str(e), 'error')
         # Optionally, create a new file or repair the existing file
         with open(config_file_path, 'w') as file:
             json.dump({"rules": []}, file, indent=4)  # Create a new file with empty rules
