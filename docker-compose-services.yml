@@ -78,7 +78,7 @@ services:
     networks:
       - dff-network
     volumes:
-      - ./ES_alert_system/config.json:./ES_alert_system/config.json
+      - .:/dff
 
 volumes:
   postgres-data: ~
