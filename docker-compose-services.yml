@@ -66,6 +66,20 @@ services:
       timeout: 5s
       retries: 5
 
+  # New service for Elasticsearch alerts
+  es_alerts:
+    build:
+      context: .
+      dockerfile: Dockerfile.ES_alerts
+    container_name: "es_alerts"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - dff-network
+    volumes:
+      - ./ES_alert_system/config.json:./ES_alert_system/config.json
+
 volumes:
   postgres-data: ~
   profile.properties: ~

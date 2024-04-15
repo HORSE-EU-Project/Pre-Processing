@@ -15,14 +15,14 @@ COPY schema.sql user.py db.py app.py keycloak_requests.py ./
 COPY ./Web_app ./Web_app
 COPY ./templates ./templates
 COPY ./static ./static
-COPY ./elastalert/ ./elastalert/  
+COPY ./ES_alert_system/ ./ES_alert_system/  
 # Assuming you have this file ready
 
 
 # Copy your ElastAlert rules if you have them ready
 # COPY path_to_your_rules/*.yaml ./elastalert/rules/
 
-# Start ElastAlert in the background & then start the Flask app
-CMD ["python3", "-u", "app.py"]
+# Start Alert in the background & then start the Flask app
+CMD python3 ./ES_alert_system/main.py & python3 -u app.py
 
 

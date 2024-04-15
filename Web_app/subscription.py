@@ -15,7 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
 
 
-ELASTICSEARCH_URL = "http://localhost:9200"  # Adjust as necessary
+ELASTICSEARCH_URL = "http://10.10.10.14:9200"  # Adjust as necessary
 INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
 
 #set ElastAlert rules directory
