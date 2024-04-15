@@ -53,7 +53,7 @@ def subscriptionSubmission():
         flash('You should login first!', 'error')
         return redirect("/")
 
-import json
+
 
 def createAlert(entity_type, webhook_url, index_name):
 
@@ -69,6 +69,7 @@ def createAlert(entity_type, webhook_url, index_name):
             "match_all": {}
         }
     }
+    
 
     # Define the rule to be added
     rule = {
