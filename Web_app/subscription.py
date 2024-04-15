@@ -80,7 +80,7 @@ def createAlert(entity_type, webhook_url, index_name):
     }
 
     # Path to the configuration file
-    config_file_path = './ES_alertsystem.config.json'
+    config_file_path = './ES_alert_system/config.json'
 
     # Read the existing configuration
     try:
