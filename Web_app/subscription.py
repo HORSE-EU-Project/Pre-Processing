@@ -56,7 +56,6 @@ def subscriptionSubmission():
 
 
 def createAlert(entity_type, webhook_url, index_name):
-
     # URL to access the Elasticsearch index
     url = f"{ELASTICSEARCH_URL.rstrip('/')}/{index_name}/_search"
 
@@ -70,7 +69,6 @@ def createAlert(entity_type, webhook_url, index_name):
         }
     }
     
-
     # Define the rule to be added
     rule = {
         "entity_type": entity_type,
@@ -110,68 +108,3 @@ def createAlert(entity_type, webhook_url, index_name):
     except Exception as e:
         current_app.logger.error("Failed to write to the Alerts file: " + str(e))
         flash("Failed to write to the Alerts file", 'error')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def sendAlert(entity_type, webhook_url, index_name):
-    # Elasticsearch URL and INDEX_NAME should be defined
-    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{index_name}/_doc/"
-    headersDict = {"Content-Type": "application/json"}
-    
-    # The query payload is now dynamic with the entity_type
-    data = {
-        "query": {
-            "match": {
-                "actionType": entity_type  # Dynamically using entity_type
-            }
-        },
-        "size": 0,  # We only need the count of documents
-        "aggs": {
-            "count": {"value_count": {"field": "actionType"}}
-        }
-    }
-
-    try:
-        # Making a GET request to Elasticsearch
-        response = requests.post(url, headers=headersDict, data=json.dumps(data))
-
-        # Check if the Elasticsearch query was successful
-        if response.status_code in [200, 201]:
-            count = response.json().get('aggregations', {}).get('count', {}).get('value', 0)
-            # Preparing the data to send to the webhook, wrapped in 'data' key
-            alert_data = {
-                "data": {
-                    "message": f"Total documents with 'actionType': '{entity_type}': {count}"
-                }
-            }
-            # Sending a PUT request to the webhook URL
-            webhook_response = requests.post(webhook_url, headers=headersDict, data=json.dumps(alert_data))
-            if webhook_response.status_code == 200:
-                current_app.logger.error("Alert sent successfully to the webhook.")
-                flash("Alert sent successfully to the webhook.")
-            else:
-                current_app.logger.error(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
-                flash(f"Failed to send alert to the webhook: {webhook_response.status_code} - {webhook_response.text}")
-        else:
-            current_app.logger.error(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
-            flash(f"Failed to query Elasticsearch: {response.status_code} - {response.text}")
-
-    except Exception as e:
-        current_app.logger.error(f"An error occurred: {str(e)}")
-        flash(f"An error occurred: {str(e)}")
-
-
-    
