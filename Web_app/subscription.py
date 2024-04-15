@@ -60,12 +60,16 @@ def createAlert(entity_type, webhook_url, index_name):
     url = f"{ELASTICSEARCH_URL.rstrip('/')}/{INDEX_NAME}/_doc/"
     headersDict = {"Content-Type": "application/json"}
     
-    # The query payload
+    # The query payload is now dynamic with the entity_type
     data = {
         "query": {
             "match": {
-            "actionType": "APPEND"
+                "actionType": entity_type  # Dynamically using entity_type
             }
+        },
+        "size": 0,  # We only need the count of documents
+        "aggs": {
+            "count": {"value_count": {"field": "actionType"}}
         }
     }
 
@@ -74,11 +78,13 @@ def createAlert(entity_type, webhook_url, index_name):
         response = requests.post(url, headers=headersDict, data=json.dumps(data))
 
         # Check if the Elasticsearch query was successful
-        if response.status_code == 200 or response.status_code == 201:
-            count = response.json().get('count', 0)
-            # Preparing the data to send to the webhook
+        if response.status_code in [200, 201]:
+            count = response.json().get('aggregations', {}).get('count', {}).get('value', 0)
+            # Preparing the data to send to the webhook, wrapped in 'data' key
             alert_data = {
-                "message": f"Total documents with 'actionType': '{entity_type}': {count}"
+                "data": {
+                    "message": f"Total documents with 'actionType': '{entity_type}': {count}"
+                }
             }
             # Sending a PUT request to the webhook URL
             webhook_response = requests.post(webhook_url, headers=headersDict, data=json.dumps(alert_data))
