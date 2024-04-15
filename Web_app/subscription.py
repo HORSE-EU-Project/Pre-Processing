@@ -74,7 +74,7 @@ def createAlert(entity_type, webhook_url, index_name):
         response = requests.get(url, headers=headersDict, data=json.dumps(data))
 
         # Check if the Elasticsearch query was successful
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 304:
             count = response.json().get('count', 0)
             # Preparing the data to send to the webhook
             alert_data = {
