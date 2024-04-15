@@ -105,7 +105,7 @@ def createAlert(entity_type, webhook_url, index_name):
         with open(config_file_path, 'w') as file:
             json.dump(config_data, file, indent=4)
             current_app.logger.debug("Alert added successfully to the rules file.")
-            flash("Alert sent successfully to the webhook.", 'success')
+            flash("Alert added successfully to the rules file", 'success')
     except Exception as e:
         current_app.logger.error("Failed to write to the Alerts file: " + str(e))
         flash("Failed to write to the Alerts file", 'error')
