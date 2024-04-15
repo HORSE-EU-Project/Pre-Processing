@@ -53,11 +53,74 @@ def subscriptionSubmission():
         flash('You should login first!', 'error')
         return redirect("/")
 
-
+import json
 
 def createAlert(entity_type, webhook_url, index_name):
+
+    # URL to access the Elasticsearch index
+    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{index_name}/_search"
+
+    # Header for HTTP requests
+    headersDict = {"Content-Type": "application/json"}
+
+    # Define the query to read the whole database
+    query = {
+        "query": {
+            "match_all": {}
+        }
+    }
+
+    # Define the rule to be added
+    rule = {
+        "entity_type": entity_type,
+        "es_url": url,
+        "query": query,
+        "endpoint": webhook_url,
+        "headers": headersDict
+    }
+
+    # Path to the configuration file
+    config_file_path = './ES_alertsystem.config.json'
+
+    # Read the existing configuration
+    try:
+        with open(config_file_path, 'r') as file:
+            config_data = json.load(file)
+            
+    except FileNotFoundError:
+        config_data = {}
+        current_app.logger.debug("Could not open Alerts file")
+        flash("Could not open Alerts file", 'error')
+
+    # Append the new rule
+    if 'rules' not in config_data:
+        config_data['rules'] = []
+    config_data['rules'].append(rule)
+
+    # Save the updated configuration back to the file
+    with open(config_file_path, 'w') as file:
+        json.dump(config_data, file, indent=4)
+        current_app.logger.debug("Alert added successfully to the rules file.")
+        flash("Alert sent successfully to the webhook.", 'success')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def sendAlert(entity_type, webhook_url, index_name):
     # Elasticsearch URL and INDEX_NAME should be defined
-    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{INDEX_NAME}/_doc/"
+    url = f"{ELASTICSEARCH_URL.rstrip('/')}/{index_name}/_doc/"
     headersDict = {"Content-Type": "application/json"}
     
     # The query payload is now dynamic with the entity_type
