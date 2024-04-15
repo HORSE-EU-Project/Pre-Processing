@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta
 
 class ElasticQuery:
-    def __init__(self, es_url, query, endpoint, interval_minutes):
+    def __init__(self, es_url, query, endpoint, interval_minutes=1):
         self.es_url = es_url
         self.query = query
         self.endpoint = endpoint
