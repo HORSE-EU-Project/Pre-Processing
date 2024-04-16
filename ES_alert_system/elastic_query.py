@@ -32,14 +32,13 @@ class ElasticQuery:
         try:
             response = requests.post(url, json=self.query, headers=self.headers)
             if response.status_code == 200:
-                logging.info("=============================Query executed successfully=============================")
+                logging.info("=========Query executed successfully=========")
                 return response.json()
             else:
                 logging.error("Failed to execute query with status code %s", response.status_code)
                 return None
         except Exception as e:
-            logging.error("Failed to execute query: %s", e, exc_info=True)
-            raise e
+            logging.error("=========Failed to execute query=========")
             return None
 
     def post_results(self, results):
@@ -56,8 +55,7 @@ class ElasticQuery:
                 logging.warning("Failed to post results: HTTP %s", response.status_code)
             return response.status_code
         except Exception as e:
-            logging.error("Error posting results: %s", e, exc_info=True)
-            raise e
+            logging.error("=========Error posting results=========")
             return None
 
     def print_results(self, results):
