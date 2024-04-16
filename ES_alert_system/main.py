@@ -29,10 +29,14 @@ def main():
             if not query.last_run or now >= query.last_run + query.interval:
                 results = query.run_query()
                 status_code = query.post_results(results)
-                if status_code == 200:
-                    logging.info("Query results successfully posted.")
-                else:
-                    logging.warning(f"Failed to post results: HTTP {status_code}")
+                try:
+                    
+                    if status_code == 200:
+                        logging.info("Query results successfully posted.")
+                    else:
+                        logging.warning(f"Failed to post results: HTTP {status_code}")
+                except Exception as e:
+                    logging.error(f"Error posting results: {e}", exc_info=True)
                 query.last_run = now
         print("=============================================================")
         time.sleep(5)
