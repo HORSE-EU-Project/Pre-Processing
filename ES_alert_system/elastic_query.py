@@ -32,10 +32,10 @@ class ElasticQuery:
         try:
             response = requests.post(url, json=self.query, headers=self.headers)
             if response.status_code == 200:
-                logging.info("Query executed successfully: %s", response.json())
+                logging.info("=============================Query executed successfully=============================")
                 return response.json()
             else:
-                logging.error("Failed to execute query with status code %s: %s", response.status_code, response.text)
+                logging.error("Failed to execute query with status code %s", response.status_code)
                 return None
         except Exception as e:
             logging.error("Failed to execute query: %s", e, exc_info=True)

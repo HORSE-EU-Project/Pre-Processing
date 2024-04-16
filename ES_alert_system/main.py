@@ -41,13 +41,13 @@ def main():
                     else:
                         logging.warning(f"Failed to post results: HTTP {status_code}")
                 except Timeout:
-                    print("The request timed out")
+                    logging.error("The request timed out")
                 except ConnectionError:
-                    print("The request failed to connect")
+                    logging.error("The request failed to connect")
                 except requests.HTTPError as e:
-                    print(f"HTTP error occurred: {e}")
+                    logging.error(f"HTTP error occurred: {e}")
                 except Exception as e:
-                    print(f"An unexpected error occurred: {e}")
+                    logging.error(f"An unexpected error occurred: {e}")
                     
                 query.last_run = now
         print("=============================================================")
