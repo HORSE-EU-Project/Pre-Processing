@@ -11,7 +11,7 @@
     {
       "es_url": "http://localhost:9200",
       "index": "test_index",
-      "query": {"match_all": {}},
+      "query": {"query":{"match_all": {}}},
       "headers": {"Content-Type": "application/json"},
       "endpoint": "http://localhost.com:5000/dff-data",
       "interval": 15
