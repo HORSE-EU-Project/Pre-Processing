@@ -109,6 +109,7 @@ def main():
                 else:
                     logging.warning(f"Failed to post results: HTTP {status_code}")
                 query.last_run = now
+        print("=============================================================")
         time.sleep(5)
         
     
