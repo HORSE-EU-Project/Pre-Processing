@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+#thoughts excerpt
 class ElasticQuery:
     def __init__(self, es_url, index, query, headers, endpoint, interval=10):
         if not all([es_url, index, query, headers, endpoint]):
@@ -27,7 +28,6 @@ class ElasticQuery:
         print("Last Run: ", self.last_run)
 
     def run_query(self):
-        """Executes a query on Elasticsearch and returns the results."""
         url = f"{self.es_url}/{self.index}/_search"
         try:
             response = requests.post(url, json=self.query, headers=self.headers)
@@ -39,6 +39,7 @@ class ElasticQuery:
                 return None
         except Exception as e:
             logging.error("Failed to execute query: %s", e, exc_info=True)
+            raise
             return None
 
     def post_results(self, results):
@@ -56,6 +57,7 @@ class ElasticQuery:
             return response.status_code
         except Exception as e:
             logging.error("Error posting results: %s", e, exc_info=True)
+            raise
             return None
 
     def print_results(self, results):
