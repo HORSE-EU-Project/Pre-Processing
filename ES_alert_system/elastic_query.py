@@ -48,7 +48,7 @@ class ElasticQuery:
             return None
 
         try:
-            response = requests.post(self.endpoint, json=results, headers=self.headers)
+            response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=6)
             if response.status_code == 200:
                 logging.info("Results successfully posted.")
             else:
