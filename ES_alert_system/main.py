@@ -11,26 +11,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 class ConfigReader:
     @staticmethod
     def read_config(config_file):
-        try:
-            with open(config_file, 'r') as file:
-                data = json.load(file)
-            queries = []
-            for item in data.get("rules", []):  # Use get to avoid KeyError if 'rules' is missing
-                # Validate item fields
-                if "es_url" in item and "index" in item and "query" in item and "headers" in item and "endpoint" in item and "interval" in item:
-                    queries.append(ElasticQuery(**item))
-                else:
-                    logging.warning(f"Skipping invalid config item: {item}")
-            return queries
-        except FileNotFoundError:
-            logging.error(f"Config file not found: {config_file}")
-            return []
-        except json.JSONDecodeError as e:
-            logging.error(f"Error decoding JSON from the config file: {config_file}; {e}")
-            return []
-        except Exception as e:
-            logging.error(f"An unexpected error occurred while reading the config file: {e}")
-            return []
+        with open(config_file, 'r') as file:
+            data = json.load(file)
+            return [ElasticQuery(**item) for item in data["rules"]]
 
 def schedule_query(query):
     while True:
