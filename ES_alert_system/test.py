@@ -101,6 +101,7 @@ def main():
     while True:
         now = datetime.now()
         for query in queries:
+            print("=========================++++++====================================")
             if not query.last_run or now >= query.last_run + query.interval:
                 results = query.run_query()
                 status_code = query.post_results(results)
