@@ -39,7 +39,7 @@ class ElasticQuery:
                 return None
         except Exception as e:
             logging.error("Failed to execute query: %s", e, exc_info=True)
-            raise
+            raise e
             return None
 
     def post_results(self, results):
@@ -57,7 +57,7 @@ class ElasticQuery:
             return response.status_code
         except Exception as e:
             logging.error("Error posting results: %s", e, exc_info=True)
-            raise
+            raise e
             return None
 
     def print_results(self, results):
