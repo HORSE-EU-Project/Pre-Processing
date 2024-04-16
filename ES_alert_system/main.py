@@ -27,6 +27,7 @@ def schedule_query(query):
                     logging.warning(f"Failed to post results: HTTP {status_code}")
         except Exception as e:
             logging.error(f"An error occurred: {str(e)}")
+            logging.error("============================THREAD=================================")
         
         # Compute the next wake-up time considering the time taken by run_query and post_results
         next_run = datetime.now() + query.interval
@@ -45,6 +46,7 @@ def main():
             t.join()
     except Exception as e:
         logging.error(f"Failed during setup: {str(e)}")
+        logging.error("=============================================================")
 
 if __name__ == "__main__":
     main()
