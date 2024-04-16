@@ -11,7 +11,7 @@ class ElasticQuery:
         if not all([es_url, index, query, headers, endpoint]):
             raise ValueError("All parameters must be provided and non-empty.")
         
-        self.es = Elasticsearch([es_url])
+        self.es = Elasticsearch([es_url], headers=headers)
         self.index = index  # Dynamic index name
         self.query = query
         self.endpoint = endpoint
@@ -29,8 +29,8 @@ class ElasticQuery:
             return None
 
     def post_results(self, results):
-        if results is None:
-            logging.warning("No results to post.")
+        if not results or 'hits' not in results or not results['hits'].get('hits', []):
+            logging.warning("No results to post or empty results.")
             return None
 
         try:
@@ -43,6 +43,7 @@ class ElasticQuery:
         except Exception as e:
             logging.error(f"Error posting results: {e}")
             return None
+
 
     def print_results(self, results):
         if results:
