@@ -5,7 +5,7 @@
       "index": "test_index",
       "query": {"query":{"match_all": {}}},
       "headers": {"Content-Type": "application/json"},
-      "endpoint": "http://example.com/api",
+      "endpoint": "http://localhost.com:5000/dff-data",
       "interval": 10
     },
     {
@@ -13,7 +13,7 @@
       "index": "test_index",
       "query": {"match_all": {}},
       "headers": {"Content-Type": "application/json"},
-      "endpoint": "http://example.com/api",
+      "endpoint": "http://localhost.com:5000/dff-data",
       "interval": 15
     }
 
