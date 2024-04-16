@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch
 
 class ElasticQuery:
-    def __init__(self, es_url, query, endpoint, interval=10, *args, **kwargs):
+    def __init__(self, es_url, query, headers, endpoint, interval=10, *args, **kwargs):
         self.es = Elasticsearch([es_url])
         self.query = query
         self.endpoint = endpoint
