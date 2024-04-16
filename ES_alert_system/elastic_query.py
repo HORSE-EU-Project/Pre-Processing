@@ -12,13 +12,22 @@ class ElasticQuery:
             raise ValueError("All parameters must be provided and non-empty.")
 
         # Initialize Elasticsearch client with headers specific for Elasticsearch if needed
-        self.es = Elasticsearch([es_url], headers={"Content-Type": "application/json"})
+        self.es = Elasticsearch([es_url], headers=headers)
         self.index = index
         self.query = query
         self.endpoint = endpoint
         self.headers = headers
         self.interval = timedelta(seconds=interval)
         self.last_run = None
+        
+        print("ES URL: ", es_url)
+        print("Index: ", index)
+        print("Query: ", query)
+        print("Headers: ", headers)
+        print("Endpoint: ", endpoint)
+        print("Interval: ", interval)
+        print("Last Run: ", self.last_run)
+        
 
     def run_query(self):
         """Executes a query on Elasticsearch and returns the results."""
