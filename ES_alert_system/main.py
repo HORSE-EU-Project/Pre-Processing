@@ -51,7 +51,7 @@ def main():
                     
                 query.last_run = now
         print("=============================================================")
-        time.sleep(5)
+        time.sleep(10)
         
 
 
