@@ -64,10 +64,9 @@ def createAlert(entity_type, webhook_url, index_name):
 
     # Define the query to read the whole database
     query = {
-        "query": {
             "match_all": {}
-        }
-    }
+            }
+
     
     # Define the rule to be added
     rule = {

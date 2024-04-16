@@ -4,9 +4,7 @@
       "entity_type": "document",
       "es_url": "http://10.10.10.14:9200/test_index/_search",
       "query": {
-        "query": {
-          "match_all": {}
-        }
+        "match_all": {}
       },
       "endpoint": "http://10.10.10.14:5000/dff-data",
       "headers": {
@@ -18,9 +16,7 @@
       "entity_type": "document",
       "es_url": "http://10.10.10.14:9200/test_index/_search",
       "query": {
-        "query": {
-          "match_all": {}
-        }
+        "match_all": {}
       },
       "endpoint": "http://10.10.10.14:5000/dff-data",
       "headers": {
