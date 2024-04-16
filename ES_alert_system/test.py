@@ -80,9 +80,22 @@ def main():
     
     #Loop through the queries and run them
     for query in queries:
+        print("Query ES URL: ", query.es_url)
+        print("Query Index: ", query.index)
+        print("Query Query: ", query.query)
+        print("Query Headers: ", query.headers)
+        print("Query Endpoint: ", query.endpoint)
+        print("Query Interval: ", query.interval)
+        print("Query Last Run: ", query.last_run)
+        print("====================================================")
+        
         results = query.run_query()
         status_code = query.post_results(results)
         query.print_results(results)
+    
+    
+    
+    
     
     #every 10 seconds run the queries
     while True:
