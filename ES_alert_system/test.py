@@ -1,6 +1,7 @@
 import requests
 import logging
 import json
+import time
 from datetime import datetime, timedelta
 
 # Set up logging
@@ -48,7 +49,7 @@ class ElasticQuery:
             return None
 
         try:
-            response = requests.post(self.endpoint, json=results, headers=self.headers)
+            response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=5)
             if response.status_code == 200:
                 logging.info("Results successfully posted.")
             else:
@@ -108,7 +109,7 @@ def main():
                     logging.info("Query results successfully posted.")
                 else:
                     logging.warning(f"Failed to post results: HTTP {status_code}")
-                #query.last_run = now
+                query.last_run = now
         print("=============================================================")
         time.sleep(5)
         
