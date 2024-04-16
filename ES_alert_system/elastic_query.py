@@ -10,9 +10,10 @@ class ElasticQuery:
     def __init__(self, es_url, index, query, headers, endpoint, interval=10):
         if not all([es_url, index, query, headers, endpoint]):
             raise ValueError("All parameters must be provided and non-empty.")
-        
+
+        # Initialize Elasticsearch client with headers specific for Elasticsearch if needed
         self.es = Elasticsearch([es_url], headers=headers)
-        self.index = index  # Dynamic index name
+        self.index = index
         self.query = query
         self.endpoint = endpoint
         self.headers = headers
@@ -20,15 +21,17 @@ class ElasticQuery:
         self.last_run = None
 
     def run_query(self):
+        """Executes a query on Elasticsearch and returns the results."""
         try:
             response = self.es.search(index=self.index, body=self.query)
-            logging.info("Query executed successfully.")
+            logging.info("Query executed successfully: %s", response)
             return response
         except Exception as e:
-            logging.error(f"Failed to execute query: {e}")
+            logging.error("Failed to execute query: %s", e, exc_info=True)
             return None
 
     def post_results(self, results):
+        """Posts query results to a specified endpoint."""
         if not results or 'hits' not in results or not results['hits'].get('hits', []):
             logging.warning("No results to post or empty results.")
             return None
@@ -38,14 +41,14 @@ class ElasticQuery:
             if response.status_code == 200:
                 logging.info("Results successfully posted.")
             else:
-                logging.warning(f"Failed to post results: HTTP {response.status_code}")
+                logging.warning("Failed to post results: HTTP %s", response.status_code)
             return response.status_code
         except Exception as e:
-            logging.error(f"Error posting results: {e}")
+            logging.error("Error posting results: %s", e, exc_info=True)
             return None
 
-
     def print_results(self, results):
+        """Prints query results if available."""
         if results:
             print(results)
         else:
