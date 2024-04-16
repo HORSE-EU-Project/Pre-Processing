@@ -2,7 +2,7 @@
   "rules": [
     {
       "entity_type": "document",
-      "es_url": "http://elasticsearch:9200/test_index/_search",
+      "es_url": "http://10.10.10.14:9200/test_index/_search",
       "query": {
         "query": {
           "match_all": {}
@@ -16,7 +16,7 @@
     },
     {
       "entity_type": "document",
-      "es_url": "http://elasticsearch:9200/test_index/_search",
+      "es_url": "http://10.10.10.14:9200/test_index/_search",
       "query": {
         "query": {
           "match_all": {}
