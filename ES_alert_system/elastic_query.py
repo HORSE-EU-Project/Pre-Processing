@@ -12,7 +12,7 @@ class ElasticQuery:
             raise ValueError("All parameters must be provided and non-empty.")
 
         # Initialize Elasticsearch client with headers specific for Elasticsearch if needed
-        self.es = Elasticsearch([es_url])
+        self.es = Elasticsearch(es_url)
         self.index = index
         self.query = query
         self.endpoint = endpoint
