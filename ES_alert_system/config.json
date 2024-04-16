@@ -1,18 +1,74 @@
 {
-    "rules": [
-      {
-        "entity_type": "document",
-        "es_url": "http://localhost:9200/test_index/_search",
+  "rules": [
+    {
+      "entity_type": "document",
+      "es_url": "http://localhost:9200/test_index/_search",
+      "query": {
         "query": {
-          "query": {
-            "match_all": {}
-          }
-        },
-        "endpoint": "http://10.10.10.14:5000/dff-data",
-        "headers": {
-          "Content-Type": "application/json"
+          "match_all": {}
         }
-      }
-    ]
-  }
-  
+      },
+      "endpoint": "http://10.10.10.14:5000/dff-data",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "interval": 5
+    },
+    {
+      "entity_type": "document",
+      "es_url": "http://localhost:9200/test_index/_search",
+      "query": {
+        "query": {
+          "match_all": {}
+        }
+      },
+      "endpoint": "http://10.10.10.14:5000/dff-data",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "interval": 12
+    },
+    {
+      "entity_type": "document",
+      "es_url": "http://localhost:9200/test_index/_search",
+      "query": {
+        "query": {
+          "match_all": {}
+        }
+      },
+      "endpoint": "http://10.10.10.14:5000/dff-data",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "interval": 21
+    },
+    {
+      "entity_type": "document",
+      "es_url": "http://localhost:9200/test_index/_search",
+      "query": {
+        "query": {
+          "match_all": {}
+        }
+      },
+      "endpoint": "http://10.10.10.14:5000/dff-data",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "interval": 23
+    },
+    {
+      "entity_type": "document",
+      "es_url": "http://localhost:9200/test_index/_search",
+      "query": {
+        "query": {
+          "match_all": {}
+        }
+      },
+      "endpoint": "http://10.10.10.14:5000/dff-data",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "interval": 30
+    }
+  ]
+}
