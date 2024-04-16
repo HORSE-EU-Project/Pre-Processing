@@ -32,7 +32,7 @@ class ElasticQuery:
     def run_query(self):
         """Executes a query on Elasticsearch and returns the results."""
         try:
-            response = self.es.search(index=self.index, body=self.query)
+            response = self.es.search(index=self.index, query={"match_all": {}})
             logging.info("Query executed successfully: %s", response)
             return response
         except Exception as e:
