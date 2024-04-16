@@ -18,13 +18,15 @@ class ConfigReader:
 def schedule_query(query):
     while True:
         try:
-            if not query.last_run or datetime.now() >= query.last_run + query.interval:
+            now = datetime.now()
+            if not query.last_run or now >= query.last_run + query.interval:
                 results = query.run_query()
                 status_code = query.post_results(results)
                 if status_code == 200:
                     logging.info("Query results successfully posted.")
                 else:
                     logging.warning(f"Failed to post results: HTTP {status_code}")
+                query.last_run = now
         except Exception as e:
             logging.error(f"An error occurred: {str(e)}")
             logging.error("============================THREAD=================================")
