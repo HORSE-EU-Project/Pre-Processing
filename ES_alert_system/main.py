@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import ConnectionError, Timeout
 import logging
 import json
 import time
@@ -39,8 +40,15 @@ def main():
                         logging.info("Query results successfully posted.")
                     else:
                         logging.warning(f"Failed to post results: HTTP {status_code}")
+                except Timeout:
+                    print("The request timed out")
+                except ConnectionError:
+                    print("The request failed to connect")
+                except requests.HTTPError as e:
+                    print(f"HTTP error occurred: {e}")
                 except Exception as e:
-                    logging.error(f"Error posting results: {e}", exc_info=True)
+                    print(f"An unexpected error occurred: {e}")
+                    
                 query.last_run = now
         print("=============================================================")
         time.sleep(5)
