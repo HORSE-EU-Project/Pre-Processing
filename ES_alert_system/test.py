@@ -28,7 +28,6 @@ class ElasticQuery:
         print("Last Run: ", self.last_run)
 
     def run_query(self):
-        """Executes a query on Elasticsearch and returns the results."""
         url = f"{self.es_url}/{self.index}/_search"
         try:
             response = requests.post(url, json=self.query, headers=self.headers)
@@ -109,7 +108,7 @@ def main():
                     logging.info("Query results successfully posted.")
                 else:
                     logging.warning(f"Failed to post results: HTTP {status_code}")
-                query.last_run = now
+                #query.last_run = now
         print("=============================================================")
         time.sleep(5)
         
