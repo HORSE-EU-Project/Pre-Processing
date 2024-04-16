@@ -18,8 +18,13 @@ class ConfigReader:
   
 def main():
     #Read the configuration file
-    queries = ConfigReader.read_config('./ES_alert_system/config.json')
-
+    try:
+        
+        queries = ConfigReader.read_config('./ES_alert_system/config.json')
+        logging.info("Configuration file read successfully.")
+    except Exception as e:
+        logging.error(f"Failed to read configuration file: {e}", exc_info=True)
+        return
 
     #every 10 seconds run the queries
     while True:
@@ -27,10 +32,9 @@ def main():
         for query in queries:
             print("=========================++++++====================================")
             if not query.last_run or now >= query.last_run + query.interval:
-                results = query.run_query()
-                status_code = query.post_results(results)
                 try:
-                    
+                    results = query.run_query()
+                    status_code = query.post_results(results)  
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
                     else:
