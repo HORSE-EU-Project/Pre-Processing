@@ -97,18 +97,18 @@ def main():
     
     
     
-    #every 10 seconds run the queries
-    while True:
-        now = datetime.now()
-        for query in queries:
-            if not query.last_run or now >= query.last_run + query.interval:
-                results = query.run_query()
-                status_code = query.post_results(results)
-                if status_code == 200:
-                    logging.info("Query results successfully posted.")
-                else:
-                    logging.warning(f"Failed to post results: HTTP {status_code}")
-                query.last_run = now
+    # #every 10 seconds run the queries
+    # while True:
+    #     now = datetime.now()
+    #     for query in queries:
+    #         if not query.last_run or now >= query.last_run + query.interval:
+    #             results = query.run_query()
+    #             status_code = query.post_results(results)
+    #             if status_code == 200:
+    #                 logging.info("Query results successfully posted.")
+    #             else:
+    #                 logging.warning(f"Failed to post results: HTTP {status_code}")
+    #             query.last_run = now
         
         
     
@@ -134,13 +134,13 @@ def main():
     # Create an instance of the ElasticQuery class
     query_instance = ElasticQuery(es_url, index, query, headers, endpoint)
     
-    print("Query ES URL: ", query_instance.es_url)
-    print("Query Index: ", query_instance.index)
-    print("Query Query: ", query_instance.query)
-    print("Query Headers: ", query_instance.headers)
-    print("Query Endpoint: ", query_instance.endpoint)
-    print("Query Interval: ", query_instance.interval)
-    print("Query Last Run: ", query_instance.last_run)
+    print("Query 2 ES URL: ", query_instance.es_url)
+    print("Query 2 Index: ", query_instance.index)
+    print("Query 2 Query: ", query_instance.query)
+    print("Query 2 Headers: ", query_instance.headers)
+    print("Query 2 Endpoint: ", query_instance.endpoint)
+    print("Query 2 Interval: ", query_instance.interval)
+    print("Query 2 Last Run: ", query_instance.last_run)
     print("====================================================")
     
     # Run the query
@@ -150,7 +150,7 @@ def main():
     status_code = query_instance.post_results(results)
     
     # Print the results
-    query_instance.print_results(results)
+    #query_instance.print_results(results)
 
 if __name__ == "__main__":
     main()    
