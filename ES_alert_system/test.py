@@ -112,36 +112,45 @@ def main():
         
         
     
-    # # Define the Elasticsearch URL
-    # es_url = "http://localhost:9200"
+    # Define the Elasticsearch URL
+    es_url = "http://localhost:9200"
     
-    # # Define the index to query
-    # index = "test_index"
+    # Define the index to query
+    index = "test_index"
     
-    # # Define the query to execute
-    # query = {
-    #     "query": {
-    #         "match_all": {}
-    #     }
-    # }
+    # Define the query to execute
+    query = {
+        "query": {
+            "match_all": {}
+        }
+    }
     
-    # # Define the headers for the HTTP requests
-    # headers = {"Content-Type": "application/json"}
+    # Define the headers for the HTTP requests
+    headers = {"Content-Type": "application/json"}
     
-    # # Define the endpoint to post the results
-    # endpoint = "http://localhost:5000/dff-data"
+    # Define the endpoint to post the results
+    endpoint = "http://localhost:5000/dff-data"
     
-    # # Create an instance of the ElasticQuery class
-    # query_instance = ElasticQuery(es_url, index, query, headers, endpoint)
+    # Create an instance of the ElasticQuery class
+    query_instance = ElasticQuery(es_url, index, query, headers, endpoint)
     
-    # # Run the query
-    # results = query_instance.run_query()
+    print("Query ES URL: ", query_instance.es_url)
+    print("Query Index: ", query_instance.index)
+    print("Query Query: ", query_instance.query)
+    print("Query Headers: ", query_instance.headers)
+    print("Query Endpoint: ", query_instance.endpoint)
+    print("Query Interval: ", query_instance.interval)
+    print("Query Last Run: ", query_instance.last_run)
+    print("====================================================")
     
-    # # Post the results
-    # status_code = query_instance.post_results(results)
+    # Run the query
+    results = query_instance.run_query()
     
-    # # Print the results
-    # query_instance.print_results(results)
+    # Post the results
+    status_code = query_instance.post_results(results)
+    
+    # Print the results
+    query_instance.print_results(results)
 
 if __name__ == "__main__":
     main()    
