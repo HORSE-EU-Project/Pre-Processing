@@ -1,7 +1,6 @@
 import requests
 import logging
 from datetime import datetime, timedelta
-from elasticsearch import Elasticsearch
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -11,8 +10,7 @@ class ElasticQuery:
         if not all([es_url, index, query, headers, endpoint]):
             raise ValueError("All parameters must be provided and non-empty.")
 
-        # Initialize Elasticsearch client with headers specific for Elasticsearch if needed
-        self.es = Elasticsearch(es_url)
+        self.es_url = es_url
         self.index = index
         self.query = query
         self.endpoint = endpoint
@@ -27,14 +25,18 @@ class ElasticQuery:
         print("Endpoint: ", endpoint)
         print("Interval: ", interval)
         print("Last Run: ", self.last_run)
-        
 
     def run_query(self):
         """Executes a query on Elasticsearch and returns the results."""
+        url = f"{self.es_url}/{self.index}/_search"
         try:
-            response = self.es.search(index=self.index, query={"match_all": {}})
-            logging.info("Query executed successfully: %s", response)
-            return response
+            response = requests.post(url, json=self.query, headers=self.headers)
+            if response.status_code == 200:
+                logging.info("Query executed successfully: %s", response.json())
+                return response.json()
+            else:
+                logging.error("Failed to execute query with status code %s: %s", response.status_code, response.text)
+                return None
         except Exception as e:
             logging.error("Failed to execute query: %s", e, exc_info=True)
             return None
