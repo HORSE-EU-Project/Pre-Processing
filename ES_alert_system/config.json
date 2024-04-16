@@ -2,6 +2,7 @@
   "rules": [
     {
       "es_url": "http://localhost:9200",
+      "index": "test_index",
       "query": {"match_all": {}},
       "endpoint": "http://example.com/api",
       "headers": {"Content-Type": "application/json"},
@@ -9,6 +10,7 @@
     },
     {
       "es_url": "http://localhost:9200",
+      "index": "test_index",
       "query": {"match_all": {}},
       "endpoint": "http://example.com/api",
       "headers": {"Content-Type": "application/json"},
