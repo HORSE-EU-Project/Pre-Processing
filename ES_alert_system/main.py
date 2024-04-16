@@ -1,11 +1,11 @@
-import json
-from datetime import datetime, timedelta
-import time
-from elastic_query import ElasticQuery
-import threading
+import requests
 import logging
+import json
+import time
+from datetime import datetime, timedelta
+from elastic_query import ElasticQuery
 
-# Setup basic configuration for logging
+# Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ConfigReader:
@@ -15,10 +15,17 @@ class ConfigReader:
             data = json.load(file)
             return [ElasticQuery(**item) for item in data["rules"]]
 
-def schedule_query(query):
+  
+def main():
+    #Read the configuration file
+    queries = ConfigReader.read_config('./ES_alert_system/config.json')
+
+
+    #every 10 seconds run the queries
     while True:
-        try:
-            now = datetime.now()
+        now = datetime.now()
+        for query in queries:
+            print("=========================++++++====================================")
             if not query.last_run or now >= query.last_run + query.interval:
                 results = query.run_query()
                 status_code = query.post_results(results)
@@ -27,28 +34,10 @@ def schedule_query(query):
                 else:
                     logging.warning(f"Failed to post results: HTTP {status_code}")
                 query.last_run = now
-        except Exception as e:
-            logging.error(f"An error occurred: {str(e)}")
-            logging.error("============================THREAD=================================")
+        print("=============================================================")
+        time.sleep(5)
         
-        # Compute the next wake-up time considering the time taken by run_query and post_results
-        next_run = datetime.now() + query.interval
-        sleep_time = (next_run - datetime.now()).total_seconds()
-        time.sleep(max(0, sleep_time))
 
-def main():
-    try:
-        queries = ConfigReader.read_config('./ES_alert_system/config.json')
-        threads = []
-        for query in queries:
-            t = threading.Thread(target=schedule_query, args=(query,))
-            t.start()
-            threads.append(t)
-        for t in threads:
-            t.join()
-    except Exception as e:
-        logging.error(f"Failed during setup: {str(e)}")
-        logging.error("=============================================================")
 
 if __name__ == "__main__":
-    main()
+    main()    
