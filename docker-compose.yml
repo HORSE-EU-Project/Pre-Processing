@@ -20,26 +20,26 @@ services:
       - sqlite_data_v2:/dff/sqlite_data
       - .:/dff
 
-  dff-api-keycloak:
-    build:
-      dockerfile: Dockerfile.api
-      context: .
-    image: dff-api-keycloak:latest
-    container_name: "dff-api-keycloak"
-    environment:
-      - "SQLITE_DB_URL=$SQLITE_URL"
-      #- "MYSQL_PASS=$MYSQL_DB_PASS"
-      - "MONGO_DB_PASS=$MONGO_PASS"
-      - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
-    ports:
-      - 5007:5007
-    networks: 
-      - dff-network
-    depends_on:
-      - dff-app-keycloak
-    volumes:
-      - sqlite_data_v2:/sqlite_data
-      - .:/dff
+  # dff-api-keycloak:
+  #   build:
+  #     dockerfile: Dockerfile.api
+  #     context: .
+  #   image: dff-api-keycloak:latest
+  #   container_name: "dff-api-keycloak"
+  #   environment:
+  #     - "SQLITE_DB_URL=$SQLITE_URL"
+  #     #- "MYSQL_PASS=$MYSQL_DB_PASS"
+  #     - "MONGO_DB_PASS=$MONGO_PASS"
+  #     - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
+  #   ports:
+  #     - 5007:5007
+  #   networks: 
+  #     - dff-network
+  #   depends_on:
+  #     - dff-app-keycloak
+  #   volumes:
+  #     - sqlite_data_v2:/sqlite_data
+  #     - .:/dff
 
 networks:
   dff-network:
