@@ -59,36 +59,40 @@ def subscriptionSubmission():
 #     # Display the subscription form
 #     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
-@subscription.route('/subscription', methods=['POST'], endpoint='new_subscription')
+@subscription.route('/subscription', methods=['GET', 'POST'], endpoint='new_subscription')
 @decoratorCheckAppOrg
 def create_subscription():
     if current_user.is_authenticated:
-        # Collect data from form
-        subscription_type = request.form.get('subscription_type')
-        endpoint_url = request.form.get('endpoint_url')
-        DB_url = request.form.get('DB_url')
-        query = request.form.get('query', '')
-        interval = request.form.get('interval')
-        active = request.form.get('active', 'off') == 'on'
+        list_apps= User.get_all("apps", "name")
+        if request.method == 'POST':
+            # Collect data from form
+            subscription_type = request.form.get('subscription_type')
+            endpoint_url = request.form.get('endpoint_url')
+            DB_url = request.form.get('DB_url')
+            query = request.form.get('query', '')
+            interval = request.form.get('interval')
+            active = request.form.get('active', 'off') == 'on'
 
-        # Call the User class method to create a subscription
-        result = User.create_subscription(
-            user_id=current_user.id,
-            subscription_type=subscription_type,
-            endpoint_url=endpoint_url,
-            DB_url=DB_url,
-            query=query,
-            interval=interval,
-            active=active
-        )
+            # Call the User class method to create a subscription
+            result = User.create_subscription(
+                user_id=current_user.id,
+                subscription_type=subscription_type,
+                endpoint_url=endpoint_url,
+                DB_url=DB_url,
+                query=query,
+                interval=interval,
+                active=active
+            )
 
-        # Flash message and redirect based on the outcome
-        if result == 'Subscription created successfully':
-            flash("Subscription created successfully.", 'success')
+            # Flash message and redirect based on the outcome
+            if result == 'Subscription created successfully':
+                flash("Subscription created successfully.", 'success')
+            else:
+                flash("Failed to create subscription: " + result, 'error')
+
+            #return redirect(url_for('subscription.subscription_form'))
         else:
-            flash("Failed to create subscription: " + result, 'error')
-
-        #return redirect(url_for('subscription.subscription_form'))
+            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
