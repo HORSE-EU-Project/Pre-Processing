@@ -56,14 +56,12 @@ def subscriptionSubmission():
 
 
 @subscription.route('/subscribe/new_subscription', methods=['GET'])
-@login_required
 @decoratorCheckAppOrg
 def subscription_form():
     # Display the subscription form
     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
 @subscription.route('/subscribe/create_subscription', methods=['POST'])
-@login_required
 @decoratorCheckAppOrg
 def create_subscription():
     if current_user.is_authenticated:
