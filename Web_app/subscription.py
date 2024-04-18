@@ -45,13 +45,59 @@ def subscriptionSubmission():
                 temp_url="url_"+str(list_apps[i])
                 if request.form.get(temp_id)=="1":
                     current_app.logger.debug("Calling createElasticsearchWatch===============================")
-                    createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME)
+                    if createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME):
+                        flash(f"Alert for {list_apps[i]} created successfully", 'success')
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
         else :
             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
+
+
+@subscription.route('/subscribe/new_subscription', methods=['GET'])
+@login_required
+@decoratorCheckAppOrg
+def subscription_form():
+    # Display the subscription form
+    return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
+
+@subscription.route('/subscribe/create_subscription', methods=['POST'])
+@login_required
+@decoratorCheckAppOrg
+def create_subscription():
+    if current_user.is_authenticated:
+        # Collect data from form
+        subscription_type = request.form.get('subscription_type')
+        endpoint_url = request.form.get('endpoint_url')
+        DB_url = request.form.get('DB_url')
+        query = request.form.get('query', '')
+        interval = request.form.get('interval')
+        active = request.form.get('active', 'off') == 'on'
+
+        # Call the User class method to create a subscription
+        result = User.create_subscription(
+            user_id=current_user.id,
+            subscription_type=subscription_type,
+            endpoint_url=endpoint_url,
+            DB_url=DB_url,
+            query=query,
+            interval=interval,
+            active=active
+        )
+
+        # Flash message and redirect based on the outcome
+        if result == 'Subscription created successfully':
+            flash("Subscription created successfully.", 'success')
+        else:
+            flash("Failed to create subscription: " + result, 'error')
+
+        #return redirect(url_for('subscription.subscription_form'))
+    else:
+        flash('You should login first!', 'error')
+        return redirect("/")
+
+
 
 
 
@@ -89,6 +135,8 @@ def createAlert(entity_type, webhook_url, index_name):
         config_data = {}
         current_app.logger.error("Could not open or parse the Alerts file: " + str(e))
         flash("Could not open or parse the Alerts file -- Error: "+ str(e), 'error')
+        # return # Exit the function
+        return False
         # Optionally, create a new file or repair the existing file
         with open(config_file_path, 'w') as file:
             json.dump({"rules": []}, file, indent=4)  # Create a new file with empty rules
@@ -104,6 +152,8 @@ def createAlert(entity_type, webhook_url, index_name):
             json.dump(config_data, file, indent=4)
             current_app.logger.debug("Alert added successfully to the rules file.")
             flash("Alert added successfully to the rules file", 'success')
+            return True
     except Exception as e:
         current_app.logger.error("Failed to write to the Alerts file: " + str(e))
         flash("Failed to write to the Alerts file", 'error')
+        return False

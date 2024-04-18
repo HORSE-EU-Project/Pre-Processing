@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %} Create Subscription {% endblock %}
+
+{% block content %}
+
+<head>
+    <style>
+        .vertical-menu {
+            width: 200px;
+            border-radius: 200px;
+        }
+
+        .vertical-menu a {
+            background-color: #eee;
+            color: black;
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+        }
+
+        .vertical-menu a:hover {
+            background-color: #ccc;
+        }
+
+        .vertical-menu a.active {
+            background-color: #025573;
+            color: white;
+        }
+    </style>
+
+    <style>
+        @media(max-width: 800px) {
+            .column {
+                font-size:auto;
+                width: 100%!important;
+                display: block;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="content-inside">
+            <div class="row" style="padding:5%">
+                <div class="column" style="width:20%;">
+                    <div class="vertical-menu">
+                        <a href="/upload">Upload Data</a>
+                        <a href="/user_history">History Upload</a>
+                        <a class="active" href="/subscribe">Subscribe</a>
+                    </div>
+                </div>
+            
+                <div class="column" style="width:80%;">
+                    <h3 style="text-align:center;">Create New Subscription</h3>
+                    <form method="post" action="{{ url_for('create_subscription') }}">
+                        <div class="text-center">
+                            <ul class="list-group list-group-flush">
+                                <li>
+                                    <label for="subscription_type">Subscription Type:</label>
+                                    <input type="text" id="subscription_type" name="subscription_type" required>
+                                </li>
+                                <li>
+                                    <label for="endpoint_url">Endpoint URL:</label>
+                                    <input type="url" id="endpoint_url" name="endpoint_url" required>
+                                </li>
+                                <li>
+                                    <label for="DB_url">Database URL:</label>
+                                    <input type="url" id="DB_url" name="DB_url" required>
+                                </li>
+                                <li>
+                                    <label for="query">Query (Optional):</label>
+                                    <input type="text" id="query" name="query">
+                                </li>
+                                <li>
+                                    <label for="interval">Interval:</label>
+                                    <input type="text" id="interval" name="interval" placeholder="e.g., '30 minutes'" required>
+                                </li>
+                                <li>
+                                    <label for="active">Active:</label>
+                                    <input type="checkbox" id="active" name="active" checked>
+                                </li>
+                            </ul>
+                            <button type="submit" class="btn" style="background-color: #5cadb3;">Create Subscription</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        {% include "./footer.html" %}
+    </footer>
+</body>
+{% endblock %}

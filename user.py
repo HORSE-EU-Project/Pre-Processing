@@ -137,3 +137,49 @@ class User(UserMixin):
             "SELECT application, organization FROM user WHERE id = ?", (user_id,)
         ).fetchone()
         return [app_org[0], app_org[1]]
+
+
+    # Subscription management methods
+    @staticmethod
+    def create_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+        db = get_db()
+        try:
+            db.execute(
+                "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            )
+            db.commit()
+        except sqlite3.IntegrityError as e:
+            return str(e)
+        return 'Subscription created successfully'
+
+    @staticmethod
+    def get_subscriptions(user_id):
+        db = get_db()
+        subscriptions = db.execute(
+            "SELECT * FROM subscriptions WHERE user_id = ?",
+            (user_id,)
+        ).fetchall()
+        return subscriptions
+
+    @staticmethod
+    def update_subscription(subscription_id, **kwargs):
+        db = get_db()
+        fields = ', '.join(f"{key} = ?" for key in kwargs)
+        values = list(kwargs.values())
+        values.append(subscription_id)
+        db.execute(
+            f"UPDATE subscriptions SET {fields} WHERE subscription_id = ?",
+            values
+        )
+        db.commit()
+
+    @staticmethod
+    def delete_subscription(subscription_id):
+        db = get_db()
+        db.execute(
+            "DELETE FROM subscriptions WHERE subscription_id = ?",
+            (subscription_id,)
+        )
+        db.commit()
