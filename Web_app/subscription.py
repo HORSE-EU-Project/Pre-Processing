@@ -62,6 +62,7 @@ def subscriptionSubmission():
 @subscription.route('/subscription', methods=['GET', 'POST'], endpoint='new_subscription')
 @decoratorCheckAppOrg
 def create_subscription():
+    token = User.get_field("id", current_user.id, "user", "token")
     if current_user.is_authenticated:
         list_apps= User.get_all("apps", "name")
         if request.method == 'POST':
