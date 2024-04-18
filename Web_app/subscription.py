@@ -93,7 +93,7 @@ def create_subscription():
 
             #return redirect(url_for('subscription.subscription_form'))
         else:
-            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
+            return render_template('create_subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
