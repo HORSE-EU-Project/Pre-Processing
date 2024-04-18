@@ -27,8 +27,6 @@ if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
     os.makedirs(ELASTALERT_RULES_DIRECTORY)
 
 
-# Set the ElastAlert rules directory to be relative to the current working directory
-ELASTALERT_RULES_DIRECTORY = os.path.join(os.getcwd(), "elastalert/rules")
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
@@ -55,11 +53,11 @@ def subscriptionSubmission():
         return redirect("/")
 
 
-@subscription.route('/subscribe/new_subscription', methods=['GET'])
-@decoratorCheckAppOrg
-def subscription_form():
-    # Display the subscription form
-    return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
+# @subscription.route('/subscribe/new_subscription', methods=['GET'])
+# @decoratorCheckAppOrg
+# def subscription_form():
+#     # Display the subscription form
+#     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
 @subscription.route('/subscribe/create_subscription', methods=['POST'])
 @decoratorCheckAppOrg
