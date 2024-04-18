@@ -30,7 +30,7 @@ if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
-@subscription.route('/subscribe', methods=['GET', 'POST'])
+@subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
 @decoratorCheckAppOrg
 def subscriptionSubmission():
     current_app.logger.debug("In subscriptionSubmission===============================")
@@ -59,7 +59,7 @@ def subscriptionSubmission():
 #     # Display the subscription form
 #     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
-@subscription.route('/subscription', methods=['POST'])
+@subscription.route('/subscription', methods=['POST'], endpoint='new_subscription')
 @decoratorCheckAppOrg
 def create_subscription():
     if current_user.is_authenticated:
