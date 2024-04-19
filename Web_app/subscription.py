@@ -73,25 +73,27 @@ def create_subscription():
             query = request.form.get('query', '')
             interval = request.form.get('interval')
             active = request.form.get('active', 'off') == 'on'
-            
-            # Call the User class method to create a subscription
-            try:
-                
-                result = User.create_subscription(
-                    user_id=current_user.id,
-                    subscription_type=subscription_type,
-                    endpoint_url=endpoint_url,
-                    DB_url=DB_url,
-                    query=query,
-                    interval=interval,
-                    active=active
-                )
-                flash("Subscription created successfully.", 'success')
-                
-            except Exception as e:
-                flash("Failed to create subscription: " + str(e), 'error')
-                return redirect(url_for('subscription.form'))
 
+            # Call the User class method to create a subscription
+            result = User.create_subscription(
+                user_id=current_user.id,
+                subscription_type=subscription_type,
+                endpoint_url=endpoint_url,
+                DB_url=DB_url,
+                query=query,
+                interval=interval,
+                active=active
+            )
+
+            # Flash message and redirect based on the outcome
+            if result == 'Subscription created successfully':
+                current_app.logger.debug("Subscription created successfully.")
+                flash("Subscription created successfully.", 'success')
+            else:
+                current_app.logger.debug("Failed to create subscription")
+                flash("Failed to create subscription: " + result, 'error')
+
+            return redirect(url_for('subscription.view_subscriptions'))
         else:
             return render_template('create_subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
