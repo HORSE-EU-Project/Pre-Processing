@@ -69,6 +69,7 @@
                                 <th>Active</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Actions</th> <!-- Added a column header for actions -->
                             </tr>
                         </thead>
                         <tbody>
@@ -83,6 +84,13 @@
                                 <td>{{ subscription.active }}</td>
                                 <td>{{ subscription.created_at }}</td>
                                 <td>{{ subscription.updated_at }}</td>
+                                <td>
+                                    <!-- Form for edit button -->
+                                    <form action="{{ url_for('subscription.edit_subscription') }}" method="post">
+                                        <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
+                                        <button type="submit">EDIT</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

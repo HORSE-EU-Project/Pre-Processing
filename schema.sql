@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS history(
 
 -- Create the subscriptions table
 CREATE TABLE IF NOT EXISTS subscriptions(
-  subscription_id SERIAL PRIMARY KEY,
+  subscription_id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT NOT NULL,
   subscription_type TEXT NOT NULL,
   endpoint_url TEXT NOT NULL,
