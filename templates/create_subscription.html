@@ -53,36 +53,36 @@
                 </div>
             
                 <div class="column" style="width:80%;">
-                    <h3 style="text-align:center;">Create New Subscription</h3>
+                    <h3 style="text-align:center;">{{ form_title }}</h3>
                     <form method="post" action="{{ url_for('subscription.new') }}">
                         <div class="text-center">
                             <ul class="list-group list-group-flush">
                                 <li>
                                     <label for="subscription_type">Subscription Type:</label>
-                                    <input type="text" id="subscription_type" name="subscription_type" required>
+                                    <input type="text" id="subscription_type" name="subscription_type" value="{{ subscription_type }}" required>
                                 </li>
                                 <li>
                                     <label for="endpoint_url">Endpoint URL:</label>
-                                    <input type="url" id="endpoint_url" name="endpoint_url" required>
+                                    <input type="url" id="endpoint_url" name="endpoint_url" value="{{ endpoint_url }}" required>
                                 </li>
                                 <li>
                                     <label for="DB_url">Database URL:</label>
-                                    <input type="url" id="DB_url" name="DB_url" required>
+                                    <input type="url" id="DB_url" name="DB_url" value="{{ DB_url }}" required>
                                 </li>
                                 <li>
                                     <label for="query">Query (Optional):</label>
-                                    <input type="text" id="query" name="query">
+                                    <input type="text" id="query" name="query" value="{{ query }}">
                                 </li>
                                 <li>
                                     <label for="interval">Interval:</label>
-                                    <input type="text" id="interval" name="interval" placeholder="e.g., '30 minutes'" required>
+                                    <input type="text" id="interval" name="interval" value="{{ interval }}" required>
                                 </li>
                                 <li>
                                     <label for="active">Active:</label>
-                                    <input type="checkbox" id="active" name="active" checked>
+                                    <input type="checkbox" id="active" name="active" {{ 'checked' if active else '' }}>
                                 </li>
                             </ul>
-                            <button type="submit" class="btn" style="background-color: #5cadb3;">Create Subscription</button>
+                            <button type="submit" class="btn" style="background-color: #5cadb3;">{{ button_text }}</button>
                         </div>
                     </form>
                 </div>

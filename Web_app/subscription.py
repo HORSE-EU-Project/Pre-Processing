@@ -93,12 +93,27 @@ def subscription_form():
             subscription_id = request.form.get('subscription_id')
             #based on the subscription_id, get the subscription details
             subscription = User.get_subscription(subscription_id)
+            
+            form_data = {
+                'form_title': "Edit Subscription",
+                'subscription_type': str(subscription['subscription_type']),
+                'endpoint_url': str(subscription['endpoint_url']),
+                'DB_url': str(subscription['DB_url']),
+                'query': str(subscription['query']),
+                'interval': str(subscription['interval']),
+                'active': bool(subscription['active']),  # This controls whether the checkbox is checked
+                'button_text': "Update Subscription"  # Text for the submit button
+            }
+            
             #Fill the form with the subscription details
             return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email)
             
             #return redirect(url_for('subscription.view_subscriptions'))
         else:
-            # Render the subscription view using the subscriptions.html template
+            form_data = {
+                'form_title': "Edit Subscription",
+                'button_text': "Update Subscription"  # Text for the submit button
+            }
             return render_template('create_subscription.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
     else:
         flash('You must log in first!', 'error')
