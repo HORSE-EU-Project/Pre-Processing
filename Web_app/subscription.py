@@ -59,7 +59,7 @@ def subscription_form():
     # Display the subscription form
     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
-@subscription.route('/subscribe/new', methods=['GET', 'POST'], endpoint='new_subscription')
+@subscription.route('/subscribe/new', methods=['GET', 'POST'], endpoint='new_sub')
 @decoratorCheckAppOrg
 def create_subscription():
     token = User.get_field("id", current_user.id, "user", "token")
