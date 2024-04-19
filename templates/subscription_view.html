@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}User Subscriptions{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    thead, tfoot {
+        background-color: #025573;
+        color: #fff;
+    }
+
+    tr:nth-child(odd) {
+        background: rgba(2, 85, 115, 0.3);
+    }
+
+    tr:nth-child(even) {
+        background: #f5f5f5;
+    }
+
+    .dataframe {
+        margin: 0 auto;
+        width: 90%;
+        border-collapse: collapse;
+    }
+</style>
+
+<body>
+    <div class="content">
+        <div class="content-inside">
+            <div class="row" style="padding: 5%">
+
+                <div class="column" style="width: 20%;">
+                    <div class="vertical-menu">
+                        <a href="/subscribe">Manage Subscriptions</a>
+                        <a href="/settings">Account Settings</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+
+                <div class="column" style="width: 80%; margin: 0 auto;">
+                    <h3 style="text-align: center;">Your Subscriptions</h3>
+                    <table class="dataframe">
+                        <thead>
+                            <tr>
+                                <th>Subscription ID</th>
+                                <th>Type</th>
+                                <th>Endpoint URL</th>
+                                <th>Database URL</th>
+                                <th>Query</th>
+                                <th>Interval</th>
+                                <th>Active</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subscription in subscriptions %}
+                            <tr>
+                                <td>{{ subscription.subscription_id }}</td>
+                                <td>{{ subscription.subscription_type }}</td>
+                                <td>{{ subscription.endpoint_url }}</td>
+                                <td>{{ subscription.DB_url }}</td>
+                                <td>{{ subscription.query }}</td>
+                                <td>{{ subscription.interval }}</td>
+                                <td>{{ subscription.active }}</td>
+                                <td>{{ subscription.created_at }}</td>
+                                <td>{{ subscription.updated_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        {% include "./footer.html" %}
+    </footer>
+</body>
+
+{% endblock %}

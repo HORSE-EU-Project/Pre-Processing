@@ -53,6 +53,34 @@ def subscriptionSubmission():
         return redirect("/")
 
 
+@subscription.route('/subscribe/view', methods=['GET', 'POST'], endpoint='view')
+@decoratorCheckAppOrg
+def subscriptionSubmission():
+    current_app.logger.debug("In subscriptionSubmission view")
+    if current_user.is_authenticated:
+        token = User.get_field("id", current_user.id, "user", "token")
+        subscriptions = User.get_subscriptions(current_user.id)  # Use the static method to get subscriptions
+
+        if request.method == 'POST':
+            list_apps = User.get_all("apps", "name")
+            for i in range(len(list_apps)):
+                temp_id = "id_" + str(list_apps[i])
+                temp_url = "url_" + str(list_apps[i])
+                if request.form.get(temp_id) == "1":
+                    current_app.logger.debug("Calling createElasticsearchWatch===============================")
+                    if createAlert(list_apps[i], request.form.get(temp_url), INDEX_NAME):
+                        flash(f"Alert for {list_apps[i]} created successfully", 'success')
+            # After handling POST, redirect to GET to avoid form resubmission issues
+            return redirect(url_for('subscription.view_subscriptions'))
+        else:
+            # Render the subscription view using the subscriptions.html template
+            return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
+    else:
+        flash('You must log in first!', 'error')
+        return redirect("/")
+
+
+
 @subscription.route('/subscribe/form', methods=['GET'], endpoint='form')
 @decoratorCheckAppOrg
 def subscription_form():
