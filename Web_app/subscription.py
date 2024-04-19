@@ -81,11 +81,28 @@ def subscriptionSubmission():
 
 
 
-@subscription.route('/subscribe/form', methods=['GET'], endpoint='form')
+@subscription.route('/subscribe/form', methods=['GET', 'POST'], endpoint='form')
 @decoratorCheckAppOrg
 def subscription_form():
-    # Display the subscription form
-    return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
+    current_app.logger.debug("In subscription form")
+    if current_user.is_authenticated:
+        token = User.get_field("id", current_user.id, "user", "token")
+        subscriptions = User.get_subscriptions(current_user.id)  # Use the static method to get subscriptions
+
+        if request.method == 'POST':
+            subscription_id = request.form.get('subscription_id')
+            #based on the subscription_id, get the subscription details
+            subscription = User.get_subscription(subscription_id)
+            #Fill the form with the subscription details
+            return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email)
+            
+            #return redirect(url_for('subscription.view_subscriptions'))
+        else:
+            # Render the subscription view using the subscriptions.html template
+            return render_template('create_subscription.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
+    else:
+        flash('You must log in first!', 'error')
+        return redirect("/")
 
 @subscription.route('/subscribe/new', methods=['GET', 'POST'], endpoint='new')
 @decoratorCheckAppOrg

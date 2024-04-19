@@ -163,6 +163,16 @@ class User(UserMixin):
         ).fetchall()
         return subscriptions
 
+
+    @staticmethod
+    def get_subscription(subscription_id):
+        db = get_db()
+        subscription = db.execute(
+            "SELECT * FROM subscriptions WHERE subscription_id = ?",
+            (subscription_id,)
+        ).fetchone()
+        return subscription
+
     @staticmethod
     def update_subscription(subscription_id, **kwargs):
         db = get_db()

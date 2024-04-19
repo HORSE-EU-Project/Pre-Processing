@@ -86,7 +86,7 @@
                                 <td>{{ subscription.updated_at }}</td>
                                 <td>
                                     <!-- Form for edit button -->
-                                    <form action="{{ url_for('subscription.edit_subscription') }}" method="post">
+                                    <form action="{{ url_for('subscription.form') }}" method="post">
                                         <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
                                         <button type="submit">EDIT</button>
                                     </form>
