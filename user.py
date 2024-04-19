@@ -199,6 +199,6 @@ class User(UserMixin):
     def delete_all_subscriptions():
         db = get_db()
         db.execute(
-            "DELETE * FROM subscriptions"    
+            "DELETE FROM subscriptions"    
         )
         db.commit()
