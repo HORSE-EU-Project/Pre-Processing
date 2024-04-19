@@ -8,7 +8,7 @@ from flask_login import (
 import sys
 import os
 import yaml
-
+import db as DB
 from .decoratorApp import decoratorCheckAppOrg
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -171,7 +171,7 @@ def create_subscription():
 
 
 def create_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
-        db = get_db()
+        db = DB.get_db()
         cursor = db.cursor()
         try:
             cursor.execute(
