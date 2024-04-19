@@ -8,7 +8,7 @@ from flask_login import (
     login_user,
     logout_user
 )
-from db import init_db_command
+from db import init_db_command, update_db_schema_command
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
