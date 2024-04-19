@@ -4,10 +4,44 @@
 
 {% block content %}
 <head>
-    <link rel="stylesheet" href="/static/css/styles.css">
-</head>
-
-<style>
+    <style>
+        .vertical-menu {
+      width: 200px;
+      border-radius: 200px;
+    }
+    
+    .vertical-menu a {
+      background-color: #eee;
+      color: black;
+      display: block;
+      padding: 12px;
+      text-decoration: none;
+    }
+    
+    .vertical-menu a:hover {
+      background-color: #ccc;
+    }
+    
+    .vertical-menu a.active {
+      background-color: #025573;
+    
+      color: white;
+    }
+    </style>
+    
+    <style>
+        @media(max-width: 800px) {
+    
+    .column {
+      font-size:auto;
+      width: 100%!important;
+      display: block;
+    text-align: center;
+    }
+    }
+    </style>
+    
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -27,12 +61,12 @@
                         $('#btnClick').attr('disabled', 'disabled');
                     }
                 }
- 
- 
+    
+    
             })
         });
     </script>
-</style>
+</head>
 
 <body>
     <div class="content">
