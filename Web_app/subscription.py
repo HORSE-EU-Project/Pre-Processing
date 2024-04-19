@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, flash, Blueprint, current_app
+from flask import render_template, request, redirect, url_for, flash, Blueprint, current_app
 import requests
 from urllib.parse import urlparse
 import json
@@ -89,11 +89,13 @@ def create_subscription():
             if result == 'Subscription created successfully':
                 current_app.logger.debug("Subscription created successfully.")
                 flash("Subscription created successfully.", 'success')
+                return redirect(url_for('subscription.view_subscriptions'))
             else:
                 current_app.logger.debug("Failed to create subscription")
                 flash("Failed to create subscription: " + result, 'error')
+                return redirect(url_for('subscription.form'))
 
-            return redirect('subscription.view_subscriptions')
+            
         else:
             return render_template('create_subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
