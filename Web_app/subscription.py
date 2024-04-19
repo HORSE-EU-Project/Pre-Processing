@@ -8,7 +8,7 @@ from flask_login import (
 import sys
 import os
 import yaml
-import db as DB
+
 from .decoratorApp import decoratorCheckAppOrg
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -94,20 +94,16 @@ def subscription_form():
             #based on the subscription_id, get the subscription details
             subscription = User.get_subscription(subscription_id)
             
-            #access the fields of the subscription object
-            s = subscription.subscription_type
-            
-            
-            # form_data = {
-            #     'form_title': "Edit Subscription",
-            #     'subscription_type': str(subscription.subscription_type),
-            #     'endpoint_url': str(subscription.endpoint_url),
-            #     'DB_url': str(subscription.DB_url),
-            #     'query': str(subscription.query),
-            #     'interval': str(subscription.interval),
-            #     'active': bool(subscription.active),  # This controls whether the checkbox is checked
-            #     'button_text': "Update Subscription"  # Text for the submit button
-            # }
+            form_data = {
+                'form_title': "Edit Subscription",
+                'subscription_type': str(subscription.subscription_type),
+                'endpoint_url': str(subscription.endpoint_url),
+                'DB_url': str(subscription.DB_url),
+                'query': str(subscription.query),
+                'interval': str(subscription.interval),
+                'active': bool(subscription.active),  # This controls whether the checkbox is checked
+                'button_text': "Update Subscription"  # Text for the submit button
+            }
             
             #Fill the form with the subscription details
             return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email)
@@ -139,28 +135,25 @@ def create_subscription():
             active = request.form.get('active', 'off') == 'on'
 
             # Call the User class method to create a subscription
-            # result = User.create_subscription(
-            #     user_id=current_user.id,
-            #     subscription_type=subscription_type,
-            #     endpoint_url=endpoint_url,
-            #     DB_url=DB_url,
-            #     query=query,
-            #     interval=interval,
-            #     active=active
-            # )
-
-            create_subscription(current_user.id, subscription_type, endpoint_url, DB_url, query, interval, active)
-
+            result = User.create_subscription(
+                user_id=current_user.id,
+                subscription_type=subscription_type,
+                endpoint_url=endpoint_url,
+                DB_url=DB_url,
+                query=query,
+                interval=interval,
+                active=active
+            )
 
             # Flash message and redirect based on the outcome
-            # if result == 'Subscription created successfully':
-            #     current_app.logger.debug("Subscription created successfully.")
-            #     flash("Subscription created successfully.", 'success')
-            #     return redirect(url_for('subscription.view_subscriptions'))
-            # else:
-            #     current_app.logger.debug("Failed to create subscription")
-            #     flash("Failed to create subscription: " + result, 'error')
-            #     return redirect(url_for('subscription.form'))
+            if result == 'Subscription created successfully':
+                current_app.logger.debug("Subscription created successfully.")
+                flash("Subscription created successfully.", 'success')
+                return redirect(url_for('subscription.view_subscriptions'))
+            else:
+                current_app.logger.debug("Failed to create subscription")
+                flash("Failed to create subscription: " + result, 'error')
+                return redirect(url_for('subscription.form'))
 
             
         else:
@@ -170,22 +163,7 @@ def create_subscription():
         return redirect("/")
 
 
-def create_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
-        db = DB.get_db()
-        cursor = db.cursor()
-        try:
-            cursor.execute(
-                "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
-            )
-            db.commit()
-            subscription_id = cursor.lastrowid
-            return f'Subscription created successfully with ID {subscription_id}'
-        except sqlite3.IntegrityError as e:
-            return str(e)
-        finally:
-            db.close()
+
 
 
 def createAlert(entity_type, webhook_url, index_name):
