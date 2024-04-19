@@ -53,11 +53,11 @@ def subscriptionSubmission():
         return redirect("/")
 
 
-# @subscription.route('/subscribe/new_subscription', methods=['GET'])
-# @decoratorCheckAppOrg
-# def subscription_form():
-#     # Display the subscription form
-#     return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
+@subscription.route('/subscribe/new_subscription', methods=['GET'])
+@decoratorCheckAppOrg
+def subscription_form():
+    # Display the subscription form
+    return render_template('create_subscription.html', name=current_user.name, email=current_user.email)
 
 @subscription.route('/subscribe/new', methods=['GET', 'POST'], endpoint='new_subscription')
 @decoratorCheckAppOrg
