@@ -4,69 +4,43 @@
 
 {% block content %}
 <head>
-    <style>
-        .vertical-menu {
-      width: 200px;
-      border-radius: 200px;
+
+    <link rel="stylesheet" href="/static/css/styles.css">
+
+</head>
+<style>
+        th, td {
+    padding: 15px;
+    text-align: left;
     }
-    
-    .vertical-menu a {
-      background-color: #eee;
-      color: black;
-      display: block;
-      padding: 12px;
-      text-decoration: none;
+
+    thead,
+    tfoot {
+        background-color: #025573;
+        color: #fff;
     }
-    
-    .vertical-menu a:hover {
-      background-color: #ccc;
-    }
-    
-    .vertical-menu a.active {
-      background-color: #025573;
-    
-      color: white;
+    tr:nth-child(odd){
+        background:rgba(2,85, 115,0.3);}
+
+    tr:nth-child(even){
+        background:#f5f5f5;}
+
+    .dataframe{
+        margin:0 auto;
     }
     </style>
-    
+
     <style>
         @media(max-width: 800px) {
-    
+
     .column {
-      font-size:auto;
-      width: 100%!important;
-      display: block;
+    font-size:auto;
+    width: 100%!important;
+    display: block;
     text-align: center;
     }
     }
-    </style>
-    
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('.chk1').change(function () {
-                if ($(this).is(":checked")) {
-                    $('#btnClick').removeAttr('disabled');
-                }
-                else {
-                    var isChecked = false;
-                    $('.chk1').each(function () {
-                        if ($(this).is(":checked")) {
-                            $('#btnClick').removeAttr('disabled');
-                            isChecked = true;
-                        }
-                    });
-                    if (!isChecked) {
-                        $('#btnClick').attr('disabled', 'disabled');
-                    }
-                }
-    
-    
-            })
-        });
-    </script>
-</head>
+</style>
 
 <body>
     <div class="content">
