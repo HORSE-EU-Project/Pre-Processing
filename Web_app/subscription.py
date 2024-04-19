@@ -93,7 +93,7 @@ def create_subscription():
                 current_app.logger.debug("Failed to create subscription")
                 flash("Failed to create subscription: " + result, 'error')
 
-            return redirect(url_for('subscription.view_subscriptions'))
+            return redirect('subscription.view_subscriptions')
         else:
             return render_template('create_subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
     else:
