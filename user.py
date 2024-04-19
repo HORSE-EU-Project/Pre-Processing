@@ -193,3 +193,12 @@ class User(UserMixin):
             (subscription_id,)
         )
         db.commit()
+        
+        
+    @staticmethod
+    def delete_all_subscriptions():
+        db = get_db()
+        db.execute(
+            "DELETE * FROM subscriptions"    
+        )
+        db.commit()
