@@ -38,3 +38,56 @@ def init_app(app):
     print("hello")
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    
+
+
+
+def update_db_schema():
+    """Update the database schema to match the schema.sql file."""
+    db = get_db()
+    current_schema = fetch_current_schema(db)
+    desired_schema = parse_schema_file()
+
+    # Implement schema changes
+    apply_schema_changes(db, current_schema, desired_schema)
+
+def fetch_current_schema(db):
+    """Fetch the current database schema."""
+    query = "SELECT name, sql FROM sqlite_master WHERE type='table';"
+    result = db.execute(query).fetchall()
+    return {row['name']: row['sql'] for row in result}
+
+def parse_schema_file():
+    """Parse the schema from the schema.sql file."""
+    with current_app.open_resource('schema.sql') as f:
+        schema_sql = f.read().decode('utf8')
+    commands = schema_sql.split(';')
+    schema = {}
+    for command in commands:
+        if 'CREATE TABLE' in command:
+            tablename = command.split()[2]
+            schema[tablename] = command + ';'
+    return schema
+
+def apply_schema_changes(db, current_schema, desired_schema):
+    """Apply changes from the desired schema to the current database schema."""
+    for tablename, sql in desired_schema.items():
+        if tablename not in current_schema:
+            db.execute(sql)  # Create missing table
+        elif current_schema[tablename] != sql:
+            db.execute('DROP TABLE IF EXISTS ' + tablename)  # Dangerous: data loss
+            db.execute(sql)  # Recreate table with new schema
+
+@click.command('update-db-schema')
+@with_appcontext
+def update_db_schema_command():
+    """Update the database schema to match the schema.sql."""
+    update_db_schema()
+    print("Database schema updated.")
+
+def init_app(app):
+    """Add teardown and command registrations to the Flask app."""
+    print("hello")
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
+    app.cli.add_command(update_db_schema_command)

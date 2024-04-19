@@ -46,9 +46,16 @@ login_manager.init_app(app)
 
 
 
-#initialize db only if it does not exist yet
-if 'sqlite_db' not in os.listdir("sqlite_data/"):
-    init_db_command()
+# Initialize or update the database schema
+db_path = "sqlite_data/sqlite_db"
+if not os.path.exists(db_path):
+    # If the database does not exist, create it
+    with app.app_context():
+        init_db_command()
+else:
+    # Check for schema updates if the database exists
+    with app.app_context():
+        update_db_schema_command()
 
 #Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
@@ -64,7 +71,6 @@ app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 def index():
     if current_user.is_authenticated:
         #Successfully authenticated
-        print("Current user is authenticated===============================")
         current_app.logger.debug("Current user is authenticated===============================")
         current_app.logger.debug('This is a debug message')
         token = User.get_field("id", current_user.id, "user", "token")
