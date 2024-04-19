@@ -139,25 +139,28 @@ def create_subscription():
             active = request.form.get('active', 'off') == 'on'
 
             # Call the User class method to create a subscription
-            result = User.create_subscription(
-                user_id=current_user.id,
-                subscription_type=subscription_type,
-                endpoint_url=endpoint_url,
-                DB_url=DB_url,
-                query=query,
-                interval=interval,
-                active=active
-            )
+            # result = User.create_subscription(
+            #     user_id=current_user.id,
+            #     subscription_type=subscription_type,
+            #     endpoint_url=endpoint_url,
+            #     DB_url=DB_url,
+            #     query=query,
+            #     interval=interval,
+            #     active=active
+            # )
+
+            create_subscription(current_user.id, subscription_type, endpoint_url, DB_url, query, interval, active)
+
 
             # Flash message and redirect based on the outcome
-            if result == 'Subscription created successfully':
-                current_app.logger.debug("Subscription created successfully.")
-                flash("Subscription created successfully.", 'success')
-                return redirect(url_for('subscription.view_subscriptions'))
-            else:
-                current_app.logger.debug("Failed to create subscription")
-                flash("Failed to create subscription: " + result, 'error')
-                return redirect(url_for('subscription.form'))
+            # if result == 'Subscription created successfully':
+            #     current_app.logger.debug("Subscription created successfully.")
+            #     flash("Subscription created successfully.", 'success')
+            #     return redirect(url_for('subscription.view_subscriptions'))
+            # else:
+            #     current_app.logger.debug("Failed to create subscription")
+            #     flash("Failed to create subscription: " + result, 'error')
+            #     return redirect(url_for('subscription.form'))
 
             
         else:
@@ -167,7 +170,22 @@ def create_subscription():
         return redirect("/")
 
 
-
+def create_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+        db = get_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            )
+            db.commit()
+            subscription_id = cursor.lastrowid
+            return f'Subscription created successfully with ID {subscription_id}'
+        except sqlite3.IntegrityError as e:
+            return str(e)
+        finally:
+            db.close()
 
 
 def createAlert(entity_type, webhook_url, index_name):
