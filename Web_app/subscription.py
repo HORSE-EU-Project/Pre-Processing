@@ -106,6 +106,7 @@ def subscription_form():
                     'active': bool(subscription['active']),  # This controls whether the checkbox is checked
                     'button_text': "Update Subscription"  # Text for the submit button
                 }
+                current_app.logger.debug("Subscription found with ID: " + str(subscription_id))
             else:
                 # Handle cases where no subscription is found
                 form_data = {
