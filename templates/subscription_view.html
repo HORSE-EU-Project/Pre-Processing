@@ -91,7 +91,7 @@
                                         <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
                                         <button type="submit">EDIT</button>
                                     </form>
-                                    <form action="{{ url_for('subscription.delete') }}" method="post">
+                                    <form action="{{ url_for('subscription.new') }}" method="post">
                                         <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
                                         <input type="hidden" id="action" name="action" value="delete">
                                         <button type="submit" style="background-color: red; color: white;">DELETE</button>
