@@ -127,7 +127,7 @@ def subscription_form():
                 
             
             #Fill the form with the subscription details
-            return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email)
+            return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email, **form_data)
             
             #return redirect(url_for('subscription.view_subscriptions'))
         else:
@@ -135,7 +135,7 @@ def subscription_form():
                 'form_title': "Edit Subscription",
                 'button_text': "Update Subscription"  # Text for the submit button
             }
-            return render_template('create_subscription.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
+            return render_template('create_subscription.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email, **form_data)
     else:
         flash('You must log in first!', 'error')
         return redirect("/")
