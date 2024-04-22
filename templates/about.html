@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %} About Us - Oauth2 IDM Demo {% endblock %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+</head>
+<style>
+  @media(max-width: 800px) {
+    .row {
+      width: 70%!important;
+    }
+    .column {
+      font-size: auto;
+      width: 100%!important;
+    }
+  }
+</style>
+<body>
+  <div class="content">
+    <div class="content-inside">
+      <h1 style="color:black;text-align: center;margin-top: 2%;"><strong>About Us</strong></h1>
+      <div class="row" style="border-radius:20px;display: flex; margin-bottom: 5%; margin: 5%; box-shadow: 1px 5px 20px #888888; margin-top: 2%; margin-left: auto; margin-right: auto; width:70%;">
+        <div class="column" style="border-radius: 20px 0px 0px 20px;width: 50%;padding: 20px;">
+          <h2 style="color:black;text-align: center;">Our Mission</h2>
+          <p>
+            Our mission is to deliver innovative solutions that simplify the complexities of data management, ensuring security, scalability, and accessibility.
+          </p>
+          <h2 style="color:black;text-align: center;">Our Vision</h2>
+          <p>
+            We aim to be the leading provider of data handling and processing services globally, recognized for our integrity, reliability, and commitment to our clients' success.
+          </p>
+        </div>
+        <div class="column" style="border-radius: 0px 20px 20px 0px;width: 50%;padding: 20px; background-image: url('../static/about-back.jpg'); color: white;">
+          <h2 style="color:white;text-align: center;">Our Values</h2>
+          <p>
+            <img src="../static/check.png" style="width:18px;height:18px;">  Innovation – We strive for creative solutions.
+          </p>
+          <p>
+            <img src="../static/check.png" style="width:18px;height:18px;">  Trust – We build and maintain trust in all our relationships.
+          </p>
+          <p>
+            <img src="../static/check.png" style="width:18px;height:18px;">  Excellence – We pursue excellence in everything we do.
+          </p>
+          <p>
+            <img src="../static/check.png" style="width:18px;height:18px;">  Collaboration – We believe in the power of teamwork.
+          </p>
+          <p>
+            <img src="../static/check.png" style="width:18px;height:18px;">  Accountability – We take responsibility for our actions and results.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="mt-auto">
+    {% include "./footer.html" %}
+  </footer>
+</body>
+{% endblock %}
