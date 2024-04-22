@@ -108,7 +108,9 @@ def subscription_form():
                     'query': str(subscription['query']),
                     'interval': str(subscription['interval']),
                     'active': bool(subscription['active']),  # This controls whether the checkbox is checked
-                    'button_text': "Update Subscription"  # Text for the submit button
+                    'button_text': "Update Subscription",  # Text for the submit button
+                    'action': 'update',  # Action to be taken when the form is submitted
+                    'subscription_id': subscription_id # Hidden field to store the subscription ID
                 }
                 current_app.logger.debug("Subscription found with ID: " + str(subscription_id))
             else:
@@ -144,10 +146,12 @@ def subscription_form():
 @decoratorCheckAppOrg
 def create_subscription():
     token = User.get_field("id", current_user.id, "user", "token")
+    
     if current_user.is_authenticated:
         list_apps= User.get_all("apps", "name")
         if request.method == 'POST':
             # Collect data from form
+            action = request.form.get('action')
             subscription_type = request.form.get('subscription_type')
             endpoint_url = request.form.get('endpoint_url')
             DB_url = request.form.get('DB_url')
@@ -155,6 +159,24 @@ def create_subscription():
             interval = request.form.get('interval')
             active = request.form.get('active', 'off') == 'on'
 
+            if action == 'update':
+                # Update the subscription
+                subscription_id = int(request.form.get('subscription_id'))
+                result = User.update_subscription(
+                    subscription_id,
+                    subscription_type=subscription_type,
+                    endpoint_url=endpoint_url,
+                    DB_url=DB_url,
+                    query=query,
+                    interval=interval,
+                    active=active
+                )
+                if result == 'Subscription updated successfully':
+                    flash("Subscription updated successfully.", 'success')
+                else:
+                    flash("Failed to update subscription: " + result, 'error')
+                return redirect(url_for('subscription.view_subscriptions'))
+            
             # Call the User class method to create a subscription
             result = User.create_subscription(
                 user_id=current_user.id,
