@@ -9,7 +9,7 @@ from user import User
 
 def decoratorCheckAppOrg(func):
     def inner():
-        if current_user.is_authenticated and (User.get_field("user", current_user.id, "apps", "name")==-1 or User.get_field("id", current_user.id, "user", "organization")==None):
+        if current_user.is_authenticated and (User.get_field("user_id", current_user.id, "apps", "name")==-1 or User.get_field("id", current_user.id, "user", "organization")==None):
             return render_template('modal.html' , name = current_user.name, email = current_user.email)
         else:
             return func()
