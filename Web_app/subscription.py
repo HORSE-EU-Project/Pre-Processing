@@ -92,7 +92,7 @@ def subscription_form():
         if request.method == 'POST':
             subscription_id = request.form.get('subscription_id')
             # Based on the subscription_id, get the subscription details
-            subscription = User.get_subscription(subscription_id)
+            subscription = dict(User.get_subscription(subscription_id))
             
             #print(subscription fields)
             current_app.logger.debug("Subscription fields: " + str(subscription))
