@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session, current_app
-from flask_mail import Mail
+#from flask_mail import Mail
 import socket
 import os
 from flask_login import (
