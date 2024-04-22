@@ -102,12 +102,12 @@ def subscription_form():
             if subscription is not None:
                 form_data = {
                     'form_title': "Edit Subscription",
-                    'subscription_type': str(subscription['subscription_type']),
-                    'endpoint_url': str(subscription['endpoint_url']),
-                    'DB_url': str(subscription['DB_url']),
-                    'query': str(subscription['query']),
-                    'interval': str(subscription['interval']),
-                    'active': bool(subscription['active']),  # This controls whether the checkbox is checked
+                    'subscription_type': str(subscription[0]),
+                    'endpoint_url': str(subscription[1]),
+                    'DB_url': str(subscription[2]),
+                    'query': str(subscription[3]),
+                    'interval': str(subscription[4]),
+                    'active': bool(subscription[5]),  # This controls whether the checkbox is checked
                     'button_text': "Update Subscription"  # Text for the submit button
                 }
                 current_app.logger.debug("Subscription found with ID: " + str(subscription_id))
