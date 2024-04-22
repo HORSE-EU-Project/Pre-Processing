@@ -91,19 +91,35 @@ def subscription_form():
 
         if request.method == 'POST':
             subscription_id = request.form.get('subscription_id')
-            #based on the subscription_id, get the subscription details
+            # Based on the subscription_id, get the subscription details
             subscription = User.get_subscription(subscription_id)
             
-            form_data = {
-                'form_title': "Edit Subscription",
-                'subscription_type': str(subscription.subscription_type),
-                'endpoint_url': str(subscription.endpoint_url),
-                'DB_url': str(subscription.DB_url),
-                'query': str(subscription.query),
-                'interval': str(subscription.interval),
-                'active': bool(subscription.active),  # This controls whether the checkbox is checked
-                'button_text': "Update Subscription"  # Text for the submit button
-            }
+            # Check if subscription data is fetched
+            if subscription is not None:
+                form_data = {
+                    'form_title': "Edit Subscription",
+                    'subscription_type': str(subscription['subscription_type']),
+                    'endpoint_url': str(subscription['endpoint_url']),
+                    'DB_url': str(subscription['DB_url']),
+                    'query': str(subscription['query']),
+                    'interval': str(subscription['interval']),
+                    'active': bool(subscription['active']),  # This controls whether the checkbox is checked
+                    'button_text': "Update Subscription"  # Text for the submit button
+                }
+            else:
+                # Handle cases where no subscription is found
+                form_data = {
+                    'form_title': "Subscription Not Found",
+                    'subscription_type': '',
+                    'endpoint_url': '',
+                    'DB_url': '',
+                    'query': '',
+                    'interval': '',
+                    'active': False,
+                    'button_text': "Update Subscription"
+                }
+                current_app.logger.debug("No subscription found with ID: " + str(subscription_id))
+                
             
             #Fill the form with the subscription details
             return render_template('create_subscription.html', subscription=subscription, tkn=token, name=current_user.name, email=current_user.email)
