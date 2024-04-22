@@ -1,9 +1,9 @@
 -- Create the user table
 CREATE TABLE IF NOT EXISTS user(
   id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  token TEXT NOT NULL,
+  name TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  token TEXT UNIQUE NOT NULL,
   organization TEXT,
   domain_name TEXT
 );
