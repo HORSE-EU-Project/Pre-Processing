@@ -136,6 +136,14 @@ def get_userinfo():
 def home():
     return render_template('main.html', name = current_user.name, email = current_user.email, tkn = current_user.token)
 
+
+
+@app.route('/about', endpoint='about')
+@decoratorCheckAppOrg
+def home():
+    return render_template('about.html', name = current_user.name, email = current_user.email, tkn = current_user.token)
+
+
 @app.route("/logout")
 @login_required
 def logout():
