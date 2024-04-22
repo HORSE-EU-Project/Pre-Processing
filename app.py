@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session, current_app
+from flask_mail import Mail
 import socket
 import os
 from flask_login import (
@@ -14,6 +15,15 @@ from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
 app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
+
+# Email configuration
+# app.config['MAIL_SERVER'] = 'smtp.yourmailserver.com'
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USERNAME'] = 'your-email@example.com'
+# app.config['MAIL_PASSWORD'] = 'your-email-password'
+# mail = Mail(app)
+
 
 print("==================================== APP LETS ====================================")
 print("==================================== APP GOGO ======================================")
@@ -33,11 +43,13 @@ from Web_app.data_ingestion import data_ingestion
 from Web_app.view_history import view_history
 from Web_app.decoratorApp import decoratorCheckAppOrg
 from Web_app.profile import profile
+from Web_app.contact import contact
 
 app.register_blueprint(subscription)
 app.register_blueprint(data_ingestion)
 app.register_blueprint(view_history)
 app.register_blueprint(profile)
+app.register_blueprint(contact)
 
 #User session management setup
 login_manager = LoginManager()
