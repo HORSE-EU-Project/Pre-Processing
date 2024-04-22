@@ -52,12 +52,12 @@ if not os.path.exists(db_path):
     # If the database does not exist, create it
     with app.app_context():
         init_db_command()
-else:
-    # Check for schema updates if the database exists
-    with app.app_context():
-        User.delete_all_subscriptions()
-        #update_db_schema_command()
-        update_db_schema_command()
+# else:
+#     # Check for schema updates if the database exists
+#     with app.app_context():
+#         User.delete_all_subscriptions()
+#         #update_db_schema_command()
+#         update_db_schema_command()
 
 #Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
