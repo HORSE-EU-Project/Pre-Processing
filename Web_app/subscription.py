@@ -71,7 +71,7 @@ def subscriptionSubmission():
                     if createAlert(list_apps[i], request.form.get(temp_url), INDEX_NAME):
                         flash(f"Alert for {list_apps[i]} created successfully", 'success')
             # After handling POST, redirect to GET to avoid form resubmission issues
-            return redirect(url_for('subscription.view_subscriptions'))
+            return redirect(url_for('subscription.view'))
         else:
             # Render the subscription view using the subscriptions.html template
             return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
@@ -161,7 +161,7 @@ def create_subscription():
                     flash("Subscription updated successfully.", 'success')
                 else:
                     flash("Failed to update subscription: " + result, 'error')
-                return redirect(url_for('subscription.view_subscriptions'))
+                return redirect(url_for('subscription.view'))
             
             elif action == 'delete':
                 # Delete the subscription
@@ -171,7 +171,7 @@ def create_subscription():
                     flash("Subscription deleted successfully.", 'success')
                 else:
                     flash("Failed to delete subscription: " + result, 'error')
-                return redirect(url_for('subscription.view_subscriptions'))
+                return redirect(url_for('subscription.view'))
             
             # Call the User class method to create a subscription
             else:
@@ -189,7 +189,7 @@ def create_subscription():
                 if result == 'Subscription created successfully':
                     current_app.logger.debug("Subscription created successfully.")
                     flash("Subscription created successfully.", 'success')
-                    return redirect(url_for('subscription.view_subscriptions'))
+                    return redirect(url_for('subscription.view'))
                 else:
                     current_app.logger.debug("Failed to create subscription")
                     flash("Failed to create subscription: " + result, 'error')
