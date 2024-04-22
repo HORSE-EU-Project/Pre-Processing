@@ -47,7 +47,7 @@ login_manager.init_app(app)
 
 
 # Initialize or update the database schema
-db_path = "sqlite_data/sqlite_db"
+db_path = "./sqlite_data/sqlite_db"
 if not os.path.exists(db_path):
     # If the database does not exist, create it
     with app.app_context():
