@@ -102,7 +102,7 @@ def subscription_form():
             if subscription is not None:
                 form_data = {
                     'form_title': "Edit Subscription",
-                    'subscription_type': str(subscription[subscription_type]),
+                    'subscription_type': str(subscription.subscription_type),
                     'endpoint_url': str(subscription[endpoint_url]),
                     'DB_url': str(subscription[DB_url]),
                     'query': str(subscription[query]),
