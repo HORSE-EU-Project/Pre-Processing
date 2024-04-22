@@ -197,7 +197,11 @@ def create_subscription():
 
             
         else:
-            return render_template('create_subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
+            form_data = {
+                'form_title': "New Subscription",
+                'button_text': "Create Subscription"  # Text for the submit button
+            } 
+            return render_template('create_subscription.html', tkn=token, name=current_user.name, email=current_user.email, **form_data)
     else:
         flash('You should login first!', 'error')
         return redirect("/")
