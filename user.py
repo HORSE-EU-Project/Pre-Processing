@@ -60,7 +60,7 @@ class User(UserMixin):
     def create_user_app(app, user, path=None):
         db = get_db(path)
         db.execute(
-            "INSERT INTO apps (name, user) "
+            "INSERT INTO apps (name, user_id) "
             "VALUES (?, ?)",
             (app, user,),
         )
@@ -68,7 +68,7 @@ class User(UserMixin):
 
     def delete_app_user(user, app, path=None):
         db=get_db(path)
-        query = "DELETE FROM apps WHERE user = ? and name = ?"
+        query = "DELETE FROM apps WHERE user_id = ? and name = ?"
         db.execute(query, (user, app,))
         db.commit()
 
