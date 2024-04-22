@@ -57,6 +57,10 @@
                     <form method="post" action="{{ url_for('subscription.new') }}">
                         <div class="text-center">
                             <ul class="list-group list-group-flush">
+                                
+                                <input type="hidden" id="subscription_id" name="subscription_id" value="{{ subscription_id }}">
+                                <input type="hidden" id="action" name="action" value="{{ action }}">
+                                
                                 <li>
                                     <label for="subscription_type">Subscription Type:</label>
                                     <input type="text" id="subscription_type" name="subscription_type" value="{{ subscription_type }}" required>

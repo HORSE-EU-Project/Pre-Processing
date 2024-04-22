@@ -99,33 +99,19 @@ def subscription_form():
             
             
             # Check if subscription data is fetched
-            if subscription is not None:
-                form_data = {
-                    'form_title': "Edit Subscription",
-                    'subscription_type': str(subscription['subscription_type']),
-                    'endpoint_url': str(subscription['endpoint_url']),
-                    'DB_url': str(subscription['DB_url']),
-                    'query': str(subscription['query']),
-                    'interval': str(subscription['interval']),
-                    'active': bool(subscription['active']),  # This controls whether the checkbox is checked
-                    'button_text': "Update Subscription",  # Text for the submit button
-                    'action': 'update',  # Action to be taken when the form is submitted
-                    'subscription_id': subscription_id # Hidden field to store the subscription ID
-                }
-                current_app.logger.debug("Subscription found with ID: " + str(subscription_id))
-            else:
-                # Handle cases where no subscription is found
-                form_data = {
-                    'form_title': "Subscription Not Found",
-                    'subscription_type': '',
-                    'endpoint_url': '',
-                    'DB_url': '',
-                    'query': '',
-                    'interval': '',
-                    'active': False,
-                    'button_text': "Update Subscription"
-                }
-                current_app.logger.debug("No subscription found with ID: " + str(subscription_id))
+            form_data = {
+                'form_title': "Edit Subscription",
+                'subscription_type': str(subscription['subscription_type']),
+                'endpoint_url': str(subscription['endpoint_url']),
+                'DB_url': str(subscription['DB_url']),
+                'query': str(subscription['query']),
+                'interval': str(subscription['interval']),
+                'active': bool(subscription['active']),  # This controls whether the checkbox is checked
+                'button_text': "Update Subscription",  # Text for the submit button
+                'action': 'update',  # Action to be taken when the form is submitted
+                'subscription_id': subscription_id # Hidden field to store the subscription ID
+            }
+            current_app.logger.debug("Subscription found with ID: " + str(subscription_id))
                 
             
             #Fill the form with the subscription details
@@ -163,7 +149,7 @@ def create_subscription():
                 # Update the subscription
                 subscription_id = int(request.form.get('subscription_id'))
                 result = User.update_subscription(
-                    subscription_id,
+                    subscription_id = subscription_id,
                     subscription_type=subscription_type,
                     endpoint_url=endpoint_url,
                     DB_url=DB_url,

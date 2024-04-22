@@ -179,11 +179,15 @@ class User(UserMixin):
         fields = ', '.join(f"{key} = ?" for key in kwargs)
         values = list(kwargs.values())
         values.append(subscription_id)
-        db.execute(
-            f"UPDATE subscriptions SET {fields} WHERE subscription_id = ?",
-            values
-        )
-        db.commit()
+        try:
+            db.execute(
+                f"UPDATE subscriptions SET {fields} WHERE subscription_id = ?",
+                values
+            )
+            db.commit()
+        except:
+            return str(e)
+        return 'Subscription updated successfully'
 
     @staticmethod
     def delete_subscription(subscription_id):
