@@ -94,6 +94,10 @@ def subscription_form():
             # Based on the subscription_id, get the subscription details
             subscription = User.get_subscription(subscription_id)
             
+            #print(subscription fields)
+            current_app.logger.debug("Subscription fields: " + str(subscription))
+            
+            
             # Check if subscription data is fetched
             if subscription is not None:
                 form_data = {
