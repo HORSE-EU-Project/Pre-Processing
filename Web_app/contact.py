@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_mail import Message, Mail
+# from flask_mail import Message, Mail
 
-# Assuming Flask-Mail is initialized in your main app file as 'mail'
-from your_main_app import mail
+# # Assuming Flask-Mail is initialized in your main app file as 'mail'
+# from your_main_app import mail
 
 contact = Blueprint('contact', __name__, template_folder='templates')
 
@@ -18,7 +18,7 @@ def submit_contact():
                       sender=email,
                       recipients=["your-recipient@example.com"],
                       body=f"From: {name}, Email: {email}, Message: {message}")
-        mail.send(msg)
+        #mail.send(msg)
 
         flash('Thank you for your message!', 'success')
         return redirect(url_for('contact.submit_contact'))
