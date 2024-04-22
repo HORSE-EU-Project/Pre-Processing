@@ -192,11 +192,15 @@ class User(UserMixin):
     @staticmethod
     def delete_subscription(subscription_id):
         db = get_db()
-        db.execute(
-            "DELETE FROM subscriptions WHERE subscription_id = ?",
-            (subscription_id,)
-        )
-        db.commit()
+        try:
+            db.execute(
+                "DELETE FROM subscriptions WHERE subscription_id = ?",
+                (subscription_id,)
+            )
+            db.commit()
+        except:
+            return str(e)
+        return 'Subscription deleted successfully'
         
         
     @staticmethod

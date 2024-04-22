@@ -163,26 +163,37 @@ def create_subscription():
                     flash("Failed to update subscription: " + result, 'error')
                 return redirect(url_for('subscription.view_subscriptions'))
             
-            # Call the User class method to create a subscription
-            result = User.create_subscription(
-                user_id=current_user.id,
-                subscription_type=subscription_type,
-                endpoint_url=endpoint_url,
-                DB_url=DB_url,
-                query=query,
-                interval=interval,
-                active=active
-            )
-
-            # Flash message and redirect based on the outcome
-            if result == 'Subscription created successfully':
-                current_app.logger.debug("Subscription created successfully.")
-                flash("Subscription created successfully.", 'success')
+            elif action == 'delete':
+                # Delete the subscription
+                subscription_id = int(request.form.get('subscription_id'))
+                result = User.delete_subscription(subscription_id)
+                if result == 'Subscription deleted successfully':
+                    flash("Subscription deleted successfully.", 'success')
+                else:
+                    flash("Failed to delete subscription: " + result, 'error')
                 return redirect(url_for('subscription.view_subscriptions'))
+            
+            # Call the User class method to create a subscription
             else:
-                current_app.logger.debug("Failed to create subscription")
-                flash("Failed to create subscription: " + result, 'error')
-                return redirect(url_for('subscription.form'))
+                result = User.create_subscription(
+                    user_id=current_user.id,
+                    subscription_type=subscription_type,
+                    endpoint_url=endpoint_url,
+                    DB_url=DB_url,
+                    query=query,
+                    interval=interval,
+                    active=active
+                )
+
+                # Flash message and redirect based on the outcome
+                if result == 'Subscription created successfully':
+                    current_app.logger.debug("Subscription created successfully.")
+                    flash("Subscription created successfully.", 'success')
+                    return redirect(url_for('subscription.view_subscriptions'))
+                else:
+                    current_app.logger.debug("Failed to create subscription")
+                    flash("Failed to create subscription: " + result, 'error')
+                    return redirect(url_for('subscription.form'))
 
             
         else:
