@@ -57,27 +57,34 @@ def subscriptionSubmission():
 @decoratorCheckAppOrg
 def subscriptionSubmission():
     current_app.logger.debug("In subscriptionSubmission view")
-    if current_user.is_authenticated:
-        token = User.get_field("id", current_user.id, "user", "token")
-        subscriptions = User.get_subscriptions(current_user.id)  # Use the static method to get subscriptions
-
-        if request.method == 'POST':
-            list_apps = User.get_all("apps", "name")
-            for i in range(len(list_apps)):
-                temp_id = "id_" + str(list_apps[i])
-                temp_url = "url_" + str(list_apps[i])
-                if request.form.get(temp_id) == "1":
-                    current_app.logger.debug("Calling createElasticsearchWatch===============================")
-                    if createAlert(list_apps[i], request.form.get(temp_url), INDEX_NAME):
-                        flash(f"Alert for {list_apps[i]} created successfully", 'success')
-            # After handling POST, redirect to GET to avoid form resubmission issues
-            return redirect(url_for('subscription.view'))
-        else:
-            # Render the subscription view using the subscriptions.html template
-            return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name, email=current_user.email)
-    else:
+    if not current_user.is_authenticated:
         flash('You must log in first!', 'error')
         return redirect("/")
+
+    token = User.get_field("id", current_user.id, "user", "token")
+    all_subscriptions = User.get_subscriptions(current_user.id)  # Use the static method to get all subscriptions
+
+    # Pagination logic
+    page = request.args.get('page', 1, type=int)  # Get the page number from query parameter
+    items_per_page = 10
+    total_pages = (len(all_subscriptions) + items_per_page - 1) // items_per_page  # Calculate total pages
+    start = (page - 1) * items_per_page
+    end = start + items_per_page
+    subscriptions = all_subscriptions[start:end]  # Slice the subscriptions for the current page
+
+    if request.method == 'POST':
+        list_apps = User.get_all("apps", "name")
+        for app in list_apps:
+            temp_id = f"id_{app}"
+            temp_url = f"url_{app}"
+            if request.form.get(temp_id) == "1":
+                current_app.logger.debug("Calling createElasticsearchWatch")
+                if createAlert(app, request.form.get(temp_url), INDEX_NAME):
+                    flash(f"Alert for {app} created successfully", 'success')
+        return redirect(url_for('subscription.view', page=page))  # Redirect to the same page to avoid form resubmission
+
+    return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name,
+                           email=current_user.email, total_pages=total_pages, current_page=page)
 
 
 
