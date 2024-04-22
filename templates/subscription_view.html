@@ -4,14 +4,12 @@
 
 {% block content %}
 <head>
-
     <link rel="stylesheet" href="/static/css/styles.css">
-
 </head>
 <style>
-        th, td {
-    padding: 15px;
-    text-align: left;
+    th, td {
+        padding: 15px;
+        text-align: left;
     }
 
     thead,
@@ -19,34 +17,37 @@
         background-color: #025573;
         color: #fff;
     }
+
     tr:nth-child(odd){
-        background:rgba(2,85, 115,0.3);}
+        background: rgba(2, 85, 115, 0.3);
+    }
 
     tr:nth-child(even){
-        background:#f5f5f5;}
-
-    .dataframe{
-        margin:0 auto;
+        background: #f5f5f5;
     }
-    </style>
 
-    <style>
-        @media(max-width: 800px) {
-
-    .column {
-    font-size:auto;
-    width: 100%!important;
-    display: block;
-    text-align: center;
+    .dataframe {
+        margin: 0 auto;
     }
+
+    .large-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px; /* Add some space between the table and the button */
+        background-color: #5cadb3; /* Button color */
+        color: white;
+        font-size: 18px; /* Larger font size */
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
     }
 </style>
-
 <body>
     <div class="content">
         <div class="content-inside">
             <div class="row" style="padding: 5%">
-
                 <div class="column" style="width: 20%;">
                     <div class="vertical-menu">
                         <a href="/subscribe">Manage Subscriptions</a>
@@ -69,7 +70,7 @@
                                 <th>Active</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
-                                <th>Actions</th> <!-- Added a column header for actions -->
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,13 +86,12 @@
                                 <td>{{ subscription.created_at }}</td>
                                 <td>{{ subscription.updated_at }}</td>
                                 <td>
-                                    <!-- Form for edit button -->
+                                    <!-- Forms for Edit and Delete -->
                                     <form action="{{ url_for('subscription.form') }}" method="post">
                                         <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
                                         <button type="submit">EDIT</button>
                                     </form>
-
-                                    <form action="{{ url_for('subscription.new') }}" method="post">
+                                    <form action="{{ url_for('subscription.delete') }}" method="post">
                                         <input type="hidden" name="subscription_id" value="{{ subscription.subscription_id }}">
                                         <input type="hidden" id="action" name="action" value="delete">
                                         <button type="submit" style="background-color: red; color: white;">DELETE</button>
@@ -101,6 +101,10 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <!-- Button to add a new subscription -->
+                    <form action="{{ url_for('subscription.new') }}" method="get">
+                        <button type="submit" class="large-button">Add New Subscription</button>
+                    </form>
                 </div>
             </div>
         </div>
