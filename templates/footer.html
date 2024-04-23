@@ -1,22 +1,69 @@
-<div class="footer">
-    <div class="footer-content">
-        <div class="footer-col">
-            <img src="{{ url_for('static', filename='dff_tr_wh.png') }}" alt="DFF Logo">
-            <img src="{{ url_for('static', filename='8bells_white.png') }}" alt="8 Bells Logo">
+<style>
+
+    .col-container {
+      display: table; /* Make the container element behave like a table */
+      width: 100%; /* Set full-width to expand the whole page */
+      background-color:#025573 ;
+      padding-left:5%;
+      padding-right: 5%;
+      margin-top: auto;
+    }
+      
+    @media(max-width: 800px) {
+    
+      .col {
+        font-size:auto;
+        width: 100%!important;
+        display: block;
+        text-align: center;
+      }
+    }
+    
+    @media(min-width: 801px) {
+    .col {
+    
+      display: table-cell;
+      width: 33.33%;
+    }
+    }
+    
+    
+    </style>
+    
+    
+    <div class="col-container">
+        <div class="col">
+            <img src="./static/dff_tr_wh.png" style="height:70%; width: 50%; object-fit: cover;">
+            <img src="./static/8bells_white.png" style=" width: 50%; object-fit: contain;">
         </div>
-        <div class="footer-col">
-            <h4 style="color: white;">Menu</h4>
-            <a href="{{ url_for('about') }}" style="color: lightgray;">About</a>
-            <a href="{{ url_for('contact.submit_contact') }}" style="color: lightgray;">Contact</a>
+      
+        <div class="col">
+            <legend style="color: white;">Menu</legend>
+    
+            <div>
+                <a href="#" style="color: lightgray;">About</a>
+            </div>
+           <div>
+    
+               <a href="#" style="color: lightgray;">Contact</a>
+           </div>
         </div>
-        <div class="footer-col">
-            <h4 style="color: white;">Possibilities</h4>
-            <a href="{{ url_for('data_ingestion.upload') }}" style="color: lightgray;">Upload Json</a>
-            <a href="{{ url_for('view_history.user_history') }}" style="color: lightgray;">History Upload</a>
-            <a href="{{ url_for('subscription.view_subscriptions') }}" style="color: lightgray;">Subscribe</a>
+      
+        <div class="col">
+            <legend style="color: white;">Possibilities</legend>
+    
+            <div>
+                <a href="/upload" style="color: lightgray;">Upload Json</a>
+            </div>
+            <div>
+               <a href="/upload" style="color: lightgray;">History Upload</a>
+           </div>
+           <div>
+               <a href="/subscribe" style="color: lightgray;">Subscribe</a>
+           </div>
         </div>
+        
+      </div>
+      <div style=" text-align: center; background-color:#002938 ;color: lightgrey; width: 100%;">
+        <p style="margin:0;"> © Copyright 2022 | All rights reserved | EIGHT BELLS LTD</p>
     </div>
-    <div class="footer-bottom">
-        <p>© Copyright 2022 | All rights reserved | EIGHT BELLS LTD</p>
-    </div>
-</div>
