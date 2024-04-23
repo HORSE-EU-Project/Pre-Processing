@@ -20,7 +20,7 @@ data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templ
 
 from .decoratorApp import decoratorCheckAppOrg
 
-@data_ingestion.route("/upload", methods= ['GET', 'POST'])
+@data_ingestion.route("/upload", methods= ['GET', 'POST'], endpoint='upload')
 @decoratorCheckAppOrg
 def ingest_data():
     current_app.logger.debug("In ingest_data===============================")
