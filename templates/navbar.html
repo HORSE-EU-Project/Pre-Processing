@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" style="object-fit:cover; height:50px;"></a>
+    <a href="/"><img src="{{ url_for('static', filename='logo.png') }}" style="object-fit:cover; height:50px;"></a>
     
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -15,7 +15,7 @@
         <div class="navbar-nav action-buttons ml-auto" style="margin-right: 50px;">
             <div class="dropdown">
                 <button class="dropbtn">
-                    <img src="{{ url_for('static', filename='images/user.png') }}" style="height:25px;"> {{ name }}
+                    <img src="{{ url_for('static', filename='user.png') }}" style="height:25px;"> {{ name }}
                 </button>
                 <div class="dropdown-content">
                     <a href="{{ url_for('profile.profile') }}" class="nav-item nav-link">Profile</a>
