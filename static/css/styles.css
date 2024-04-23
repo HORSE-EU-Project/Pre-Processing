@@ -47,15 +47,6 @@ html, body {
   color: white;
 }
 
-.dropdown-content {
-  display: none;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-
 /* Style about copy icon */
 .peeper-keyhole, .peeper-copy-pass {
   display: inline-block;
