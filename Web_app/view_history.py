@@ -11,7 +11,7 @@ view_history = Blueprint('view_history', __name__, template_folder='../templates
 
 from .decoratorApp import decoratorCheckAppOrg
 
-@view_history.route("/user_history", methods= ['GET', 'POST'])
+@view_history.route("/user_history", methods= ['GET', 'POST'], endpoint='user_history')
 @decoratorCheckAppOrg
 def view_upload_history():
     if current_user.is_authenticated:
