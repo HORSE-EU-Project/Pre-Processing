@@ -97,6 +97,10 @@ tr:nth-child(even) {
   cursor: pointer;
 }
 
+form {
+  width: 90%;        /* Ensure the form also takes up 100% width of its parent */
+}
+
 /* Container layout for columns */
 .col-container {
   display: table; /* Make the container element behave like a table */
