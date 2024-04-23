@@ -36,10 +36,18 @@
         	</div>
         </nav>
 
-        <!-- Include the Vertical Menu -->
-        {% include 'vertical_menu.html' %}
+        {%include 'navbar.html'%}
 
-
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-2">
+                  {% include 'vertical_menu.html' %}
+              </div>
+              <div class="col-md-10">
+                  {% block content %}{% endblock %}
+              </div>
+          </div>
+        </div>
 
         {% for message in get_flashed_messages(with_categories=True) %}
             {% if message[0] == "error" %}

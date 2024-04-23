@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" style="object-fit:cover; height:50px;"></a>
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start" style="font-weight: 600; font-size: 18px;">
+        <div class="navbar-nav">
+            <a href="/" class="nav-item nav-link">Home</a>
+            <a href="{{ url_for('about') }}" class="nav-item nav-link">About</a>
+            <a href="{{ url_for('contact.submit_contact') }}" class="nav-item nav-link">Contact</a>
+        </div>
+        
+        <div class="navbar-nav action-buttons ml-auto" style="margin-right: 50px;">
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <img src="{{ url_for('static', filename='images/user.png') }}" style="height:25px;"> {{ name }}
+                </button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('profile') }}" class="nav-item nav-link">Profile</a>
+                    <a class="nav-item nav-link" style="color:red;" href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

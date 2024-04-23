@@ -1,48 +1,33 @@
-/*.reveal-if-active {
-  opacity: 0;
-  max-height: 0;
-  overflow: hidden;
-  -webkit-transform: scale(0.8);
-          transform: scale(0.8);
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-}
-
-input[type="radio"]:checked ~ .reveal-if-active,
-input[type="checkbox"]:checked ~ .reveal-if-active {
-  opacity: 1;
-  max-height: 100px;
-  overflow: visible;
-  padding: 10px 20px;
-  -webkit-transform: scale(1);
-          transform: scale(1);
-}
-*/
-/*# sourceMappingURL=styles.css.map */
-
-
-
- body {
+body {
   padding: 0;
   margin: 0;
   height: 100%;
 }
 
+.container-fluid {
+  padding-right: 0;
+  padding-left: 0;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Ensure full height layout */
+html, body {
+  height: 100%;
+}
+
+/* Content styling */
 .content {
   min-height: 71%;
-
-}
-.content-inside {
   padding: 20px;
   padding-bottom: 50px;
-
 }
 
-
-/* sidemenu */
+/* Sidebar menu styling */
 .vertical-menu {
-  width: 200px;
-  border-radius: 200px;
+  width: 100%; /* Adjusted to take full width of the column */
+  border-radius: 0; /* Removed rounded corners for sidebar use */
+  margin-top: 20px; /* Added some top margin for spacing */
 }
 
 .vertical-menu a {
@@ -59,18 +44,15 @@ input[type="checkbox"]:checked ~ .reveal-if-active {
 
 .vertical-menu a.active {
   background-color: #025573;
-
   color: white;
 }
 
-
-/* style about copy icon */
-.peeper-keyhole,.peeper-copy-pass {
-
+/* Style about copy icon */
+.peeper-keyhole, .peeper-copy-pass {
   display: inline-block;
   width: 20px;
   height: 20px;
-  margin-left:10px;
+  margin-left: 10px;
   z-index: 100;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.637);
