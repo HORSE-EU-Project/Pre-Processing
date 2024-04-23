@@ -49,6 +49,11 @@
           </div>
         </div>
 
+        <footer>
+        {% include 'footer.html' %}
+        </footer>
+
+        
         {% for message in get_flashed_messages(with_categories=True) %}
             {% if message[0] == "error" %}
             <div class="alert alert-danger alert-dismissible" role="alert">
