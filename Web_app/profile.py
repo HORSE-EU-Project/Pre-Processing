@@ -21,7 +21,7 @@ from keycloak_requests import change_password
 def edit_profile():
     if current_user.is_authenticated:
         token = User.get_field("id", current_user.id, "user", "token") 
-        old_app_list = User.get_all_cond("apps", "name", "user", current_user.id)
+        old_app_list = User.get_all_cond("apps", "name", "user_id", current_user.id)
         if request.method == 'POST':
             if request.form.get('Cancel') == 'Cancel':   
                 return render_template("main.html", name=current_user.name,email = current_user.email, tkn = token)

@@ -4,44 +4,6 @@
 {% block content %}
 
 <head>
-<style>
-    .vertical-menu {
-  width: 200px;
-  border-radius: 200px;
-}
-
-.vertical-menu a {
-  background-color: #eee;
-  color: black;
-  display: block;
-  padding: 12px;
-  text-decoration: none;
-}
-
-.vertical-menu a:hover {
-  background-color: #ccc;
-}
-
-.vertical-menu a.active {
-  background-color: #025573;
-
-  color: white;
-}
-</style>
-
-<style>
-    @media(max-width: 800px) {
-
-.column {
-  font-size:auto;
-  width: 100%!important;
-  display: block;
-text-align: center;
-}
-}
-</style>
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -73,69 +35,30 @@ text-align: center;
     <div class="content">
         <div class="content-inside ">
             <div class="row" style="padding:5%">
+                <h3 style="text-align:center;">Subscription Form</h3>
+                <form method=post action="#">
+                    <div class="text-center">
+                        <ul class="list-group list-group-flush">
+                            
 
-                <div class="column" style="width:20%;">
-
-
-                    <div class=" vertical-menu ">
-                    
-                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="background-color:white; color: #025573; border-width: 1px; border-color: #025573; margin-bottom: 2%;">Give me my token!</button>
-
-                        <div class="modal fade" id="myModal" role="dialog">
-                            <div class="modal-dialog">
-
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">This is your token!</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body form-inline">
-                                         
-                                        <input id="password2" type="password" class="form-control" name="password" value= {{tkn}}>
-                                        <small>Copy it!</small>
-                                     
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <a class=""       href="/upload">Upload Data</a>
-                        <a class=""       href="/user_history">History Upload</a>
-                        <a class="active" href="/subscribe">Subscribe</a>
-
-                    </div>
-                </div>
-            
-                <div class="column " style="width: 80%;">
-                    <h3 style="text-align:center;">Subscription Form</h3>
-                    <form method=post action="#">
-                        <div class="text-center">
-                            <ul class="list-group list-group-flush">
                                 
-
+                                    {%for i in ids%}
+                                    <li>
+                                        <label for="id1" >{{i}}</label>
+                                        <input type = "checkbox" class="chk1" id = "id_{{i}}" name = "id_{{i}}" value = "1">
+                                        <label for="url-fr">Url</label> 
+                                        <input class="require-if-active" type="url" id="url_{{i}}" name="url_{{i}}" data-require-pair="#id_{{i}}">
+                                        </li>
+                                    {% endfor %}
                                     
-                                        {%for i in ids%}
-                                        <li>
-                                            <label for="id1" >{{i}}</label>
-                                            <input type = "checkbox" class="chk1" id = "id_{{i}}" name = "id_{{i}}" value = "1">
-                                            <label for="url-fr">Url</label> 
-                                            <input class="require-if-active" type="url" id="url_{{i}}" name="url_{{i}}" data-require-pair="#id_{{i}}">
-                                         </li>
-                                        {% endfor %}
-                                     
-                            </ul>
-                            <button type="submit" id="btnClick" class="btn" style="background-color: #5cadb3;" value="submit" disabled="disabled">Submit</button>
-                        </div>
+                        </ul>
+                        <button type="submit" id="btnClick" class="btn" style="background-color: #5cadb3;" value="submit" disabled="disabled">Submit</button>
+                    </div>
 
-                    </form>
-                
-                </div>
+                </form>   
             </div>
         </div>
     </div>
 
-    <footer>
-        {% include "./footer.html" %}
-    </footer>
 </body>
 {% endblock %}

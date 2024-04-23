@@ -7,7 +7,6 @@
     <div class="content">
         <div class="content-inside">
             <div class="row" style="padding: 5%">
-                <div class="column" style="width: 80%; margin: 0 auto;">
                     <h3 style="text-align: center;">Your Subscriptions</h3>
                     <table class="dataframe">
                         <thead>
@@ -66,14 +65,10 @@
                     <form action="{{ url_for('subscription.new') }}" method="get">
                         <button type="submit" class="large-button">Add New Subscription</button>
                     </form>
-                </div>
+                
             </div>
         </div>
     </div>
-
-    <footer>
-        {% include "./footer.html" %}
-    </footer>
 </body>
 
 {% endblock %}
