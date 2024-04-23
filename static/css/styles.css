@@ -96,3 +96,31 @@ tr:nth-child(even) {
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* Container layout for columns */
+.col-container {
+  display: table; /* Make the container element behave like a table */
+  width: 100%; /* Set full-width to expand the whole page */
+  background-color: #025573;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin-top: auto;
+}
+
+/* Responsive adjustments for mobile views */
+@media (max-width: 800px) {
+  .col {
+    font-size: auto;
+    width: 100% !important;
+    display: block; /* Stack the columns vertically */
+    text-align: center;
+  }
+}
+
+/* Styling for screens wider than 800px */
+@media (min-width: 801px) {
+  .col {
+    display: table-cell; /* Each .col acts like a table cell */
+    width: 33.33%; /* Divide the width equally among three columns */
+  }
+}
