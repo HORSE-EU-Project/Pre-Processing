@@ -18,7 +18,7 @@
                     <img src="{{ url_for('static', filename='images/user.png') }}" style="height:25px;"> {{ name }}
                 </button>
                 <div class="dropdown-content">
-                    <a href="{{ url_for('profile') }}" class="nav-item nav-link">Profile</a>
+                    <a href="{{ url_for('profile.profile') }}" class="nav-item nav-link">Profile</a>
                     <a class="nav-item nav-link" style="color:red;" href="{{ url_for('logout') }}">Logout</a>
                 </div>
             </div>

@@ -16,7 +16,7 @@ from .decoratorApp import decoratorCheckAppOrg
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from keycloak_requests import change_password
 
-@profile.route("/profile", methods= ['GET', 'POST'])
+@profile.route("/profile", methods= ['GET', 'POST'], endpoint='profile')
 @decoratorCheckAppOrg
 def edit_profile():
     if current_user.is_authenticated:
