@@ -30,30 +30,30 @@ if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
+# @subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
+# @decoratorCheckAppOrg
+# def subscriptionSubmission():
+#     current_app.logger.debug("In subscriptionSubmission===============================")
+#     token = User.get_field("id", current_user.id, "user", "token")
+#     if current_user.is_authenticated:
+#         list_apps= User.get_all("apps", "name")
+#         if request.method == 'POST':
+#             for i in range(0,len(list_apps)):
+#                 temp_id="id_"+str(list_apps[i])
+#                 temp_url="url_"+str(list_apps[i])
+#                 if request.form.get(temp_id)=="1":
+#                     current_app.logger.debug("Calling createElasticsearchWatch===============================")
+#                     if createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME):
+#                         flash(f"Alert for {list_apps[i]} created successfully", 'success')
+#             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
+#         else :
+#             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
+#     else:
+#         flash('You should login first!', 'error')
+#         return redirect("/")
+
+
 @subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
-@decoratorCheckAppOrg
-def subscriptionSubmission():
-    current_app.logger.debug("In subscriptionSubmission===============================")
-    token = User.get_field("id", current_user.id, "user", "token")
-    if current_user.is_authenticated:
-        list_apps= User.get_all("apps", "name")
-        if request.method == 'POST':
-            for i in range(0,len(list_apps)):
-                temp_id="id_"+str(list_apps[i])
-                temp_url="url_"+str(list_apps[i])
-                if request.form.get(temp_id)=="1":
-                    current_app.logger.debug("Calling createElasticsearchWatch===============================")
-                    if createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME):
-                        flash(f"Alert for {list_apps[i]} created successfully", 'success')
-            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
-        else :
-            return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
-    else:
-        flash('You should login first!', 'error')
-        return redirect("/")
-
-
-@subscription.route('/subscribe/view', methods=['GET', 'POST'], endpoint='view')
 @decoratorCheckAppOrg
 def subscriptionSubmission():
     current_app.logger.debug("In subscriptionSubmission view")
@@ -81,7 +81,7 @@ def subscriptionSubmission():
                 current_app.logger.debug("Calling createElasticsearchWatch")
                 if createAlert(app, request.form.get(temp_url), INDEX_NAME):
                     flash(f"Alert for {app} created successfully", 'success')
-        return redirect(url_for('subscription.view', page=page))  # Redirect to the same page to avoid form resubmission
+        return redirect(url_for('subscription.view_subscriptions', page=page))  # Redirect to the same page to avoid form resubmission
 
     return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name,
                            email=current_user.email, total_pages=total_pages, current_page=page)
@@ -168,7 +168,7 @@ def create_subscription():
                     flash("Subscription updated successfully.", 'success')
                 else:
                     flash("Failed to update subscription: " + result, 'error')
-                return redirect(url_for('subscription.view'))
+                return redirect(url_for('subscription.view_subscriptions'))
             
             elif action == 'delete':
                 # Delete the subscription
@@ -178,7 +178,7 @@ def create_subscription():
                     flash("Subscription deleted successfully.", 'success')
                 else:
                     flash("Failed to delete subscription: " + result, 'error')
-                return redirect(url_for('subscription.view'))
+                return redirect(url_for('subscription.view_subscriptions'))
             
             # Call the User class method to create a subscription
             else:
@@ -196,7 +196,7 @@ def create_subscription():
                 if result == 'Subscription created successfully':
                     current_app.logger.debug("Subscription created successfully.")
                     flash("Subscription created successfully.", 'success')
-                    return redirect(url_for('subscription.view'))
+                    return redirect(url_for('subscription.view_subscriptions'))
                 else:
                     current_app.logger.debug("Failed to create subscription")
                     flash("Failed to create subscription: " + result, 'error')
