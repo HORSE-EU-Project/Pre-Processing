@@ -3,60 +3,10 @@
 {% block title %}User Subscriptions{% endblock %}
 
 {% block content %}
-<head>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/styles.css">
-</head>
-<style>
-    th, td {
-        padding: 15px;
-        text-align: left;
-    }
-
-    thead,
-    tfoot {
-        background-color: #025573;
-        color: #fff;
-    }
-
-    tr:nth-child(odd){
-        background: rgba(2, 85, 115, 0.3);
-    }
-
-    tr:nth-child(even){
-        background: #f5f5f5;
-    }
-
-    .dataframe {
-        margin: 0 auto;
-    }
-
-    .large-button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        margin-top: 20px; /* Add some space between the table and the button */
-        background-color: #5cadb3; /* Button color */
-        color: white;
-        font-size: 18px; /* Larger font size */
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-</style>
 <body>
     <div class="content">
         <div class="content-inside">
             <div class="row" style="padding: 5%">
-                <div class="column" style="width: 20%;">
-                    <div class="vertical-menu">
-                        <a href="/subscribe">Manage Subscriptions</a>
-                        <a href="/settings">Account Settings</a>
-                        <a href="/logout">Logout</a>
-                    </div>
-                </div>
-
                 <div class="column" style="width: 80%; margin: 0 auto;">
                     <h3 style="text-align: center;">Your Subscriptions</h3>
                     <table class="dataframe">
