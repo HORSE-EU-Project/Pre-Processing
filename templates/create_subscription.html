@@ -3,56 +3,13 @@
 
 {% block content %}
 
-<head>
-    <style>
-        .vertical-menu {
-            width: 200px;
-            border-radius: 200px;
-        }
 
-        .vertical-menu a {
-            background-color: #eee;
-            color: black;
-            display: block;
-            padding: 12px;
-            text-decoration: none;
-        }
-
-        .vertical-menu a:hover {
-            background-color: #ccc;
-        }
-
-        .vertical-menu a.active {
-            background-color: #025573;
-            color: white;
-        }
-    </style>
-
-    <style>
-        @media(max-width: 800px) {
-            .column {
-                font-size:auto;
-                width: 100%!important;
-                display: block;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
 
 <body>
     <div class="content">
         <div class="content-inside">
-            <div class="row" style="padding:5%">
-                <div class="column" style="width:20%;">
-                    <div class="vertical-menu">
-                        <a href="/upload">Upload Data</a>
-                        <a href="/user_history">History Upload</a>
-                        <a class="active" href="/subscribe">Subscribe</a>
-                    </div>
-                </div>
-            
-                <div class="column" style="width:80%;">
+            <div class="row" style="padding:5%">           
+                <div class="column" style="width:90%;">
                     <h3 style="text-align:center;">{{ form_title }}</h3>
                     <form method="post" action="{{ url_for('subscription.new') }}">
                         <div class="text-center">
@@ -93,9 +50,5 @@
             </div>
         </div>
     </div>
-
-    <footer>
-        {% include "./footer.html" %}
-    </footer>
 </body>
 {% endblock %}
