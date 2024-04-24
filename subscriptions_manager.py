@@ -28,7 +28,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 
                 #write the queries back to the config file
                 with open(CONFIG_FILE_PATH, 'w') as file:
-                    json.dump(data, file, indent=4)
+                    json.dump(queries, file, indent=4)
                     current_app.logger.debug("Config file updated with new subscription.")
                 return 'Subscription added successfully'
             
