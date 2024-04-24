@@ -1,9 +1,10 @@
 from flask import current_app
 import json
+import os
 
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
-CONFIG_FILE_PATH = f'{ES_ALERT_SYSTEM_PATH}/config.json'
+CONFIG_FILE_PATH = os.path.join(ES_ALERT_SYSTEM_PATH,'config.json')
 ES_INDEX = 'test_index'
 
 
