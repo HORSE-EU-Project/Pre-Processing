@@ -1,3 +1,5 @@
+import json
+
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
 CONFIG_FILE_PATH = f'{ES_ALERT_SYSTEM_PATH}/config.json'
