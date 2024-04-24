@@ -30,29 +30,6 @@ if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
-# @subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
-# @decoratorCheckAppOrg
-# def subscriptionSubmission():
-#     current_app.logger.debug("In subscriptionSubmission===============================")
-#     token = User.get_field("id", current_user.id, "user", "token")
-#     if current_user.is_authenticated:
-#         list_apps= User.get_all("apps", "name")
-#         if request.method == 'POST':
-#             for i in range(0,len(list_apps)):
-#                 temp_id="id_"+str(list_apps[i])
-#                 temp_url="url_"+str(list_apps[i])
-#                 if request.form.get(temp_id)=="1":
-#                     current_app.logger.debug("Calling createElasticsearchWatch===============================")
-#                     if createAlert(list_apps[i],request.form.get(temp_url), INDEX_NAME):
-#                         flash(f"Alert for {list_apps[i]} created successfully", 'success')
-#             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
-#         else :
-#             return render_template('subscription.html', name = current_user.name, email = current_user.email, tkn = token,ids=list_apps)
-#     else:
-#         flash('You should login first!', 'error')
-#         return redirect("/")
-
-
 @subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
 @decoratorCheckAppOrg
 def subscriptionSubmission():

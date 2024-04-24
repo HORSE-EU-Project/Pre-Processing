@@ -24,10 +24,9 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                     "interval": interval
                     })
             except json.JSONDecodeError as e:
-                print(f"An error occurred: {e.msg}")
-                print(f"Error at line number {e.lineno}, column {e.colno}")
+                current_app.logger.debug("In subscriptionSubmission view "+str(e))
             except Exception as e:
-                print(f"An unexpected error occurred: {str(e)}")
+                current_app.logger.debug("An unexpected error occurred: "+str(e))
             # with open(CONFIG_FILE_PATH, 'w') as file:
             #     json.dump(data, file, indent=4)
                 
