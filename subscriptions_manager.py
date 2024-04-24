@@ -22,7 +22,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 current_app.logger.debug("Open config file " + CONFIG_FILE_PATH + " for reading")
                 queries = ConfigReader.read_config('./ES_alert_system/config.json')
                 
-                new_query = ElasticQuery(DB_url, ES_INDEX, query, {"Content-Type": "application/json"}, endpoint_url, str(interval))
+                new_query = ElasticQuery(DB_url, ES_INDEX, query, {"Content-Type": "application/json"}, endpoint_url, int(interval))
                 
                 queries.append(new_query)
                 
