@@ -1,11 +1,7 @@
-#Functions for updating  the subscriptions for various endpoints and sources
-
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
 CONFIG_FILE_PATH = f'{ES_ALERT_SYSTEM_PATH}/config.json'
 ES_INDEX = 'test_index'
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def add_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
