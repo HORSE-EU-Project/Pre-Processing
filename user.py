@@ -227,7 +227,7 @@ class User(UserMixin):
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
-            delete_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            delete_subscription(subscription_id)
             
             db.commit()
         except:

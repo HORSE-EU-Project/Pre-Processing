@@ -4,7 +4,7 @@ CONFIG_FILE_PATH = f'{ES_ALERT_SYSTEM_PATH}/config.json'
 ES_INDEX = 'test_index'
 
 
-def add_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
     try:
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
