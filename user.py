@@ -2,7 +2,7 @@ import pandas as pd
 from flask_login import UserMixin
 from db import get_db
 import sqlite3
-from subscriptions_manager import update_subscription, add_subscription, delete_subscription
+import subscriptions_manager
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -158,7 +158,7 @@ class User(UserMixin):
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
-            add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             
             
             db.commit()
@@ -204,7 +204,7 @@ class User(UserMixin):
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
-            update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             
             db.commit()
         except:
@@ -227,7 +227,7 @@ class User(UserMixin):
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
-            delete_subscription(subscription_id)
+            subscriptions_manager.delete_subscription(subscription_id)
             
             db.commit()
         except:
