@@ -2,6 +2,7 @@ import pandas as pd
 from flask_login import UserMixin
 from db import get_db
 import sqlite3
+from subscriptions_manager import update_subscriptions
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -149,6 +150,9 @@ class User(UserMixin):
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             )
+            update_subscriptions(user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            
+            
             db.commit()
         except sqlite3.IntegrityError as e:
             return str(e)
