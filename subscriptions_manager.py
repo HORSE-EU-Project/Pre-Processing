@@ -16,25 +16,64 @@ class ConfigReader:
             return [ElasticQuery(**item) for item in data["rules"]]
 
 
+
+def add_new_rule(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+
+
+    try:
+        # Open the config file in read mode and load existing data
+        with open(config_file_path, 'r') as file:
+            data = json.load(file)
+        
+        # Append the new rule to the list of rules
+        data['rules'].append(new_rule)
+
+        # Write the updated data back to the config file
+        with open(config_file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+        
+        current_app.logger.debug("New rule added successfully.")
+    except FileNotFoundError:
+        current_app.logger.debug("The configuration file was not found.")
+    except json.JSONDecodeError:
+        current_app.logger.debug("The configuration file contains invalid JSON.")
+    except Exception as e:
+        current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
+
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
         if subscription_type == 'ES':
-            try:
-                current_app.logger.debug("Open config file " + CONFIG_FILE_PATH + " for reading")
-                queries = ConfigReader.read_config('./ES_alert_system/config.json')
-                
-                new_query = ElasticQuery(DB_url, ES_INDEX, query, {"Content-Type": "application/json"}, endpoint_url, int(interval))
-                
-                queries.append(new_query)
-                
-                #write the queries back to the config file
-                with open(CONFIG_FILE_PATH, 'w') as file:
-                    json.dump(queries, file, indent=4)
-                    current_app.logger.debug("Config file updated with new subscription.")
-                return 'Subscription added successfully'
+            # Create the new rule as a dictionary
+            new_rule = {
+                "subscription_id": subscription_id,
+                "user_id": user_id,
+                "es_url": DB_url,
+                "index": "your_index_based_on_subscription_type",  # Set this to a meaningful value based on the subscription type
+                "query": query,
+                "headers": {"Content-Type": "application/json"},
+                "endpoint": endpoint_url,
+                "interval": interval,
+                "active": active
+            }
             
+            try:
+        # Open the config file in read mode and load existing data
+                with open(config_file_path, 'r') as file:
+                    data = json.load(file)
+                
+                # Append the new rule to the list of rules
+                data['rules'].append(new_rule)
+
+                # Write the updated data back to the config file
+                with open(config_file_path, 'w') as file:
+                    json.dump(data, file, indent=4)
+                
+                print("New rule added successfully.")
+            except FileNotFoundError:
+                print("The configuration file was not found.")
+            except json.JSONDecodeError:
+                print("The configuration file contains invalid JSON.")
             except Exception as e:
-                current_app.logger.debug("An unexpected error occurred: " + str(e))
-                return str(e)
+                print(f"An unexpected error occurred: {str(e)}")
     
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
