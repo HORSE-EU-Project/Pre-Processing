@@ -3,20 +3,22 @@
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
 CONFIG_FILE_PATH = f'{ES_ALERT_SYSTEM_PATH}/config.json'
-
+ES_INDEX = 'test_index'
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def update_subscriptions(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+def add_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
     try:
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
                 data['rules'].append({
+                    "subscription_id": subscription_id,
+                    "user_id": user_id,
                     "es_url": DB_url,
-                    "index": "logs",
+                    "index": ES_INDEX,
                     "query": query,
                     "headers": {"Content-Type": "application/json"},
                     "endpoint": endpoint_url,
@@ -25,6 +27,46 @@ def update_subscriptions(user_id, subscription_type, endpoint_url, DB_url, query
             with open(CONFIG_FILE_PATH, 'w') as file:
                 json.dump(data, file, indent=4)
                 
-    except sqlite3.IntegrityError as e:
+    except EOFError as e:
         return str(e)
     return 'Subscription stored successfully'
+
+def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+    try:
+        # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
+        if subscription_type == 'ES':
+            with open(CONFIG_FILE_PATH, 'r') as file:
+                data = json.load(file)
+                #search for the subscription_id and update the subscription
+                for rule in data['rules']:
+                    if rule['subscription_id'] == subscription_id:
+                        rule['user_id'] = user_id
+                        rule['es_url'] = DB_url
+                        rule['index'] = ES_INDEX
+                        rule['query'] = query
+                        rule['headers'] = {"Content-Type": "application/json"}
+                        rule['endpoint'] = endpoint_url
+                        rule['interval'] = interval
+                        break
+            with open(CONFIG_FILE_PATH, 'w') as file:
+                json.dump(data, file, indent=4)
+    except EOFError as e:
+        return str(e)
+    return 'Subscription updated successfully'
+
+def delete_subscription(subscription_id):
+    try:
+        # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
+        if subscription_type == 'ES':
+            with open(CONFIG_FILE_PATH, 'r') as file:
+                data = json.load(file)
+                #search for the subscription_id and update the subscription
+                for rule in data['rules']:
+                    if rule['subscription_id'] == subscription_id:
+                        data['rules'].remove(rule)
+                        break
+            with open(CONFIG_FILE_PATH, 'w') as file:
+                json.dump(data, file, indent=4)
+    except EOFError as e:
+        return str(e)
+    return 'Subscription deleted successfully'

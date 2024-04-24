@@ -5,6 +5,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from elastic_query import ElasticQuery
+import ES_queries
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,7 +22,9 @@ def main():
     #Read the configuration file
     try:
         
-        queries = ConfigReader.read_config('./ES_alert_system/config.json')
+        # queries = ConfigReader.read_config('./ES_alert_system/config.json')
+        queries = ES_queries('./ES_alert_system/config.json')
+        
         logging.info("Configuration file read successfully.")
     except Exception as e:
         logging.error(f"Failed to read configuration file: {e}", exc_info=True)

@@ -2,7 +2,7 @@ import pandas as pd
 from flask_login import UserMixin
 from db import get_db
 import sqlite3
-from subscriptions_manager import update_subscriptions
+from subscriptions_manager import update_subscription, add_subscription, delete_subscription
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -150,7 +150,15 @@ class User(UserMixin):
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             )
-            update_subscriptions(user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            
+            # Get the subscription_id of the newly created subscription
+            subscription_id = db.execute(
+                "SELECT subscription_id FROM subscriptions WHERE user_id = ? AND subscription_type = ? AND endpoint_url = ? AND DB_url = ? AND query = ? AND interval = ? AND active = ?",
+                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            )
+            
+            # Update the subscriptions in the ./ES_alert_system/config.json file
+            add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             
             
             db.commit()
@@ -188,6 +196,16 @@ class User(UserMixin):
                 f"UPDATE subscriptions SET {fields} WHERE subscription_id = ?",
                 values
             )
+            
+            # Get the subscription_id of the newly created subscription
+            subscription_id = db.execute(
+                "SELECT subscription_id FROM subscriptions WHERE user_id = ? AND subscription_type = ? AND endpoint_url = ? AND DB_url = ? AND query = ? AND interval = ? AND active = ?",
+                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            )
+            
+            # Update the subscriptions in the ./ES_alert_system/config.json file
+            update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            
             db.commit()
         except:
             return str(e)
@@ -201,6 +219,16 @@ class User(UserMixin):
                 "DELETE FROM subscriptions WHERE subscription_id = ?",
                 (subscription_id,)
             )
+            
+            # Get the subscription_id of the newly created subscription
+            subscription_id = db.execute(
+                "SELECT subscription_id FROM subscriptions WHERE user_id = ? AND subscription_type = ? AND endpoint_url = ? AND DB_url = ? AND query = ? AND interval = ? AND active = ?",
+                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            )
+            
+            # Update the subscriptions in the ./ES_alert_system/config.json file
+            delete_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            
             db.commit()
         except:
             return str(e)
