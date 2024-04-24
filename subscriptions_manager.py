@@ -35,14 +35,14 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
             
             try:
         # Open the config file in read mode and load existing data
-                with open(config_file_path, 'r') as file:
+                with open(CONFIG_FILE_PATH, 'r') as file:
                     data = json.load(file)
                 
                 # Append the new rule to the list of rules
                 data['rules'].append(new_rule)
 
                 # Write the updated data back to the config file
-                with open(config_file_path, 'w') as file:
+                with open(CONFIG_FILE_PATH, 'w') as file:
                     json.dump(data, file, indent=4)
                 
                 current_app.logger.debug("New rule added successfully.")
