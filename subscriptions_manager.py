@@ -17,28 +17,6 @@ class ConfigReader:
 
 
 
-def add_new_rule(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
-
-
-    try:
-        # Open the config file in read mode and load existing data
-        with open(config_file_path, 'r') as file:
-            data = json.load(file)
-        
-        # Append the new rule to the list of rules
-        data['rules'].append(new_rule)
-
-        # Write the updated data back to the config file
-        with open(config_file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-        
-        current_app.logger.debug("New rule added successfully.")
-    except FileNotFoundError:
-        current_app.logger.debug("The configuration file was not found.")
-    except json.JSONDecodeError:
-        current_app.logger.debug("The configuration file contains invalid JSON.")
-    except Exception as e:
-        current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
 
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
         if subscription_type == 'ES':
@@ -67,13 +45,13 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 with open(config_file_path, 'w') as file:
                     json.dump(data, file, indent=4)
                 
-                print("New rule added successfully.")
+                current_app.logger.debug("New rule added successfully.")
             except FileNotFoundError:
-                print("The configuration file was not found.")
+                current_app.logger.debug("The configuration file was not found.")
             except json.JSONDecodeError:
-                print("The configuration file contains invalid JSON.")
+                current_app.logger.debug("The configuration file contains invalid JSON.")
             except Exception as e:
-                print(f"An unexpected error occurred: {str(e)}")
+                current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
     
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
