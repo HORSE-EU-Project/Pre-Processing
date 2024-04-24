@@ -10,9 +10,10 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
     try:
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
-            with open(CONFIG_FILE_PATH, 'r') as file:
-                data = json.load(file)
-                data['rules'].append({
+            try:
+                with open('config.json', 'r') as file:
+                    data = json.load(file)
+                    data['rules'].append({
                     "subscription_id": subscription_id,
                     "user_id": user_id,
                     "es_url": DB_url,
@@ -21,7 +22,12 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                     "headers": {"Content-Type": "application/json"},
                     "endpoint": endpoint_url,
                     "interval": interval
-                })
+                    })
+            except json.JSONDecodeError as e:
+                print(f"An error occurred: {e.msg}")
+                print(f"Error at line number {e.lineno}, column {e.colno}")
+            except Exception as e:
+                print(f"An unexpected error occurred: {str(e)}")
             with open(CONFIG_FILE_PATH, 'w') as file:
                 json.dump(data, file, indent=4)
                 
