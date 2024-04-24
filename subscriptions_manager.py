@@ -12,7 +12,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
             try:
-                with open('config.json', 'r') as file:
+                with open(CONFIG_FILE_PATH, 'r') as file:
                     data = json.load(file)
                     data['rules'].append({
                     "subscription_id": subscription_id,
