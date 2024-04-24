@@ -28,8 +28,8 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 print(f"Error at line number {e.lineno}, column {e.colno}")
             except Exception as e:
                 print(f"An unexpected error occurred: {str(e)}")
-            with open(CONFIG_FILE_PATH, 'w') as file:
-                json.dump(data, file, indent=4)
+            # with open(CONFIG_FILE_PATH, 'w') as file:
+            #     json.dump(data, file, indent=4)
                 
     except EOFError as e:
         return str(e)
