@@ -12,8 +12,10 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
             try:
+                current_app.logger.debug("Open config file "+CONFIG_FILE_PATH+" for reading")
                 with open(CONFIG_FILE_PATH, 'r') as file:
                     data = json.load(file)
+                    current_app.logger.debug("Data: "+str(data))
                     data['rules'].append({
                     "subscription_id": subscription_id,
                     "user_id": user_id,
@@ -28,8 +30,8 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 current_app.logger.debug("In subscriptionSubmission view "+str(e))
             except Exception as e:
                 current_app.logger.debug("An unexpected error occurred: "+str(e))
-            with open(CONFIG_FILE_PATH, 'w') as file:
-                json.dump(data, file, indent=4)
+            # with open(CONFIG_FILE_PATH, 'w') as file:
+            #     json.dump(data, file, indent=4)
                 
     except EOFError as e:
         return str(e)
