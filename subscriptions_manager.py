@@ -28,8 +28,8 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 current_app.logger.debug("In subscriptionSubmission view "+str(e))
             except Exception as e:
                 current_app.logger.debug("An unexpected error occurred: "+str(e))
-            # with open(CONFIG_FILE_PATH, 'w') as file:
-            #     json.dump(data, file, indent=4)
+            with open(CONFIG_FILE_PATH, 'w') as file:
+                json.dump(data, file, indent=4)
                 
     except EOFError as e:
         return str(e)
