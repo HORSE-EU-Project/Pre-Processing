@@ -208,7 +208,7 @@ class User(UserMixin):
             subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             
             db.commit()
-        except:
+        except Exception as e:
             return str(e)
         return 'Subscription updated successfully'
 
