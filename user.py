@@ -168,7 +168,11 @@ class User(UserMixin):
     def get_subscriptions(user_id):
         db = get_db()
         subscriptions = db.execute(
-            "SELECT * FROM subscriptions WHERE user_id = ?",
+            """SELECT subscription_id, user_id, es_url, index_name, query, headers, endpoint, interval, active,
+                   strftime('%Y-%m-%dT%H:%M:%S', created_at) as created_at,
+                   strftime('%Y-%m-%dT%H:%M:%S', updated_at) as updated_at
+            FROM subscriptions
+            WHERE user_id = ?""",
             (user_id,)
         ).fetchall()
         return subscriptions
