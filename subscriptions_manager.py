@@ -94,7 +94,7 @@ def sync_subscriptions(subscriptions):
 
         #Only for ES subscriptions for now
         data = {'rules': subscriptions}
-        with open(JSON_CONFIG_PATH, 'w') as json_file:
+        with open(CONFIG_FILE_PATH, 'w') as json_file:
             json.dump(data, json_file, indent=4)
         
         return "Subscriptions successfully synced to the YAML file."

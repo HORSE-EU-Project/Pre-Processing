@@ -62,6 +62,10 @@ def subscriptionSubmission():
         if action == 'sync':
             # Update the subscription on the yaml file based on the SQLite database
             result = User.sync_subscriptions(current_user.id)
+            if result == 'Subscriptions synchronized successfully':
+                flash("Subscriptions synchronized successfully", 'success')
+            else:
+                flash("Failed to synchronize subscriptions: " + result, 'error')
             current_app.logger.debug(result)
         
         return redirect(url_for('subscription.view_subscriptions', page=page))  # Redirect to the same page to avoid form resubmission
