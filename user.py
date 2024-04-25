@@ -207,7 +207,7 @@ class User(UserMixin):
     def delete_subscription(subscription_id):
         db = get_db()
         try:
-            subscription = get_subscription(subscription_id)
+            subscription = dict(get_subscription(subscription_id))
             
             db.execute(
                 "DELETE FROM subscriptions WHERE subscription_id = ?",
@@ -218,7 +218,7 @@ class User(UserMixin):
             subscriptions_manager.delete_subscription(subscription_id, subscription['subscription_type'])
             
             db.commit()
-        except:
+        except Exception as e:
             return str(e)
         return 'Subscription deleted successfully'
         
