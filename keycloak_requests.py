@@ -37,23 +37,24 @@ http.mount("https://", adapter)
 http.mount("http://", adapter)
 
 def get_kc_token(username, password):
-    current_app.logger.debug("get_kc_token===============================")
-    header={
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-    data = {
-        "client_id": "DFF_client",
-        "client_secret": SECRET,
-        "username": username,
-        "password": password,
-        "grant_type": "password",
-        "scope": "openid"
-    }
+    try:        
+        current_app.logger.debug("get_kc_token===============================")
+        header={
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            "client_id": "DFF_client",
+            "client_secret": SECRET,
+            "username": username,
+            "password": password,
+            "grant_type": "password",
+            "scope": "openid"
+        }
 
-    current_app.logger.debug("get_kc_token===============================")
-    response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
-    response.raise_for_status()  # Raises an HTTPError for bad responses
-    
+        current_app.logger.debug("get_kc_token===============================")
+        response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
+    except Exception as e:
+        return str(e)
     return response
 
 def get_kc_userinfo(token):

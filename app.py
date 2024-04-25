@@ -96,7 +96,7 @@ def index():
             # flash('Invalid credentials: ' + username + password + '!', 'error')   
             # return render_template('index.html')
             response = get_kc_token(username, password)
-            print('Response: ' + str(response.status_code) + '!', 'error')
+            flash('Response: ' + str(response.status_code) + '!', 'error')
             if response.status_code != 200:
                 flash('We got: ' + str(response.status_code) + 'from Keycloak.', 'error')
                 return render_template('index.html')
@@ -112,9 +112,9 @@ def get_userinfo():
     token = request.args['messages']
     response = get_kc_userinfo(token)
     r_code = response.status_code
-    #if r_code != 200 and r_code != 302:
-    #    flash('Keycloak is not responding. Status code: ' + str(response.status_code) + ' Try again later!', 'error')
-    #    return render_template('index.html')
+    if r_code != 200 and r_code != 302:
+       flash('Keycloak is not responding. Status code: ' + str(response.status_code) + ' Try again later!', 'error')
+       return render_template('index.html')
     user_name = response.json()["preferred_username"]
     user_email = response.json()["email"]
     unique_id = response.json()["sub"]
