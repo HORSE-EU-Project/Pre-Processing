@@ -77,7 +77,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
         return str(e)
     return 'Subscription updated successfully'
 
-def delete_subscription(subscription_id):
+def delete_subscription(subscription_id, subscription_type):
     try:
         # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':

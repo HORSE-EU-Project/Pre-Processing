@@ -207,13 +207,15 @@ class User(UserMixin):
     def delete_subscription(subscription_id):
         db = get_db()
         try:
+            subscription = get_subscription(subscription_id)
+            
             db.execute(
                 "DELETE FROM subscriptions WHERE subscription_id = ?",
                 (subscription_id,)
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
-            subscriptions_manager.delete_subscription(subscription_id)
+            subscriptions_manager.delete_subscription(subscription_id, subscription['subscription_type'])
             
             db.commit()
         except:
