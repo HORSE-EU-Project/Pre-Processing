@@ -57,7 +57,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         rule['user_id'] = user_id
                         rule['es_url'] = DB_url
                         rule['index'] = ES_INDEX
-                        rule['query'] = query
+                        rule['query'] = dict(query)
                         rule['headers'] = {"Content-Type": "application/json"}
                         rule['endpoint'] = endpoint_url
                         rule['interval'] = interval
