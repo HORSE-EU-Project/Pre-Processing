@@ -193,21 +193,27 @@ class User(UserMixin):
         return subscription
 
     @staticmethod
-    def update_subscription(subscription_id, **kwargs):
-        db = get_db()
-        fields = ', '.join(f"{key} = ?" for key in kwargs)
-        values = list(kwargs.values())
-        values.append(subscription_id)
+    def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+        
         try:
-            db.execute(
-                f"UPDATE subscriptions SET {fields} WHERE subscription_id = ?",
-                values
-            )
-            
-            # Update the subscriptions in the ./ES_alert_system/config.json file
-            subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
-            
+            db = get_db()
+            # Prepare the SQL update statement
+            sql = """
+            UPDATE subscriptions
+            SET user_id = ?,
+                subscription_type = ?,
+                endpoint_url = ?,
+                DB_url = ?,
+                query = ?,
+                interval = ?,
+                active = ?
+            WHERE subscription_id = ?
+            """
+            # Execute the update statement
+            cursor = db.cursor()
+            cursor.execute(sql, (user_id, subscription_type, endpoint_url, DB_url, query, interval, active, subscription_id))
             db.commit()
+            cursor.close()
         except Exception as e:
             return str(e)
         return 'Subscription updated successfully'
