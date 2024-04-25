@@ -24,6 +24,11 @@
         <div class="content-inside">
             <div class="row" style="padding: 1%">
                     <h3 style="text-align: center;">Your Subscriptions</h3>
+                    <form action="{{ url_for('subscription.view_subscriptions') }}" method="POST" style="text-align: center; margin-bottom: 20px;">
+                        <input type="hidden" id="action" name="action" value="sync">
+                        <button type="submit" style="padding: 10px 20px;">Sync</button>
+                    </form>
+
                     <table class="dataframe">
                         <thead>
                             <tr>

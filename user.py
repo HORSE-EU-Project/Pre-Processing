@@ -175,6 +175,15 @@ class User(UserMixin):
 
 
     @staticmethod
+    def sync_subscriptions(user_id):
+        try:
+            subscriptions = User.get_subscriptions(user_id)
+            result = subscriptions_manager.sync_subscriptions(subscriptions)
+        except Exception as e:
+            return str(e)
+        return result   
+
+    @staticmethod
     def get_subscription(subscription_id):
         db = get_db()
         subscription = db.execute(

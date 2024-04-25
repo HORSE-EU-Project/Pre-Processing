@@ -51,13 +51,19 @@ def subscriptionSubmission():
 
     if request.method == 'POST':
         list_apps = User.get_all("apps", "name")
-        for app in list_apps:
-            temp_id = f"id_{app}"
-            temp_url = f"url_{app}"
-            if request.form.get(temp_id) == "1":
-                current_app.logger.debug("Calling createElasticsearchWatch")
-                if createAlert(app, request.form.get(temp_url), INDEX_NAME):
-                    flash(f"Alert for {app} created successfully", 'success')
+        # for app in list_apps:
+        #     temp_id = f"id_{app}"
+        #     temp_url = f"url_{app}"
+        #     if request.form.get(temp_id) == "1":
+        #         current_app.logger.debug("Calling createElasticsearchWatch")
+        #         if createAlert(app, request.form.get(temp_url), INDEX_NAME):
+        #             flash(f"Alert for {app} created successfully", 'success')
+        
+        if action == 'sync':
+            # Update the subscription on the yaml file based on the SQLite database
+            result = User.sync_subscriptions(current_user.id)
+            current_app.logger.debug(result)
+        
         return redirect(url_for('subscription.view_subscriptions', page=page))  # Redirect to the same page to avoid form resubmission
 
     return render_template('subscription_view.html', subscriptions=subscriptions, tkn=token, name=current_user.name,

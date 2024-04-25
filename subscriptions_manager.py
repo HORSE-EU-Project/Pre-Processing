@@ -8,15 +8,6 @@ ES_ALERT_SYSTEM_PATH = './ES_alert_system'
 CONFIG_FILE_PATH = os.path.join(ES_ALERT_SYSTEM_PATH,'config.json')
 ES_INDEX = 'test_index'
 
-class ConfigReader:
-    @staticmethod
-    def read_config(config_file):
-        with open(config_file, 'r') as file:
-            data = json.load(file)
-            return [ElasticQuery(**item) for item in data["rules"]]
-
-
-
 
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
         if subscription_type == 'ES':
@@ -93,3 +84,19 @@ def delete_subscription(subscription_id, subscription_type):
     except EOFError as e:
         return str(e)
     return 'Subscription deleted successfully'
+
+
+
+def sync_subscriptions(subscriptions):
+    try:
+        if not subscriptions:
+            return "No subscriptions found for the user."
+
+        #Only for ES subscriptions for now
+        data = {'rules': subscriptions}
+        with open(JSON_CONFIG_PATH, 'w') as json_file:
+            json.dump(data, json_file, indent=4)
+        
+        return "Subscriptions successfully synced to the YAML file."
+    except Exception as e:
+        return f"An error occurred while syncing subscriptions: {str(e)}"
