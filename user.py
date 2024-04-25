@@ -207,7 +207,7 @@ class User(UserMixin):
     def delete_subscription(subscription_id):
         db = get_db()
         try:
-            subscription = dict(get_subscription(subscription_id))
+            subscription = dict(User.get_subscription(subscription_id))
             
             db.execute(
                 "DELETE FROM subscriptions WHERE subscription_id = ?",
