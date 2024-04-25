@@ -92,8 +92,11 @@ def sync_subscriptions(subscriptions):
         if not subscriptions:
             return "No subscriptions found for the user."
 
-        #Only for ES subscriptions for now
-        data = {'rules': subscriptions}
+        # Convert Row objects to dictionaries if necessary
+        dict_subscriptions = [dict(sub) for sub in subscriptions] if subscriptions else []
+
+        # Only for ES subscriptions for now
+        data = {'rules': dict_subscriptions}
         with open(CONFIG_FILE_PATH, 'w') as json_file:
             json.dump(data, json_file, indent=4)
         
