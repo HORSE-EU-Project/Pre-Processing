@@ -144,6 +144,7 @@ def create_subscription():
                 subscription_id = int(request.form.get('subscription_id'))
                 result = User.update_subscription(
                     subscription_id = subscription_id,
+                    user_id=current_user.id,
                     subscription_type=subscription_type,
                     endpoint_url=endpoint_url,
                     DB_url=DB_url,
