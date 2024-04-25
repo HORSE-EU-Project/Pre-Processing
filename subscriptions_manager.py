@@ -22,13 +22,13 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         if subscription_type == 'ES':
             # Create the new rule as a dictionary
             new_rule = {
-                "subscription_id": subscription_id,
-                "user_id": user_id,
-                "es_url": DB_url,
-                "index": "your_index_based_on_subscription_type",  # Set this to a meaningful value based on the subscription type
-                "query": query,
+                "subscription_id": str(subscription_id),
+                "user_id": str(user_id),
+                "es_url": str(DB_url),
+                "index": "test_index",  # Set this to a meaningful value based on the subscription type
+                "query": str(query),
                 "headers": {"Content-Type": "application/json"},
-                "endpoint": endpoint_url,
+                "endpoint": str(endpoint_url),
                 "interval": interval,
                 "active": active
             }
