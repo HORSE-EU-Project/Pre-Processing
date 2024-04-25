@@ -195,12 +195,6 @@ class User(UserMixin):
                 values
             )
             
-            # Get the subscription_id of the newly created subscription
-            subscription_id = db.execute(
-                "SELECT subscription_id FROM subscriptions WHERE user_id = ? AND subscription_type = ? AND endpoint_url = ? AND DB_url = ? AND query = ? AND interval = ? AND active = ?",
-                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
-            )
-            
             # Update the subscriptions in the ./ES_alert_system/config.json file
             subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             
@@ -216,12 +210,6 @@ class User(UserMixin):
             db.execute(
                 "DELETE FROM subscriptions WHERE subscription_id = ?",
                 (subscription_id,)
-            )
-            
-            # Get the subscription_id of the newly created subscription
-            subscription_id = db.execute(
-                "SELECT subscription_id FROM subscriptions WHERE user_id = ? AND subscription_type = ? AND endpoint_url = ? AND DB_url = ? AND query = ? AND interval = ? AND active = ?",
-                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
             )
             
             # Update the subscriptions in the ./ES_alert_system/config.json file
