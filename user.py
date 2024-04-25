@@ -212,6 +212,8 @@ class User(UserMixin):
             # Execute the update statement
             cursor = db.cursor()
             cursor.execute(sql, (user_id, subscription_type, endpoint_url, DB_url, query, interval, active, subscription_id))
+            subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            
             db.commit()
             cursor.close()
         except Exception as e:
