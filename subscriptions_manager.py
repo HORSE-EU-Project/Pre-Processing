@@ -95,6 +95,11 @@ def sync_subscriptions(subscriptions):
         # Convert Row objects to dictionaries if necessary
         dict_subscriptions = [dict(sub) for sub in subscriptions] if subscriptions else []
 
+        #convert the values of the keys "updated_at" and "created_at" to string
+        for sub in dict_subscriptions:
+            sub['updated_at'] = str(sub['updated_at'])
+            sub['created_at'] = str(sub['created_at'])
+        
         # Only for ES subscriptions for now
         data = {'rules': dict_subscriptions}
         with open(CONFIG_FILE_PATH, 'w') as json_file:
