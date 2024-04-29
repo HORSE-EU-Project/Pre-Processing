@@ -47,7 +47,6 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
     try:
-        # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
@@ -70,7 +69,6 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
 
 def delete_subscription(subscription_id, subscription_type):
     try:
-        # Update the ./ES_alert_system/config.json file with the new subscription if subscription type is 'ES'
         if subscription_type == 'ES':
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)

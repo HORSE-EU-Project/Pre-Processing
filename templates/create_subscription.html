@@ -14,14 +14,20 @@
                     <form method="post" action="{{ url_for('subscription.new') }}">
                         <div class="text-center">
                             <ul class="list-group list-group-flush">
-                                
                                 <input type="hidden" id="subscription_id" name="subscription_id" value="{{ subscription_id }}">
                                 <input type="hidden" id="action" name="action" value="{{ action }}">
-                                
+                    
                                 <li>
                                     <label for="subscription_type">Subscription Type:</label>
-                                    <input type="text" id="subscription_type" name="subscription_type" value="{{ subscription_type }}" required>
+                                    <select id="subscription_type" name="subscription_type" required onchange="updateFormFields()">
+                                        <option value="ES">ES</option>
+                                        <option value="ORION">ORION</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </li>
+                                <div id="dynamic_fields">
+                                    <!-- Dynamic fields will be appended here -->
+                                </div>
                                 <li>
                                     <label for="endpoint_url">Endpoint URL:</label>
                                     <input type="url" id="endpoint_url" name="endpoint_url" value="{{ endpoint_url }}" required>
@@ -29,10 +35,6 @@
                                 <li>
                                     <label for="DB_url">Database URL:</label>
                                     <input type="url" id="DB_url" name="DB_url" value="{{ DB_url }}" required>
-                                </li>
-                                <li>
-                                    <label for="query">Query (Optional):</label>
-                                    <input type="text" id="query" name="query" value="{{ query }}">
                                 </li>
                                 <li>
                                     <label for="interval">Interval:</label>
@@ -46,6 +48,8 @@
                             <button type="submit" class="btn" style="background-color: #5cadb3;">{{ button_text }}</button>
                         </div>
                     </form>
+                    <script src="../static/js/subscription_form_logic.js"></script>
+                    
                 </div>
             </div>
         </div>
