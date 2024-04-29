@@ -35,13 +35,13 @@ class ElasticQuery:
             
             
             
+            qry = dict(self.query)
             
-            
-            qry = {
-                    "query": {
-                        "match_all": {}
-                    }
-                }
+            # qry = {
+            #         "query": {
+            #             "match_all": {}
+            #         }
+            #     }
             
             logging.info("=========Executing query=========")
             logging.info("Query: %s", qry)
