@@ -36,8 +36,12 @@ class ElasticQuery:
             q = self.query["query"]
             key, value = q.popitem()
             q = {str(key): value}
-            qry = {"query": q}
-            logging.info("Query: ", qry)
+            qry = {
+                    "query": {
+                        "match_all": {}
+                    }
+                }
+            
             response = requests.post(url, json=str(qry), headers=self.headers)
             if response.status_code == 200:
                 logging.info("=========Query executed successfully=========")
