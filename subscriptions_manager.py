@@ -16,7 +16,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
             #use regex to split the query, using : as the delimiter
             query = query.split(':')
             
-            es_query = dict({query[0]: json.loads(query[1])})
+            es_query = json.loads({query : dict({query[0]: json.loads(query[1])})})
             
             # Create the new rule as a dictionary
             new_rule = {
