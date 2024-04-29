@@ -59,8 +59,7 @@ class ElasticQuery:
                 logging.error("Failed to execute query with status code %s", response.status_code)
                 return None
         except Exception as e:
-            logging.error("=========Failed to execute query=========")
-            logging.error(str(e))
+            logging.error("=========Failed to execute query=========",str(e))
             return None
 
     def post_results(self, results):
