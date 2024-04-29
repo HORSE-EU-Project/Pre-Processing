@@ -4,7 +4,7 @@ class ES_queries():
     
     def __init__(self, ES_URL):
         self.ES_URL = ES_URL
-        self.ES_queries = read_config()
+        self.ES_queries = self.read_config()
         
     
     def read_config(self):
