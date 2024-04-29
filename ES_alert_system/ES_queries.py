@@ -1,5 +1,6 @@
 #A class for reading the queries from the queries file and managing the queries
 import json
+from elastic_query import ElasticQuery
 class ES_queries():
     
     def __init__(self, ES_URL):
