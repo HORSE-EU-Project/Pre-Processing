@@ -5,7 +5,7 @@ import json
 import time
 from datetime import datetime, timedelta
 from elastic_query import ElasticQuery
-import ES_queries
+from ES_queries import ES_queries
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
