@@ -12,38 +12,47 @@ ES_INDEX = 'test_index'
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
                      query, interval, active, es_index=None, entity=None ):
         if subscription_type == 'ES':
-            #create a query for the ElasticSearch DB based on the  query and index
-            #use regex to split the query, using : as the delimiter
+            # Assuming 'query' is defined, example: query = "query : {match_all:{}}"
+            # Split the query using ':' as the delimiter
             key, value = query.split(':')
-            # Remove any leading/trailing whitespace
             key = key.strip()
             value = value.strip()
-            value = eval(value)
-            
+
+            # Convert the string representation of a dictionary into an actual dictionary
+            # Using json.loads for safer parsing compared to eval
+            try:
+                value = json.loads(value.replace('\'', '\"'))  # Ensure the string is in proper JSON format
+            except json.JSONDecodeError:
+                print("Error decoding the JSON data. Check the input format.")
+                value = {}  # default to an empty dictionary in case of error
+
             es_query = {"query": {key: value}}
-            
+
             # Create the new rule as a dictionary
             new_rule = {
                 "subscription_id": subscription_id,
                 "user_id": user_id,
                 "es_url": str(DB_url),
-                "index": es_index,  # Set this to a meaningful value based on the subscription type
-                "query": json.dumps(es_query),
+                "index": es_index,  # Meaningful value based on the subscription type
+                "query": es_query,  # Keep as dictionary, not string
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
                 "active": active
             }
-            
+
+            # Open the config file in read mode and load existing data
             try:
-        # Open the config file in read mode and load existing data
                 with open(CONFIG_FILE_PATH, 'r') as file:
                     data = json.load(file)
-                
-                # Append the new rule to the list of rules
-                data['rules'].append(new_rule)
+            except FileNotFoundError:
+                data = {'rules': []}  # Initialize if file doesn't exist
 
-                # Write the updated data back to the config file
+            # Append the new rule to the list of rules
+            data['rules'].append(new_rule)
+
+            # Write the updated data back to the config file
+            try:
                 with open(CONFIG_FILE_PATH, 'w') as file:
                     json.dump(data, file, indent=4)
                 
