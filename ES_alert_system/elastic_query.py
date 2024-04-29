@@ -24,10 +24,6 @@ class ElasticQuery:
         print("ES URL: ", self.es_url)
         print("Index: ", self.index)
         print("Query: ", self.query)
-        qry = dict(self.query)
-        print("Query: ", qry)
-        
-        
         print("Headers: ", self.headers)
         print("Endpoint: ", self.endpoint)
         print("Interval: ", self.interval)
@@ -38,14 +34,12 @@ class ElasticQuery:
         try:
             
             
-            
-            qry = dict(self.query)
-            
-            # qry = {
-            #         "query": {
-            #             "match_all": {}
-            #         }
-            #     }
+            #unfold the string query to a dictionary
+            qry = {
+                    "query": {
+                        "match_all": {}
+                    }
+                }
             
             logging.info("=========Executing query=========")
             logging.info("Query: %s", qry)
