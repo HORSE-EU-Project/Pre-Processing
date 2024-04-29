@@ -33,7 +33,7 @@ def main():
     #every 10 seconds run the queries
     while True:
         now = datetime.now()
-        for query in queries:
+        for query in queries.ES_queries:
             print("=========================++++++====================================")
             if not query.last_run or now >= query.last_run + query.interval:
                 try:
