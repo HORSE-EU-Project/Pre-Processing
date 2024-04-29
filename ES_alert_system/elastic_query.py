@@ -33,7 +33,6 @@ class ElasticQuery:
         url = f"{self.es_url}/{self.index}/_search"
         try:
             #unfold the string query to a dictionary
-            self.query = convert_query_string(self.query)
             q = self.query["query"]
             key, value = q.popitem()
             q = {str(key): value}
