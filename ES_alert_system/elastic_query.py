@@ -47,10 +47,11 @@ class ElasticQuery:
             
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(self.query))
-            logging.info("Query: %s", dict(self.query))
+            logging.info("Query: %s", self.query)
             logging.info("URL: %s", url)
             
-            response = requests.post(url, json=json.loads(str(self.query)), headers=self.headers)
+            response = requests.post(url, json=json.loads(self.query), headers=self.headers)
+            
             if response.status_code == 200:
                 logging.info("=========Query executed successfully=========")
                 return response.json()
@@ -59,6 +60,7 @@ class ElasticQuery:
                 return None
         except Exception as e:
             logging.error("=========Failed to execute query=========")
+            logging.error(str(e))
             return None
 
     def post_results(self, results):
