@@ -143,7 +143,7 @@ class User(UserMixin):
     # Subscription management methods
     @staticmethod
     def create_subscription(user_id, subscription_type, endpoint_url, DB_url, 
-                            query, interval, es_index=None, entity=None ):
+                            query, interval,active, es_index=None, entity=None ):
         db = get_db()
         try:
             # Insert the new subscription
@@ -195,7 +195,7 @@ class User(UserMixin):
 
     @staticmethod
     def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                            query, interval, es_index=None, entity=None ):
+                            query, interval, active, es_index=None, entity=None ):
         
         try:
             db = get_db()
