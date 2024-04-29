@@ -9,11 +9,31 @@ function updateFormFields() {
         dynamicFields.innerHTML = `
             <li>
                 <label for="index">Index:</label>
-                <input type="text" id="index" name="index" required>
+                <input type="text" id="index" name="index">
             </li>
             <li>
                 <label for="query">Query:</label>
-                <input type="text" id="query" name="query" required>
+                <input type="text" id="query" name="query">
+            </li>
+        `;
+    }
+    else if (subscriptionType === 'ORION') {
+        dynamicFields.innerHTML = `
+            <li>
+                <label for="Entity">Entity:</label>
+                <input type="text" id="entity" name="entity">
+            </li>
+            <li>
+                <label for="query">Query:</label>
+                <input type="text" id="query" name="query">
+            </li>
+        `;
+    }
+    else if (subscriptionType === 'Other') {
+        dynamicFields.innerHTML = `
+            <li>
+                <label for="query">Query:</label>
+                <input type="text" id="query" name="query">
             </li>
         `;
     }
