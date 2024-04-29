@@ -33,7 +33,12 @@ class ElasticQuery:
         url = f"{self.es_url}/{self.index}/_search"
         try:
             
+            
             #unfold the string query to a dictionary
+            q = convert_query_string(self.query)
+            logging.info("Query: ", q)
+            
+            
             qry = {
                     "query": {
                         "match_all": {}
