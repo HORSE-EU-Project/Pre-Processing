@@ -35,7 +35,7 @@ class ElasticQuery:
             
             
             #unfold the string query to a dictionary
-            q = convert_query_string(self.query)
+            q = convert_query_string(str(self.query))
             logging.info("Query: ", q)
             
             
