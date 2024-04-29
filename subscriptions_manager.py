@@ -12,21 +12,7 @@ ES_INDEX = 'test_index'
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
                      query, interval, active, es_index=None, entity=None ):
         if subscription_type == 'ES':
-            # Assuming 'query' is defined, example: query = "query : {match_all:{}}"
-            # Split the query using ':' as the delimiter
-            key, value = query.split(':')
-            key = key.strip()
-            value = value.strip()
-
-            # Convert the string representation of a dictionary into an actual dictionary
-            # Using json.loads for safer parsing compared to eval
-            try:
-                value = json.loads(value.replace('\'', '\"'))  # Ensure the string is in proper JSON format
-            except json.JSONDecodeError:
-                print("Error decoding the JSON data. Check the input format.")
-                value = {}  # default to an empty dictionary in case of error
-
-            es_query = {"query": {key: value}}
+            
 
             # Create the new rule as a dictionary
             new_rule = {
@@ -34,7 +20,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 "user_id": user_id,
                 "es_url": str(DB_url),
                 "index": es_index,  # Meaningful value based on the subscription type
-                "query": {es_query},  # Keep as dictionary, not string
+                "query": {"query": es_query},  # Keep as dictionary, not string
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
