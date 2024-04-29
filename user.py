@@ -159,7 +159,7 @@ class User(UserMixin):
 
             subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
-
+            User.sync_subscriptions(user_id)
         except sqlite3.IntegrityError as e:
             return str(e)
         return 'Subscription created successfully'
@@ -220,6 +220,7 @@ class User(UserMixin):
             
             db.commit()
             cursor.close()
+            User.sync_subscriptions(user_id)
         except Exception as e:
             return str(e)
         return 'Subscription updated successfully'
@@ -239,6 +240,7 @@ class User(UserMixin):
             subscriptions_manager.delete_subscription(subscription_id, subscription['subscription_type'])
             
             db.commit()
+            User.sync_subscriptions(user_id)
         except Exception as e:
             return str(e)
         return 'Subscription deleted successfully'
@@ -251,3 +253,4 @@ class User(UserMixin):
             "DELETE FROM subscriptions"    
         )
         db.commit()
+        User.sync_subscriptions(user_id)
