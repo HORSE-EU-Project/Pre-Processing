@@ -14,9 +14,13 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         if subscription_type == 'ES':
             #create a query for the ElasticSearch DB based on the  query and index
             #use regex to split the query, using : as the delimiter
-            query = query.split(':')
+            key, value = query.split(':')
+            # Remove any leading/trailing whitespace
+            key = key.strip()
+            value = value.strip()
+            value = eval(value)
             
-            es_query = json.loads({"query" : dict({query[0]: json.loads(query[1])})})
+            es_query = {"query": {key: value}}
             
             # Create the new rule as a dictionary
             new_rule = {
@@ -56,9 +60,13 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         query, interval, active, es_index=None, entity=None ):
     try:
         if subscription_type == 'ES':
-            query = query.split(':')
+            key, value = query.split(':')
+            # Remove any leading/trailing whitespace
+            key = key.strip()
+            value = value.strip()
+            value = eval(value)
             
-            es_query = dict({query[0]: json.loads(query[1])})
+            es_query = {"query": {key: value}}
             
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
