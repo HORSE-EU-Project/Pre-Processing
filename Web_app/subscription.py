@@ -131,7 +131,13 @@ def create_subscription():
             query = request.form.get('query', '')
             interval = request.form.get('interval')
             active = request.form.get('active', 'off') == 'on'
-
+            es_index = None
+            entity = None
+            if subscription_type == 'ES':
+                es_index = request.form.get('index')
+            elif subscription_type == 'ORION':
+                entity = request.form.get('entity')
+            
             if action == 'update':
                 # Update the subscription
                 subscription_id = int(request.form.get('subscription_id'))
@@ -143,7 +149,9 @@ def create_subscription():
                     DB_url=DB_url,
                     query=query,
                     interval=interval,
-                    active=active
+                    active=active,
+                    es_index=es_index,
+                    entity=entity
                 )
                 if result == 'Subscription updated successfully':
                     flash("Subscription updated successfully.", 'success')

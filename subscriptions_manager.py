@@ -9,15 +9,16 @@ CONFIG_FILE_PATH = os.path.join(ES_ALERT_SYSTEM_PATH,'config.json')
 ES_INDEX = 'test_index'
 
 
-def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
+                     query, interval, active, es_index=None, entity=None ):
         if subscription_type == 'ES':
             # Create the new rule as a dictionary
             new_rule = {
                 "subscription_id": subscription_id,
                 "user_id": user_id,
                 "es_url": str(DB_url),
-                "index": "test_index",  # Set this to a meaningful value based on the subscription type
-                "query": str(query),
+                "index": es_index,  # Set this to a meaningful value based on the subscription type
+                "query": query,
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
@@ -45,7 +46,8 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
     
         
-def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
+                        query, interval, active, es_index=None, entity=None ):
     try:
         if subscription_type == 'ES':
             with open(CONFIG_FILE_PATH, 'r') as file:
@@ -55,7 +57,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                     if rule['subscription_id'] == subscription_id:
                         rule['user_id'] = user_id
                         rule['es_url'] = DB_url
-                        rule['index'] = ES_INDEX
+                        rule['index'] = es_index
                         rule['query'] = query
                         rule['headers'] = {"Content-Type": "application/json"}
                         rule['endpoint'] = endpoint_url

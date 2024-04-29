@@ -142,7 +142,8 @@ class User(UserMixin):
 
     # Subscription management methods
     @staticmethod
-    def create_subscription(user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+    def create_subscription(user_id, subscription_type, endpoint_url, DB_url, 
+                            query, interval, es_index=None, entity=None ):
         db = get_db()
         try:
             # Insert the new subscription
@@ -155,9 +156,9 @@ class User(UserMixin):
 
             # Retrieve the ID of the newly created subscription
             subscription_id = cursor.lastrowid  # This returns the row ID of the last modified row
-            
-            # Update the subscriptions in the ./ES_alert_system/config.json file
-            subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, int(interval), active)
+
+            subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
+                                                   endpoint_url, DB_url, query, int(interval), active, es_index, entity)
 
         except sqlite3.IntegrityError as e:
             return str(e)
@@ -193,7 +194,8 @@ class User(UserMixin):
         return subscription
 
     @staticmethod
-    def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active):
+    def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
+                            query, interval, es_index=None, entity=None ):
         
         try:
             db = get_db()
@@ -211,8 +213,10 @@ class User(UserMixin):
             """
             # Execute the update statement
             cursor = db.cursor()
-            cursor.execute(sql, (user_id, subscription_type, endpoint_url, DB_url, query, interval, active, subscription_id))
-            subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+            cursor.execute(sql, (user_id, subscription_type, endpoint_url, DB_url, query, interval, 
+                                 active, subscription_id))
+            subscriptions_manager.update_subscription(subscription_id, user_id, subscription_type, 
+                                                      endpoint_url, DB_url, query, interval, active)
             
             db.commit()
             cursor.close()

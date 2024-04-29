@@ -2,6 +2,10 @@ function updateFormFields() {
     const subscriptionType = document.getElementById('subscription_type').value;
     const dynamicFields = document.getElementById('dynamic_fields');
 
+    // Define default values directly in the script
+    const defaultIndex = 'test_index';
+    const defaultQuery = JSON.stringify({"match_all": {}});
+
     // Clear existing dynamic fields
     dynamicFields.innerHTML = '';
 
@@ -9,11 +13,11 @@ function updateFormFields() {
         dynamicFields.innerHTML = `
             <li>
                 <label for="index">Index:</label>
-                <input type="text" id="index" name="index">
+                <input type="text" id="index" name="index" value= "${defaultIndex}">
             </li>
             <li>
                 <label for="query">Query:</label>
-                <input type="text" id="query" name="query">
+                <input type="text" id="query" name="query" values = '${defaultQuery}' >
             </li>
         `;
     }
