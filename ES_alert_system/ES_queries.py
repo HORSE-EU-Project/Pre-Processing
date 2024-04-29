@@ -8,7 +8,7 @@ class ES_queries():
         
     
     def read_config(self):
-        with open(self.rules, 'r') as file:
+        with open(self.ES_URL, 'r') as file:
             data = json.load(file)
             return [ElasticQuery(**item) for item in data["rules"]]
         
