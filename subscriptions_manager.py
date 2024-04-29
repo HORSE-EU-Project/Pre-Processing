@@ -10,14 +10,15 @@ ES_INDEX = 'test_index'
 
 
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                     query, interval, active, es_index=None, entity=None ):
+                     query, interval, active, es_index='test_index', entity=None ):
         if subscription_type == 'ES':
             
-
+            
             # Create the new rule as a dictionary
             new_rule = {
                 "subscription_id": subscription_id,
                 "user_id": user_id,
+                "subscription_type": "ES",
                 "es_url": str(DB_url),
                 "index": es_index,  # Meaningful value based on the subscription type
                 "query": {json.dumps(query)},  # Keep as dictionary, not string
@@ -52,7 +53,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
     
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                        query, interval, active, es_index=None, entity=None ):
+                        query, interval, active, es_index='test_index', es_index=None, entity=None ):
     try:
         if subscription_type == 'ES':
             key, value = query.split(':')
@@ -69,6 +70,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                 for rule in data['rules']:
                     if rule['subscription_id'] == subscription_id:
                         rule['user_id'] = user_id
+                        rule["subscription_type"] = "ES"
                         rule['es_url'] = DB_url
                         rule['index'] = es_index
                         rule['query'] = json.dumps(es_query)
