@@ -12,13 +12,19 @@ ES_INDEX = 'test_index'
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
                      query, interval, active, es_index=None, entity=None ):
         if subscription_type == 'ES':
+            #create a query for the ElasticSearch DB based on the  query and index
+            #use regex to split the query, using : as the delimiter
+            query = query.split(':')
+            
+            es_query = dict({query[0]: json.loads(query[1])})
+            
             # Create the new rule as a dictionary
             new_rule = {
                 "subscription_id": subscription_id,
                 "user_id": user_id,
                 "es_url": str(DB_url),
                 "index": es_index,  # Set this to a meaningful value based on the subscription type
-                "query": query,
+                "query": es_query,
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
@@ -50,6 +56,10 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         query, interval, active, es_index=None, entity=None ):
     try:
         if subscription_type == 'ES':
+            query = query.split(':')
+            
+            es_query = dict({query[0]: json.loads(query[1])})
+            
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
                 #search for the subscription_id and update the subscription
@@ -58,7 +68,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         rule['user_id'] = user_id
                         rule['es_url'] = DB_url
                         rule['index'] = es_index
-                        rule['query'] = query
+                        rule['query'] = es_query
                         rule['headers'] = {"Content-Type": "application/json"}
                         rule['endpoint'] = endpoint_url
                         rule['interval'] = interval
