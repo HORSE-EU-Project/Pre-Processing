@@ -24,6 +24,10 @@ class ElasticQuery:
         print("ES URL: ", self.es_url)
         print("Index: ", self.index)
         print("Query: ", self.query)
+        qry = dict(self.query)
+        print("Query: ", qry)
+        
+        
         print("Headers: ", self.headers)
         print("Endpoint: ", self.endpoint)
         print("Interval: ", self.interval)
