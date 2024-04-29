@@ -1,5 +1,5 @@
 #A class for reading the queries from the queries file and managing the queries
-
+import json
 class ES_queries():
     
     def __init__(self, ES_URL):
