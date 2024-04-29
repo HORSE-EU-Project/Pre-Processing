@@ -32,6 +32,9 @@ class ElasticQuery:
     def run_query(self):
         url = f"{self.es_url}/{self.index}/_search"
         try:
+            #unfold the string query to a dictionary
+            self.query = convert_query_string(self.query)
+            print("Query: ", self.query)
             response = requests.post(url, json=self.query, headers=self.headers)
             if response.status_code == 200:
                 logging.info("=========Query executed successfully=========")
@@ -66,3 +69,25 @@ class ElasticQuery:
             print(results)
         else:
             logging.info("No results available to print.")
+
+    
+    def convert_query_string(input_string):
+        try :
+            # Strip leading and trailing spaces and remove the initial "query:" part
+            json_part = input_string.split("query:", 1)[1].strip()
+
+            # Properly format the string for JSON conversion by replacing single quotes if necessary
+            json_part = json_part.replace('\'', '\"')
+
+            # Convert the string to a dictionary
+            query_dict = json.loads(json_part)
+
+            # Create the final dictionary expected
+            result = {"query": query_dict}
+
+            # Return the result as a JSON string for clarity and to match the expected output format
+            return json.dumps(result)
+        
+        except Exception as e:
+            # Handle exceptions that may arise from incorrect formatting or parsing
+            return str(e)
