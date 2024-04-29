@@ -26,7 +26,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 print("Error decoding the JSON data. Check the input format.")
                 value = {}  # default to an empty dictionary in case of error
 
-            es_query = {"querys": {key: value}}
+            es_query = {"query": {key: value}}
 
             # Create the new rule as a dictionary
             new_rule = {
@@ -34,7 +34,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 "user_id": user_id,
                 "es_url": str(DB_url),
                 "index": es_index,  # Meaningful value based on the subscription type
-                "query": es_query,  # Keep as dictionary, not string
+                "query": {es_query},  # Keep as dictionary, not string
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
