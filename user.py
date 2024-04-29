@@ -226,7 +226,7 @@ class User(UserMixin):
         return 'Subscription updated successfully'
 
     @staticmethod
-    def delete_subscription(subscription_id):
+    def delete_subscription(subscription_id, user_id):
         db = get_db()
         try:
             subscription = dict(User.get_subscription(subscription_id))

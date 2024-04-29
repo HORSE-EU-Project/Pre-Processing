@@ -162,7 +162,7 @@ def create_subscription():
             elif action == 'delete':
                 # Delete the subscription
                 subscription_id = int(request.form.get('subscription_id'))
-                result = User.delete_subscription(subscription_id)
+                result = User.delete_subscription(subscription_id, current_user.id)
                 if result == 'Subscription deleted successfully':
                     flash("Subscription deleted successfully.", 'success')
                 else:
