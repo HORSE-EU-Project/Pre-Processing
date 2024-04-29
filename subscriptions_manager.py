@@ -28,7 +28,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 "user_id": user_id,
                 "es_url": str(DB_url),
                 "index": es_index,  # Set this to a meaningful value based on the subscription type
-                "query": {es_query},
+                "query": str(es_query),
                 "headers": {"Content-Type": "application/json"},
                 "endpoint": str(endpoint_url),
                 "interval": interval,
