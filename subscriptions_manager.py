@@ -53,7 +53,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
     
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                        query, interval, active, es_index='test_index', es_index=None, entity=None ):
+                        query, interval, active, es_index='test_index', entity=None ):
     try:
         if subscription_type == 'ES':
             key, value = query.split(':')
