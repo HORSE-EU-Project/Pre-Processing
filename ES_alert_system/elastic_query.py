@@ -17,7 +17,7 @@ class ElasticQuery:
         self.query = query
         self.endpoint = endpoint_url
         self.headers = headers
-        self.interval = timedelta(seconds=interval)
+        self.interval = timedelta(seconds= int(interval))
         self.active = active
         self.last_run = None
         
