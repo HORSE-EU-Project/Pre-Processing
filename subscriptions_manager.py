@@ -56,13 +56,6 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         query, interval, active, es_index='test_index', entity=None ):
     try:
         if subscription_type == 'ES':
-            key, value = query.split(':')
-            # Remove any leading/trailing whitespace
-            key = key.strip()
-            value = value.strip()
-            value = eval(value)
-            
-            es_query = {"query": {key: value}}
             
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
@@ -73,7 +66,7 @@ def update_subscription(subscription_id, user_id, subscription_type, endpoint_ur
                         rule["subscription_type"] = "ES"
                         rule['es_url'] = DB_url
                         rule['index'] = es_index
-                        rule['query'] = json.dumps(es_query)
+                        rule['query'] = {json.dumps(query)}
                         rule['headers'] = {"Content-Type": "application/json"}
                         rule['endpoint'] = endpoint_url
                         rule['interval'] = interval
