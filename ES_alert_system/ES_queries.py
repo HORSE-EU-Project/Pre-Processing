@@ -1,7 +1,5 @@
 #A class for reading the queries from the queries file and managing the queries
 
-Path: ES_alert_system/elastic_query.py
-
 class ES_queries():
     
     def __init__(self, ES_URL):
