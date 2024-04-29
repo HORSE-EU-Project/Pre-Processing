@@ -7,8 +7,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 #thoughts excerpt
 class ElasticQuery:
-    def __init__(self, subscription_id, user_id, subscription_type='ES', es_url='', index='test_index', query='', headers='', endpoint='', interval=10):
-        if not all([es_url, index, query, headers, _url]):
+    def __init__(self, subscription_id, user_id, subscription_type='ES', es_url='', index='test_index', 
+                 query='', headers='', endpoint_url='', interval=10):
+        if not all([es_url, index, query, headers, endpoint_url]):
             raise ValueError("All parameters must be provided and non-empty.")
         self.subscription_id = subscription_id
         self.user_id = user_id
@@ -16,7 +17,7 @@ class ElasticQuery:
         self.es_url = es_url
         self.index = index
         self.query = query
-        self.endpoint = endpoint
+        self.endpoint = endpoint_url
         self.headers = headers
         self.interval = timedelta(seconds=interval)
         self.last_run = None
