@@ -128,7 +128,7 @@ def create_subscription():
             subscription_type = request.form.get('subscription_type')
             endpoint_url = request.form.get('endpoint_url')
             DB_url = request.form.get('DB_url')
-            query = request.form.get('query', '')
+            query = request.form.get('query')
             interval = request.form.get('interval')
             active = request.form.get('active', 'off') == 'on'
             es_index = None
