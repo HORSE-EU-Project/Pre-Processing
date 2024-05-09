@@ -166,9 +166,10 @@ class User(UserMixin):
                 subscription_id = None
                 result = subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
-
+                current_app.logger.debug('ORIION SUBSCRIPTION RESULT: ' + str(result))
                 if result != 'Subscription created successfully' and result != None:
                     subscription_id = result
+                    
                     #insert into the table the record, using the subscription_id returned by the Orion Context Broker
                     cursor = db.execute(
                         "INSERT INTO subscriptions (subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
