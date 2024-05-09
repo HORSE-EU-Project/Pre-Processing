@@ -9,6 +9,8 @@ ES_ALERT_SYSTEM_PATH = './ES_alert_system'
 CONFIG_FILE_PATH = os.path.join(ES_ALERT_SYSTEM_PATH,'config.json')
 ES_INDEX = 'test_index'
 
+ORION_URL = "http://10.10.10.14:1026"
+
 
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
                      query, interval, active, es_index='test_index', entity=None ):
