@@ -147,19 +147,37 @@ class User(UserMixin):
         db = get_db()
         try:
             # Insert the new subscription
-            cursor = db.execute(
-                "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
-            )
-            db.commit()
-
-            # Retrieve the ID of the newly created subscription
-            subscription_id = cursor.lastrowid  # This returns the row ID of the last modified row
-
-            subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
+            if subscription_type == 'ES':
+                cursor = db.execute(
+                    "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+                )
+        
+                # Retrieve the subscription_id of the new subscription
+                subscription_id = cursor.lastrowid
+                
+                result = subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
+
+            elif subscription_type == 'ORION':
+                subscription_id = None
+                result = subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
+                                                   endpoint_url, DB_url, query, int(interval), active, es_index, entity)
+
+                if result != 'Subscription created successfully' and result != None:
+                    subscription_id = result
+                    #insert into the table the record, using the subscription_id returned by the Orion Context Broker
+                    cursor = db.execute(
+                        "INSERT INTO subscriptions (subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        (subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+                    )
+                    
+                
             User.sync_subscriptions(user_id)
+            
+            db.commit()
         except sqlite3.IntegrityError as e:
             return str(e)
         return 'Subscription created successfully'
