@@ -2,6 +2,7 @@ from flask import current_app
 import json
 import os
 from elastic_query import ElasticQuery
+import traceback
 
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
