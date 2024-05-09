@@ -271,4 +271,4 @@ class User(UserMixin):
             "DELETE FROM subscriptions"    
         )
         db.commit()
-        User.sync_subscriptions(user_id)
+        #User.sync_subscriptions(user_id)
