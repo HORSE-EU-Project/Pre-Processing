@@ -165,13 +165,15 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         if r.status_code == 201:
-            flash('Subscription created successfully','success')
-            return 'Subscription created successfully'
+            response_data = r.json()
+            subscription_id = response_data.get("id")
+            flash('Subscription created successfully', 'success')
+            return subscription_id  # Return the subscription ID
         #elif r.status_code == 409:
         #    flash('Device has already been registered','info')
         else:
             flash('Something went wrong','error')
-            return 'Something went wrong'
+            return None
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
         return str(e)
