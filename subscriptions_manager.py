@@ -142,11 +142,15 @@ def sync_subscriptions(subscriptions):
     
 def createOrionRequest(dbName, endpoint):
     url = ORION_URL+"/v2/subscriptions/"
-    headersDict = {"Content-Type" : "application/json"}
     payload = dict( description = dbName,
-                    subject = {"entities" : [], "condition" : {"attrs" : []}},
-                    notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
-                    )
+            subject = {"entities" : [], "condition" : {"attrs" : []}},
+            notification = {"http" : {"url": ""}, "attrs" : [], "metadata" : ["dateCreated", "dateModified"]}                
+        )
+    headersDict = {
+            "Content-Type": "application/json",
+            "Content-Length": str(len(json.dumps(payload)))  # Calculate the length of the JSON payload
+        }
+    
     payload["subject"]["entities"] = [{"idPattern": ".*","type":dbName}]
     payload["notification"]["http"]["url"] = endpoint
     return sendRequestToFiware(url, headersDict, payload)
