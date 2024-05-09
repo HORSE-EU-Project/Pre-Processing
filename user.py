@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from db import get_db
 import sqlite3
 import subscriptions_manager
+import traceback
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -179,6 +180,8 @@ class User(UserMixin):
             
             db.commit()
         except sqlite3.IntegrityError as e:
+            traceback_str = traceback.format_exc()
+            current_app.logger.debug(str(traceback_str))
             return str(e)
         return 'Subscription created successfully'
 
