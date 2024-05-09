@@ -47,7 +47,9 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
                 return 'Subscription added successfully'
             except Exception as e:
                 current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
-                return str(e)
+                traceback_str = traceback.format_exc()
+                return traceback_str
+
         #else if subscription_type is 'ORION', add the subscription to the Orion Context Broker
         elif subscription_type == 'ORION':
             try:
@@ -56,7 +58,8 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
 
             
             except Exception as e:
-                return str(e)
+                traceback_str = traceback.format_exc()
+                return traceback_str
         
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
@@ -173,7 +176,9 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
         #    flash('Device has already been registered','info')
         else:
             flash('Something went wrong','error')
-            return None
+            traceback_str = traceback.format_exc()
+            return traceback_str
     except requests.exceptions.RequestException as e: 
         flash('Internal error')
-        return str(e)
+        traceback_str = traceback.format_exc()
+        return traceback_str

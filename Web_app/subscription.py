@@ -187,7 +187,7 @@ def create_subscription():
                     flash("Subscription created successfully.", 'success')
                     return redirect(url_for('subscription.view_subscriptions'))
                 else:
-                    current_app.logger.debug("Failed to create subscription")
+                    current_app.logger.debug("Failed to create subscription"+ result)
                     flash("Failed to create subscription: " + result, 'error')
                     return redirect(url_for('subscription.form'))
 
