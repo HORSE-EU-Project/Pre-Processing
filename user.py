@@ -4,6 +4,7 @@ from db import get_db
 import sqlite3
 import subscriptions_manager
 import traceback
+from flask import current_app
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
