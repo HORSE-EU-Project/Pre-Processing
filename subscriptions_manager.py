@@ -3,6 +3,7 @@ import json
 import os
 from elastic_query import ElasticQuery
 import traceback
+import requests
 
 # Set important paths
 ES_ALERT_SYSTEM_PATH = './ES_alert_system'
