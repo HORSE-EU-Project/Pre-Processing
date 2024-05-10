@@ -57,7 +57,7 @@ def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, 
         #else if subscription_type is 'ORION', add the subscription to the Orion Context Broker
         elif subscription_type == 'ORION':
             try:
-                result = createOrionRequest(entity, endpoint_url)
+                result = createOrionRequest(str(entity), str(endpoint_url))
                 return result           
 
             
