@@ -5,6 +5,16 @@ import sqlite3
 import subscriptions_manager
 import traceback
 from flask import current_app
+import random
+import string
+import time
+
+def generate_text_id():
+    # Set the seed for the random number generator using the current time
+    random.seed(int(time.time()))
+    
+    # Generate a random alphanumeric value with 20 digits
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=20))
 
 class User(UserMixin):
     def __init__(self, id_, name, email, token, organization, domain_name):
@@ -152,7 +162,7 @@ class User(UserMixin):
             # Insert the new subscription
             if subscription_type == 'ES':        
                 # Retrieve the subscription_id of the new subscription (need better id mechanism)
-                subscription_id = cursor.lastrowid
+                subscription_id = generate_text_id()
                 current_app.logger.debug('SUBSCRIPTION ID: ' + str(subscription_id))
                 
                 cursor = db.execute(
