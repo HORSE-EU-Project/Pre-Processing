@@ -167,6 +167,7 @@ def deleteOrionSubscription(subscription_id):
 #Sending a request to fiware       
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
+        current_app.logger.debug(f"Sending request to Fiware: {matchPostURL}")
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         # if r.status_code == 201:
         response_data = r.json()
