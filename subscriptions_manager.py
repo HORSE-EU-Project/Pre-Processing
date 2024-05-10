@@ -170,17 +170,18 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
         current_app.logger.debug(f"Sending request to Fiware: {matchPostURL}")
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         # if r.status_code == 201:
-        response_data = r.json()
-        #print the content of the response
-        current_app.logger.debug(f"Response from Fiware: {response_data}")
-        
-        subscription_id = response_data.get("Location").split("/")[-1]
-        current_app.logger.debug(f"Subscription created successfully. Subscription ID: {subscription_id}")
-        return subscription_id  # Return the subscription ID
-        # else:
-        #     traceback_str = traceback.format_exc()
-        #     current_app.logger.debug(str(traceback_str))
-        #     return traceback_str
+        if r.status_code == 201:
+            subscription_id = r.headers.get("Location").split("/")[-1]
+            return subscription_id
+        else:
+            current_app.logger.debug(f"Failed to create subscription. Status code: {r.status_code}, Response: {r.text}")
+            return None
+    except requests.exceptions.RequestException as e:
+        current_app.logger.debug(f"Error sending request to Fiware: {str(e)}")
+        return None
+    except json.decoder.JSONDecodeError as je:
+        current_app.logger.debug(f"Error decoding response JSON: {str(je)}, Response text: {r.text}")
+        return None
     except requests.exceptions.RequestException as e:
         traceback_str = traceback.format_exc()
         current_app.logger.debug(str(traceback_str))
