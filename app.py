@@ -67,7 +67,7 @@ if not os.path.exists(db_path):
 else:
     # Check for schema updates if the database exists
     with app.app_context():
-        User.delete_all_subscriptions()
+        #User.delete_all_subscriptions()
         #drop_table("subscriptions")
         #update_db_schema_command()
         update_db_schema_command()
