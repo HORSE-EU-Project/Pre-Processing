@@ -149,7 +149,7 @@ def createOrionRequest(dbName, endpoint):
                     )
     payload["subject"]["entities"] = [{"idPattern": ".*","type":dbName}]
     payload["notification"]["http"]["url"] = endpoint
-    sendRequestToFiware(url, headersDict, payload)
+    return sendRequestToFiware(url, headersDict, payload)
 
 def deleteOrionSubscription(subscription_id):
     url = ORION_URL + "/v2/subscriptions/" + subscription_id
