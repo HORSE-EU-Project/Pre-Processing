@@ -18,16 +18,6 @@ from user import User
 ELASTICSEARCH_URL = "http://10.10.10.14:9200"  # Adjust as necessary
 INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
 
-#set ElastAlert rules directory
-ELASTALERT_RULES_DIRECTORY = os.path.join(os.getcwd(), "elastalert/rules")
-
-
-#create folder if it does not exist
-if not os.path.exists(ELASTALERT_RULES_DIRECTORY):
-    os.makedirs(ELASTALERT_RULES_DIRECTORY)
-
-
-
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
 @subscription.route('/subscribe', methods=['GET', 'POST'], endpoint='view_subscriptions')
