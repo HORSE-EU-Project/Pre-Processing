@@ -68,7 +68,7 @@ else:
     # Check for schema updates if the database exists
     with app.app_context():
         User.delete_all_subscriptions()
-        db.drop_table("subscriptions")
+        drop_table("subscriptions")
         #update_db_schema_command()
         update_db_schema_command()
 
