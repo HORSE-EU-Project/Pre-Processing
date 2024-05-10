@@ -69,7 +69,7 @@ def subscription_form():
         if request.method == 'POST':
             subscription_id = request.form.get('subscription_id')
             # Based on the subscription_id, get the subscription details
-            subscription = dict(User.get_subscription(int(subscription_id)))
+            subscription = dict(User.get_subscription(subscription_id))
             
             #print(subscription fields)
             current_app.logger.debug("Subscription fields: " + str(subscription))
@@ -130,7 +130,7 @@ def create_subscription():
             
             if action == 'update':
                 # Update the subscription
-                subscription_id = int(request.form.get('subscription_id'))
+                subscription_id = request.form.get('subscription_id')
                 result = User.update_subscription(
                     subscription_id = subscription_id,
                     user_id=current_user.id,
@@ -151,7 +151,7 @@ def create_subscription():
             
             elif action == 'delete':
                 # Delete the subscription
-                subscription_id = int(request.form.get('subscription_id'))
+                subscription_id = request.form.get('subscription_id')
                 result = User.delete_subscription(subscription_id, current_user.id)
                 if result == 'Subscription deleted successfully':
                     flash("Subscription deleted successfully.", 'success')
