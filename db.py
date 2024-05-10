@@ -1,7 +1,7 @@
 # http://flask.pocoo.org/docs/1.0/tutorial/database/
 import sqlite3
 import click
-from flask import current_app, g
+from flask import current_app, g, current_app
 from flask.cli import with_appcontext
 
 def get_db(path=None):
@@ -97,3 +97,4 @@ def drop_table(table_name):
     db = get_db()
     db.execute('DROP TABLE IF EXISTS ' + table_name)
     print("Table dropped")
+    
