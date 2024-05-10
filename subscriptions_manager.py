@@ -168,15 +168,15 @@ def deleteOrionSubscription(subscription_id):
 def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
     try:
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
-        if r.status_code == 201:
-            response_data = r.json()
-            subscription_id = response_data.get("id")
-            current_app.logger.debug(f"Subscription created successfully. Subscription ID: {subscription_id}")
-            return subscription_id  # Return the subscription ID
-        else:
-            traceback_str = traceback.format_exc()
-            current_app.logger.debug(str(traceback_str))
-            return traceback_str
+        # if r.status_code == 201:
+        response_data = r.json()
+        subscription_id = response_data.get("id")
+        current_app.logger.debug(f"Subscription created successfully. Subscription ID: {subscription_id}")
+        return subscription_id  # Return the subscription ID
+        # else:
+        #     traceback_str = traceback.format_exc()
+        #     current_app.logger.debug(str(traceback_str))
+        #     return traceback_str
     except requests.exceptions.RequestException as e:
         traceback_str = traceback.format_exc()
         current_app.logger.debug(str(traceback_str))
