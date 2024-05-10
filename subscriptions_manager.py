@@ -170,7 +170,7 @@ def sendRequestToFiware(matchPostURL,headersDict,matchPayload):
         r = requests.post(matchPostURL, headers = headersDict, data= json.dumps(matchPayload))
         # if r.status_code == 201:
         response_data = r.json()
-        subscription_id = response_data.get("id")
+        subscription_id = response_data.get("Location").split("/")[-1]
         current_app.logger.debug(f"Subscription created successfully. Subscription ID: {subscription_id}")
         return subscription_id  # Return the subscription ID
         # else:
