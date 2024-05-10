@@ -91,3 +91,9 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(update_db_schema_command)
+    
+#drop teble based on name
+def drop_table(table_name):
+    db = get_db()
+    db.execute('DROP TABLE IF EXISTS ' + table_name)
+    print("Table dropped")

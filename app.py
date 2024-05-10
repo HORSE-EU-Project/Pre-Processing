@@ -9,7 +9,7 @@ from flask_login import (
     login_user,
     logout_user
 )
-from db import init_db_command, update_db_schema_command
+from db import init_db_command, update_db_schema_command, drop_table
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
@@ -64,12 +64,13 @@ if not os.path.exists(db_path):
     # If the database does not exist, create it
     with app.app_context():
         init_db_command()
-# else:
-#     # Check for schema updates if the database exists
-#     with app.app_context():
-#         User.delete_all_subscriptions()
-#         #update_db_schema_command()
-#         update_db_schema_command()
+else:
+    # Check for schema updates if the database exists
+    with app.app_context():
+        User.delete_all_subscriptions()
+        db.drop_table("subscriptions")
+        #update_db_schema_command()
+        update_db_schema_command()
 
 #Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
