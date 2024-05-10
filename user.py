@@ -147,6 +147,7 @@ class User(UserMixin):
     def create_subscription(user_id, subscription_type, endpoint_url, DB_url, 
                             query, interval,active, es_index=None, entity=None ):
         db = get_db()
+        cursor = db.cursor()
         try:
             # Insert the new subscription
             if subscription_type == 'ES':        
