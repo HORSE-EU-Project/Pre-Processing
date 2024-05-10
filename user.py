@@ -149,16 +149,17 @@ class User(UserMixin):
         db = get_db()
         try:
             # Insert the new subscription
-            if subscription_type == 'ES':
-                cursor = db.execute(
-                    "INSERT INTO subscriptions (user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
-                )
-        
+            if subscription_type == 'ES':        
                 # Retrieve the subscription_id of the new subscription (need better id mechanism)
                 subscription_id = cursor.lastrowid
                 current_app.logger.debug('SUBSCRIPTION ID: ' + str(subscription_id))
+                
+                cursor = db.execute(
+                    "INSERT INTO subscriptions (subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (subscription_id, user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
+                )
+                
                 result = subscriptions_manager.add_subscription(str(subscription_id), user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
 
