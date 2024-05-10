@@ -158,7 +158,7 @@ class User(UserMixin):
         
                 # Retrieve the subscription_id of the new subscription
                 subscription_id = cursor.lastrowid
-                
+                current_app.logger.debug('SUBSCRIPTION ID: ' + str(subscription_id))
                 result = subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
 
