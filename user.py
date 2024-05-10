@@ -156,10 +156,10 @@ class User(UserMixin):
                     (user_id, subscription_type, endpoint_url, DB_url, query, interval, active)
                 )
         
-                # Retrieve the subscription_id of the new subscription
+                # Retrieve the subscription_id of the new subscription (need better id mechanism)
                 subscription_id = cursor.lastrowid
                 current_app.logger.debug('SUBSCRIPTION ID: ' + str(subscription_id))
-                result = subscriptions_manager.add_subscription(subscription_id, user_id, subscription_type, 
+                result = subscriptions_manager.add_subscription(str(subscription_id), user_id, subscription_type, 
                                                    endpoint_url, DB_url, query, int(interval), active, es_index, entity)
 
             elif subscription_type == 'ORION':
