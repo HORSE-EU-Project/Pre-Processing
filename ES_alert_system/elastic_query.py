@@ -46,6 +46,8 @@ class ElasticQuery:
             logging.info("Query: %s", qry)
             logging.info("URL: %s", url)
             
+            self.query = {"query": self.query}
+            
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(self.query))
             logging.info("Query: %s", self.query)
