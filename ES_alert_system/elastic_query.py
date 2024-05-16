@@ -50,10 +50,10 @@ class ElasticQuery:
             
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(self.query))
-            logging.info("Query: %s", str(json.dumps(self.query['query'])))
+            logging.info("Query: %s", str(json.dumps(self.query)))
             logging.info("URL: %s", url)
             
-            response = requests.post(url, json=json.dumps(self.query['query']), headers=self.headers)
+            response = requests.post(url, json=json.dumps(qry), headers=self.headers)
             
             if response.status_code == 200:
                 logging.info("=========Query executed successfully=========")
