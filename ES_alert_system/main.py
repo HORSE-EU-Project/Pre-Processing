@@ -19,19 +19,20 @@ class ConfigReader:
 
   
 def main():
-    #Read the configuration file
-    try:
-        
-        # queries = ConfigReader.read_config('./ES_alert_system/config.json')
-        queries = ES_queries('./ES_alert_system/config.json')
-        
-        logging.info("Configuration file read successfully.")
-    except Exception as e:
-        logging.error(f"Failed to read configuration file: {e}", exc_info=True)
-        return
+    
 
     #every 10 seconds run the queries
     while True:
+            #Read the configuration file
+        try:
+            
+            # queries = ConfigReader.read_config('./ES_alert_system/config.json')
+            queries = ES_queries('./ES_alert_system/config.json')
+            
+            logging.info("Configuration file read successfully.")
+        except Exception as e:
+            logging.error(f"Failed to read configuration file: {e}", exc_info=True)
+        
         now = datetime.now()
         for query in queries.ES_queries:
             print("=========================++++++====================================")
