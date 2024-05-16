@@ -50,7 +50,7 @@ class ElasticQuery:
             
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(self.query))
-            logging.info("Query: %s", self.query['query'])
+            logging.info("Query: %s", json.loads(self.query['query']))
             logging.info("URL: %s", url)
             
             response = requests.post(url, json=json.loads(self.query['query']), headers=self.headers)
