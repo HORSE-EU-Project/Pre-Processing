@@ -33,11 +33,15 @@ class ElasticQuery:
     def run_query(self):
         url = f"{self.es_url}/{self.index}/_search"
         try:
+            qry = {"query": self.query}
+            
+
+
             # If the query is a string, convert it to a dictionary
             key,value = qry["query"].split(":", 1)
             qry["query"] = {key:eval(value.strip())}
             
-            logging.info("================================= Executing query =================================")
+            logging.info("=========================== Executing query ===========================")
             logging.info("Query: %s", str(json.dumps(qry)))
             logging.info("URL: %s", url)
             
