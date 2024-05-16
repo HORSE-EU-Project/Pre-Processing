@@ -52,7 +52,7 @@ class ElasticQuery:
 
             # If the query is a string, convert it to a dictionary
             key,value = qry["query"].split(":", 1)
-            qry["query"] = {key:value}
+            qry["query"] = {key:eval(value.strip())}
             
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(qry))
