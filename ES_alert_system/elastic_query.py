@@ -48,6 +48,12 @@ class ElasticQuery:
             
             qry = {"query": self.query}
             
+
+
+            # If the query is a string, convert it to a dictionary
+            key,value = qry["query"].split(":", 1)
+            qry["query"] = {key:value}
+            
             logging.info("=========Executing query 22222=========")
             logging.info("Query type: %s", type(qry))
             logging.info("Query: %s", str(json.dumps(qry)))
