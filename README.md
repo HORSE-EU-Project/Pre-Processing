@@ -71,7 +71,7 @@ cd /path/to/your/desired/folder
 
 ### Clone your repository:
 
-git clone https://github.com/yourusername/yourrepository.git
+git clone https://github.com/HORSE-EU-Project/Pre-Processing.git 
 
 ### Navigate into the cloned repository:
 
