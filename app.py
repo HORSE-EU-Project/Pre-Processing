@@ -25,8 +25,7 @@ secret = secrets.token_urlsafe(16)
 # mail = Mail(app)
 
 
-print("==================================== APP LETS ====================================")
-print("==================================== APP GOGO ======================================")
+print("==================================== APP LETS GO====================================")
 print("Flask App Secret Key: ", str(secret))
 
 app.config.update({
