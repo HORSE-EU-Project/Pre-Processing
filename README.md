@@ -1,22 +1,111 @@
-# DFF
-Master Repository of DFF Mechanism
+# Setup and Run Guide for Your Application
+
+This guide provides detailed instructions on how to set up and run the application on an Ubuntu 20+ .
+
+## Prerequisites
+Before starting, ensure that you have the following software installed on your System:
+
+1. Docker
+2. Docker Compose
+3. Git
+
+If these are not installed, follow the steps below to install them.
+
+## Step 1: Install Docker
+### Update the package database:
+
+sudo apt update
+
+### Install prerequisite packages:
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+
+### Add Docker’s official GPG key:
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+### Add Docker repository:
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 
-# Authentication Branch
-Flask is used for developing the web application.
-First, you’ll need to install those third-party dependencies mentioned above. 
-You’ll do this by installing the contents of the requirements.txt file:
+### Install Docker:
 
-pip install -r requirements.txt
+sudo apt update
+sudo apt install docker-ce -y
 
-Then, set the environmental variables containing the CLIENT_ID and CLIENT_SECRET of the app, as produced from Keyrock IDM when registering your app.
 
-set KEYROCK_CLIENT_ID=your_client_id 
+### Start Docker and enable it to start on boot:
 
-set KEYROCK_CLIENT_SECRET=your_client_secret
+sudo systemctl start docker
+sudo systemctl enable docker
 
-Note: Alternatively, you could paste the strings directly here and store them in these variables. However, the client secret should not be shared or committed to any public repository. In other words, be very careful not to check in this file if you paste your real client credentials in here.
+## Step 2: Install Docker Compose
+### Download the Docker Compose binary:
 
-Now, you are ready to run the app (in a virtual environment in Visual Studio Code simply run the following):
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
-py app.py
+### Apply executable permissions to the binary:
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+### Verify the installation:
+
+docker-compose --version
+
+
+## Step 3: Install Git
+### Update the package database (if not already done):
+
+sudo apt update
+
+### Install Git:
+
+sudo apt install git -y
+
+
+## Step 4: Clone the Repository
+### Navigate to the directory where you want to clone the repository:
+
+cd /path/to/your/desired/folder
+
+### Clone your repository:
+
+git clone https://github.com/HORSE-EU-Project/Pre-Processing.git 
+
+### Navigate into the cloned repository:
+
+cd yourrepository
+
+
+## Step 5: Set Up and Run the Application
+### Run the docker-compose-services.yml file to set up the necessary services:
+
+sudo docker-compose -f docker-compose-services.yml up -d
+
+### Run the docker-compose.yml file to start the basic Flask application:
+
+sudo docker-compose up -d
+
+### Run the stanalone python application that manages ES data preprocessing & ditribution
+
+sudo python3 ./ES_alert_system/main.py
+
+
+## Step 6: Verify the Setup
+### Check if all the containers are running:
+
+sudo docker ps
+
+### Access your application by navigating to the appropriate URL in your web browser. If your Flask application is running on port 5000, you can typically access it at:
+
+http://<your-vm-ip>:5000
+
+## Additional Tips
+### To stop the containers, use:
+
+docker-compose down
+
+### To view the logs of a specific container, use:
+
+docker logs <container_id>
