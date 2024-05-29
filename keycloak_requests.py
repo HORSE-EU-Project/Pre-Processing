@@ -13,7 +13,7 @@ KEYCLOAK_USERINFO_URL = "keycloak:8080/realms/DFF/protocol/openid-connect/userin
 
 #SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
-SECRET = "kp17oYqbZdWoPn4b5XrI4bDWj0vSbndA"
+SECRET = "XKqlgC3cxpcYIFq9Grrsaz3UppuIDBTI"
 
 print("Secret Key keycloak request: ", SECRET)
 
