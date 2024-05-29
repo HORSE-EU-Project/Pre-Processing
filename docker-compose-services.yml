@@ -66,18 +66,18 @@ services:
       retries: 5
 
   # New service for Elasticsearch alerts
-  es_alerts:
-    build:
-      context: .
-      dockerfile: Dockerfile.ES_alerts
-    container_name: "es_alerts"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    networks:
-      - dff-network
-    volumes:
-      - .:/dff
+  # es_alerts:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.ES_alerts
+  #   container_name: "es_alerts"
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   networks:
+  #     - dff-network
+  #   volumes:
+  #     - .:/dff
 
   orion:
     image: fiware/orion
