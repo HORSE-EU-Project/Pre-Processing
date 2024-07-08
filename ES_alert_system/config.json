@@ -1,25 +1,28 @@
 {
-  "rules": [
-    {
-      "subscription_id": 1,
-      "user_id": "1",
-      "es_url": "http://localhost:9200",
-      "index": "test_index",
-      "query": {"query":{"match_all": {}}},
-      "headers": {"Content-Type": "application/json"},
-      "endpoint": "http://localhost:5000/dff-data",
-      "interval": 10
-    },
-    {
-      "subscription_id": 2,
-      "user_id": "1",
-      "es_url": "http://localhost:9200",
-      "index": "test_index",
-      "query": {"query":{"match_all": {}}},
-      "headers": {"Content-Type": "application/json"},
-      "endpoint": "http://localhost:5000/dff-data",
-      "interval": 15
-    }
-
-  ]
+    "rules": [
+        {
+            "subscription_id": "0XFW2EJLGDS8KGL3LED3",
+            "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
+            "subscription_type": "ES",
+            "endpoint_url": "http://10.10.10.14:5000/dff-data",
+            "DB_url": "http://localhost:9200",
+            "query": "match_all: {}",
+            "interval": "12",
+            "active": 1,
+            "created_at": "2024-05-29 12:49:45",
+            "updated_at": "2024-05-29 12:49:45"
+        },
+        {
+            "subscription_id": "DMVSLGF1YD1W0Q7Z2SVC",
+            "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
+            "subscription_type": "ES",
+            "endpoint_url": "http://10.10.10.14:5000/dff-data",
+            "DB_url": "http://localhost:9200",
+            "query": "query:{match_all: {}}",
+            "interval": "12",
+            "active": 1,
+            "created_at": "2024-07-08 07:43:41",
+            "updated_at": "2024-07-08 07:43:41"
+        }
+    ]
 }
