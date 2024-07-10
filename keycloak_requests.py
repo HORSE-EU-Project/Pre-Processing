@@ -2,29 +2,21 @@ from flask import Flask, render_template, request, redirect, Blueprint, flash, u
 from flask_login import current_user
 import requests
 import os
+from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-#KEYCLOAK_TOKEN_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/token"
-#KEYCLOAK_USERINFO_URL="http://10.10.10.14:8080/auth/realms/DFF/protocol/openid-connect/userinfo"
-#KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/auth/realms/DFF/account/credentials/password"
-#SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
+# Load environment variables from .env file
+load_dotenv()
 
-# Corrected Token URL
-KEYCLOAK_TOKEN_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/token"
-
-# Corrected Userinfo URL
-KEYCLOAK_USERINFO_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/userinfo"
-
-#KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
-
-#SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
-
-SECRET = "XKqlgC3cxpcYIFq9Grrsaz3UppuIDBTI"
+KEYCLOAK_TOKEN_URL = os.getenv('KEYCLOAK_TOKEN_URL')
+KEYCLOAK_USERINFO_URL = os.getenv('KEYCLOAK_USERINFO_URL')
+KEYCLOAK_CREDENTIALS_URL = os.getenv('KEYCLOAK_CREDENTIALS_URL')
+SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
 print("Secret Key keycloak request: ", SECRET)
 
-#Define retry strategy and http adapter for requests
+# Define retry strategy and http adapter for requests
 retry_strategy = Retry(
     total=3,
     backoff_factor=1,
@@ -39,7 +31,7 @@ http.mount("http://", adapter)
 def get_kc_token(username, password):
     try:        
         current_app.logger.debug("get_kc_token===============================")
-        header={
+        header = {
             "Content-Type": "application/x-www-form-urlencoded"
         }
         data = {
@@ -58,10 +50,10 @@ def get_kc_token(username, password):
     return response
 
 def get_kc_userinfo(token):
-    payload={}
+    payload = {}
     headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer {}".format(token)
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {}".format(token)
     }
     r = http.get(KEYCLOAK_USERINFO_URL, headers=headers, data=payload)
     return r

@@ -1,28 +1,34 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9.12
+# Dockerfile
 
-# Set the working directory in the container
-WORKDIR /dff
+# Use -slim for a lighter version of python docker image
+FROM python:3.8-slim
 
-# Copy only the requirements.txt initially to leverage Docker cache
-COPY requirements.txt ./
+# Set environment variables from .env
+ARG DATABASE_URL
+ARG API_KEY
+ARG SECRET_KEY
+ARG DB_HOST
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_NAME
 
-# Install any needed packages specified in requirements.txt
-RUN pip --no-cache-dir install -r requirements.txt
+ENV DATABASE_URL=${DATABASE_URL}
+ENV API_KEY=${API_KEY}
+ENV SECRET_KEY=${SECRET_KEY}
+ENV DB_HOST=${DB_HOST}
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_NAME=${DB_NAME}
 
-# Copy the rest of the application
-COPY schema.sql user.py db.py app.py keycloak_requests.py ./
-COPY ./Web_app ./Web_app
-COPY ./templates ./templates
-COPY ./static ./static
-COPY ./ES_alert_system/ ./ES_alert_system/  
-# Assuming you have this file ready
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
+# Copy the application code
+COPY . .
 
-# Copy your ElastAlert rules if you have them ready
-# COPY path_to_your_rules/*.yaml ./elastalert/rules/
+# Run the application
+CMD ["python", "app.py"]
 
-# Start Alert in the background & then start the Flask app
-CMD ["python3", "app.py"]
 
 

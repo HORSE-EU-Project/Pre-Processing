@@ -14,3 +14,4 @@ flask_oidc
 oauth2client
 itsdangerous<2.1
 PyYAML>=5.1
+python-dotenv

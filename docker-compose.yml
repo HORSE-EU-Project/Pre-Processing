@@ -11,9 +11,22 @@ services:
     container_name: "dff-app-keycloak"
     networks: 
       - dff-network
+    args:
+        - DATABASE_URL=${DATABASE_URL}
+        - API_KEY=${API_KEY}
+        - SECRET_KEY=${SECRET_KEY}
+        - DB_HOST=${DB_HOST}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${DB_NAME}
     environment:
-      - "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_SECRET"
-      - "SECRET_KEY=$APP_SECRET_KEY"
+      - DATABASE_URL=${DATABASE_URL}
+      - API_KEY=${API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     ports:
       - 5005:5005
     volumes:

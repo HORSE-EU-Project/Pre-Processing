@@ -1,15 +1,20 @@
 # http://flask.pocoo.org/docs/1.0/tutorial/database/
 import sqlite3
 import click
+import os
+from dotenv import load_dotenv
 from flask import current_app, g, current_app
 from flask.cli import with_appcontext
+
+# Load environment variables from .env file
+load_dotenv()
 
 def get_db(path=None):
     if "db" not in g:
         if path is None:
-            path="./"
+            path = os.getenv('DB_PATH', './')
         g.db = sqlite3.connect(
-            path + "sqlite_data/sqlite_db", detect_types=sqlite3.PARSE_DECLTYPES
+            path, detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
     

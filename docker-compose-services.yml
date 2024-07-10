@@ -10,9 +10,9 @@ services:
     container_name: "kc-postgres"
     restart: unless-stopped
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: "exit 0"
     ports:
@@ -24,7 +24,7 @@ services:
 
   # Keycloak is the identity and access manager
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0.2
+    image: ${KEYCLOAK_IMAGE}
     command: start-dev
     container_name: "keycloak"
     restart: unless-stopped
@@ -32,11 +32,11 @@ services:
       - ./profile.properties:/opt/jboss/keycloak/standalone/configuration/profile.properties
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://kc-postgres:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: password
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB_URL: ${KEYCLOAK_DB_URL}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:
@@ -47,7 +47,7 @@ services:
 
   # Elasticsearch as the search and analytics engine
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    image: ${ELASTICSEARCH_IMAGE}
     container_name: "elasticsearch"
     environment:
       - discovery.type=single-node
@@ -65,22 +65,8 @@ services:
       timeout: 5s
       retries: 5
 
-  # New service for Elasticsearch alerts
-  # es_alerts:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.ES_alerts
-  #   container_name: "es_alerts"
-  #   depends_on:
-  #     elasticsearch:
-  #       condition: service_healthy
-  #   networks:
-  #     - dff-network
-  #   volumes:
-  #     - .:/dff
-
   orion:
-    image: fiware/orion
+    image: ${FIWARE_ORION_IMAGE}
     container_name: "orion"
     depends_on:
       mongo:
@@ -92,7 +78,7 @@ services:
       - dff-network
 
   mongo:
-    image: mongo:4.2
+    image: ${MONGO_IMAGE}
     container_name: "mongo"
     command: --nojournal
     networks:

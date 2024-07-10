@@ -11,10 +11,15 @@ from werkzeug.utils import secure_filename
 from flask_login import (
     current_user
 )
+import os
+from dotenv import load_dotenv
 
-# Update with your Elasticsearch URL
-ELASTICSEARCH_URL = "http://elasticsearch:9200"
-INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
+
+# Load environment variables from .env file
+load_dotenv()
+
+ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL', 'http://elasticsearch:9200')
+INDEX_NAME = os.getenv('INDEX_NAME', 'test_index')
 
 data_ingestion = Blueprint('data_ingestion', __name__, template_folder='../templates')
 

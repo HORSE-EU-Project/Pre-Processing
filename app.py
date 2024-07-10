@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, Blueprint, flash, url_for, session, current_app
+from dotenv import load_dotenv
 #from flask_mail import Mail
 import socket
 import os
@@ -13,8 +14,18 @@ from db import init_db_command, update_db_schema_command, drop_table
 from user import User
 from keycloak_requests import get_kc_token, get_kc_userinfo
 import secrets
+
+# Load environment variables from .env file
+load_dotenv()
+
+
+
 app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
+
+
+
+
 
 # Email configuration
 # app.config['MAIL_SERVER'] = 'smtp.yourmailserver.com'
@@ -29,9 +40,10 @@ print("==================================== APP LETS GO=========================
 print("Flask App Secret Key: ", str(secret))
 
 app.config.update({
-    'SECRET_KEY': secret,
-    'TESTING': True,
-    'DEBUG': True
+    'SECRET_KEY': os.getenv('SECRET_KEY'),
+    'TESTING': os.getenv('TESTING') == 'True',
+    'DEBUG': os.getenv('DEBUG') == 'True',
+    'UPLOAD_FOLDER': os.getenv('UPLOAD_FOLDER')
 })
 
 
@@ -58,7 +70,8 @@ login_manager.init_app(app)
 
 
 # Initialize or update the database schema
-db_path = "./sqlite_data/sqlite_db"
+db_path = os.getenv('DB_PATH')
+
 if not os.path.exists(db_path):
     # If the database does not exist, create it
     with app.app_context():
@@ -151,6 +164,5 @@ def logout():
 
 if __name__ == "__main__":
     print("==================================== APP ====================================")
-    ipV4IP = socket.gethostbyname(socket.gethostname())
-    app.run(ssl_context="adhoc", host=ipV4IP, port=5005)
+    app.run(ssl_context="adhoc", host=os.getenv('FLASK_RUN_HOST'), port=int(os.getenv('FLASK_RUN_PORT')))
     print("==================================== APP END ====================================")

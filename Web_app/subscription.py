@@ -14,9 +14,15 @@ from .decoratorApp import decoratorCheckAppOrg
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from user import User
 
+import os
+from dotenv import load_dotenv
 
-ELASTICSEARCH_URL = "elasticsearch:9200"  # Adjust as necessary
-INDEX_NAME = "test_index"  # Update with the name of your Elasticsearch index
+
+# Load environment variables from .env file
+load_dotenv()
+
+ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL', 'http://elasticsearch:9200')
+INDEX_NAME = os.getenv('INDEX_NAME', 'test_index')
 
 subscription = Blueprint('subscription', __name__, template_folder='../templates')
 
