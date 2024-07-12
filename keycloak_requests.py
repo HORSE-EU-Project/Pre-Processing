@@ -52,10 +52,8 @@ def get_kc_token(username, password):
             "grant_type": "password",
             "scope": "openid"
         }
-
-        current_app.logger.debug("get_kc_token===============================")
         
-        current_app.logger.debug("Sending to: ", KEYCLOAK_TOKEN_URL)
+        current_app.logger.debug("Sending to: "+ KEYCLOAK_TOKEN_URL)
         response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
     except Exception as e:
         return str(e)
