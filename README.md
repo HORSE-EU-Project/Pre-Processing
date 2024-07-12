@@ -112,3 +112,39 @@ sudo docker rm --id of the container--
 ### To view the logs of a specific container, use:
 
 docker logs --container_id--
+
+
+
+# Setup Keycloak (for connection with Pre-Processing)
+![image](https://github.com/user-attachments/assets/8bf1f591-9db9-4a85-8005-a243dc91d83c)
+
+## Enter keycloak dashboard
+in a browser --vm ip--:8080
+Enter username (default: admin)
+Enter password (default: admin)
+Enter dashboard
+
+## Create realm where every info about the users and apps are stored
+Create a realm Called DFF and
+### import DFF realm's imfo (by importing the json file)
+
+### OR, create DFF realm manualy
+Create a client "DFF" and generate a "Client Secret"
+![image](https://github.com/user-attachments/assets/4ccd1216-1c32-4e38-90dc-072732720884)
+
+Create users, that have access to the Pre-Processing App (using credentials: usernames and passwords).
+![image](https://github.com/user-attachments/assets/5c1f80ab-96f2-40af-93c4-7c30014771c3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
