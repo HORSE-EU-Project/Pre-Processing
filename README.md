@@ -138,6 +138,7 @@ Create users, that have access to the Pre-Processing App (using credentials: use
 
 ### The Client secret in the keycloak Realm and the flask application should match in order for the appication to have access to keycloak services
 
+![image](https://github.com/user-attachments/assets/85baa698-9940-48b5-9aaa-e4deac173860)
 
 
 
