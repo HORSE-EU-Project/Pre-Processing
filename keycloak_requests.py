@@ -11,16 +11,18 @@ from requests.packages.urllib3.util.retry import Retry
 #SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 # Corrected Token URL
-KEYCLOAK_TOKEN_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/token"
+KEY_cloak_url = "http://192.168.130.62:8080"
+
+KEYCLOAK_TOKEN_URL = KEY_cloak_url + "/realms/DFF/protocol/openid-connect/token"
 
 # Corrected Userinfo URL
-KEYCLOAK_USERINFO_URL = "http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/userinfo"
+KEYCLOAK_USERINFO_URL = KEY_cloak_url + "/realms/DFF/protocol/openid-connect/userinfo"
 
-#KEYCLOAK_CREDENTIALS_URL="http://10.10.10.14:8080/realms/DFF/protocol/openid-connect/auth/password"
+KEYCLOAK_CREDENTIALS_URL= KEY_cloak_url + "/realms/DFF/protocol/openid-connect/auth/password"
 
 #SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
-SECRET = "XKqlgC3cxpcYIFq9Grrsaz3UppuIDBTI"
+SECRET = "PSJWpNueAxgUQB8aGpDoHhcqwPTJHHxy"
 
 print("Secret Key keycloak request: ", SECRET)
 
