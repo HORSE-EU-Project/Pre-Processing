@@ -6,7 +6,7 @@ pyOpenSSL==20.0.1
 cryptography==3.4.7
 Flask-Login==0.4.1
 plotly==4.14.3
-numpy
+numpy==1.20.3
 pandas==1.2.4  # Adjusted version
 flask_restful
 marshmallow
