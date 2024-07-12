@@ -99,7 +99,7 @@ sudo docker ps
 
 ### Access your application by navigating to the appropriate URL in your web browser. If your Flask application is running on port 5000, you can typically access it at:
 
-http:// <your-vm-ip> :5000
+http:// --your-vm-ip-- :5000
 
 ## Additional Tips
 ### To stop the containers, use:
@@ -107,8 +107,8 @@ http:// <your-vm-ip> :5000
 docker-compose down
 
 ### To removing containers from VM
-sudo docker rm <id of the container>
+sudo docker rm --id of the container--
 
 ### To view the logs of a specific container, use:
 
-docker logs <container_id>
+docker logs --container_id--
