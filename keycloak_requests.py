@@ -11,7 +11,7 @@ from requests.packages.urllib3.util.retry import Retry
 #SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 # Corrected Token URL
-KEY_cloak_url = "http://192.168.130.62:8080"
+KEY_cloak_url = "192.168.130.62:8080"
 
 KEYCLOAK_TOKEN_URL = KEY_cloak_url + "/realms/DFF/protocol/openid-connect/token"
 
