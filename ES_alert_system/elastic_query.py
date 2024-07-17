@@ -35,12 +35,13 @@ class ElasticQuery:
     #     print("Last Run: ", self.last_run)
 
 
-    def __init__(self, es_url, index, headers, username, password):
+    def __init__(self, es_url, index, headers, username, password, query):
         self.es_url = es_url
         self.index = index
         self.headers = headers
         self.username = username
         self.password = password
+        self.query = query
 
     # def run_query(self):
     #     #if es_url is "DEME" then read from "a local pcap file" else read from "ES"
@@ -117,10 +118,10 @@ class ElasticQuery:
         url = f"{self.es_url}/{self.index}/_count"
         try:
             # Convert query string to dictionary if necessary
-            if isinstance(query, str):
-                qry = {"query": json.loads(query)}
+            if isinstance(self.query, str):
+                qry = {"query": json.loads(self.query)}
             else:
-                qry = {"query": query}
+                qry = {"query": self.query}
 
             logging.info("=========================== Executing query ===========================")
             logging.info("Query: %s", json.dumps(qry, indent=2))
@@ -246,8 +247,8 @@ if __name__ == "__main__":
     }
     '''
     
-    executor = ElasticQuery(es_url, index, headers, username, password)
-    result = executor.run_query(query)
+    executor = ElasticQuery(es_url, index, headers, username, password, query)
+    result = executor.run_query()
 
     if result:
         print("Query Result:", json.dumps(result, indent=2))
