@@ -246,8 +246,8 @@ if __name__ == "__main__":
     }
     '''
     
-    executor = ElasticsearchQueryExecutor(es_url, index, headers, username, password)
-    result = executor.execute_query(query)
+    executor = ElasticQuery(es_url, index, headers, username, password)
+    result = executor.run_query(query)
 
     if result:
         print("Query Result:", json.dumps(result, indent=2))
