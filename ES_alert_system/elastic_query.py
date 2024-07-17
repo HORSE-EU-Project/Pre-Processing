@@ -12,36 +12,39 @@ ES_password = 'HoR$e2024!eLk@sPh#ynX'
 
 #thoughts excerpt
 class ElasticQuery:
-    # def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
-    #              query='', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=10, active=True, **kwargs):
-    #     self.subscription_id = subscription_id
-    #     self.user_id = user_id
-    #     self.subscription_type = subscription_type
-    #     self.es_url = DB_url
-    #     self.index = index
-    #     self.query = query
-    #     self.endpoint = endpoint_url
-    #     self.headers = headers
-    #     self.interval = timedelta(seconds= int(interval))
-    #     self.active = active
-    #     self.last_run = None
-        
-    #     print("ES URL: ", self.es_url)
-    #     print("Index: ", self.index)
-    #     print("Query: ", self.query)
-    #     print("Headers: ", self.headers)
-    #     print("Endpoint: ", self.endpoint)
-    #     print("Interval: ", self.interval)
-    #     print("Last Run: ", self.last_run)
-
-
-    def __init__(self, es_url, index, headers, username, password, query):
-        self.es_url = es_url
+    def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
+                 query='', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=10, active=True, 
+                 username=ES_username, password=ES_password, **kwargs):
+        self.subscription_id = subscription_id
+        self.user_id = user_id
+        self.subscription_type = subscription_type
+        self.es_url = DB_url
         self.index = index
+        self.query = query
+        self.endpoint = endpoint_url
         self.headers = headers
+        self.interval = timedelta(seconds= int(interval))
+        self.active = active
+        self.last_run = None
         self.username = username
         self.password = password
-        self.query = query
+        
+        print("ES URL: ", self.es_url)
+        print("Index: ", self.index)
+        print("Query: ", self.query)
+        print("Headers: ", self.headers)
+        print("Endpoint: ", self.endpoint)
+        print("Interval: ", self.interval)
+        print("Last Run: ", self.last_run)
+
+
+    # def __init__(self, es_url, index, headers, username, password, query):
+    #     self.es_url = es_url
+    #     self.index = index
+    #     self.headers = headers
+    #     self.username = username
+    #     self.password = password
+    #     self.query = query
 
     # def run_query(self):
     #     #if es_url is "DEME" then read from "a local pcap file" else read from "ES"
@@ -118,10 +121,10 @@ class ElasticQuery:
         url = f"{self.es_url}/{self.index}/_count"
         try:
             # Convert query string to dictionary if necessary
-            if isinstance(query, str):
-                qry = json.loads(query)
+            if isinstance(self.query, str):
+                qry = json.loads(self.query)
             else:
-                qry = query
+                qry = self.query
 
             logging.info("=========================== Executing query ===========================")
             logging.info("Query: %s", json.dumps(qry, indent=2))
