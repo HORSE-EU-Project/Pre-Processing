@@ -37,92 +37,12 @@ class ElasticQuery:
         print("Interval: ", self.interval)
         print("Last Run: ", self.last_run)
 
-
-    # def __init__(self, es_url, index, headers, username, password, query):
-    #     self.es_url = es_url
-    #     self.index = index
-    #     self.headers = headers
-    #     self.username = username
-    #     self.password = password
-    #     self.query = query
-
-    # def run_query(self):
-    #     #if es_url is "DEME" then read from "a local pcap file" else read from "ES"
-    #     if self.es_url == "DEME":
-    #         # Example usage
-    #         pcap_file = 'demo-cnit_testbed-deme-ntp-attack.pcap'  # Replace with your pcap file path
-    #         start_time, end_time, ip_packets_count = fun.print_ip_packet_counts(pcap_file)
-            
-    #         # Example usage
-    #         fun.pcap_file = 'demo-cnit_testbed-deme-dns-attack.pcap'  # Replace with your pcap file path
-    #         start_time, end_time, dns_bytes_count = fun.print_dns_packet_bytes(pcap_file)
-            
-    #         # Construct the payload
-    #         payload = [
-    #             {
-    #                 "timestamp": str(int(time.time())),  # current Unix timestamp
-    #                 "instances": [
-    #                     {
-    #                         "instance": "Test_Instance",
-    #                         "features": [
-    #                             {"feature": "NTP", "value": ip_packets_count},
-    #                             {"feature": "DNS", "value": dns_bytes_count}
-    #                         ]
-    #                     }
-    #                 ]
-    #             }
-    #         ]
-
-    #         # Set the headers
-    #         headers = {'Content-Type': 'application/json'}
-
-    #         # Send the POST request
-    #         response = requests.post(url, json=payload, headers=headers)
-            
-            
-            
-    #         return "OK"
-    #     elif self.es_url == "NKUA-DTE":
-    #         #using nkua functions to read from a local pcap file and send the results to the endpoint
-    #         output_directory = "./pcap_files"
-    #         output_filename = "demo-cnit_testbed-a.pcap"
-    #         pcap_file = os.path.join(output_directory, output_filename)
-            
-    #         fun.process_capture(pcap_file)
-    #         return "OK"
-    #     else:
-    #         url = f"{self.es_url}/{self.index}/_count"
-    #     try:
-    #         qry = {"query": self.query}
-
-    #         # If the query is a string, convert it to a dictionary
-    #         if isinstance(qry["query"], str):
-    #             key, value = qry["query"].split(":", 1)
-    #             qry["query"] = {key: eval(value.strip())}
-
-    #         logging.info("=========================== Executing query ===========================")
-    #         logging.info("Query: %s", str(json.dumps(qry)))
-    #         logging.info("URL: %s", url)
-
-    #         response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
-
-    #         if response.status_code == 200:
-    #             logging.info("=========Query executed successfully=========")
-    #             return response.json()
-    #         else:
-    #             logging.error("Failed to execute query with status code %s", response.status_code)
-    #             return None
-    #     except Exception as e:
-    #         logging.error("=========Failed to execute query=========", str(e))
-    #         return None
-
-
     def run_query(self):
         url = f"{self.es_url}/{self.index}/_count"
         try:
             # Convert query string to dictionary if necessary
             if isinstance(self.query, str):
-                qry = json.loads(self.query)
+                qry = json.loads(self.query.replace("'", '"'))
             else:
                 qry = self.query
 
