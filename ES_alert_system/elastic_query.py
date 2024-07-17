@@ -7,9 +7,12 @@ import DEMO_functions as fun
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+ES_username = 'elastic'
+ES_password = 'HoR$e2024!eLk@sPh#ynX'
+
 #thoughts excerpt
 class ElasticQuery:
-    def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='test_index', 
+    def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
                  query='', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=10, active=True, **kwargs):
         self.subscription_id = subscription_id
         self.user_id = user_id
@@ -31,40 +34,104 @@ class ElasticQuery:
         print("Interval: ", self.interval)
         print("Last Run: ", self.last_run)
 
+    # def run_query(self):
+    #     #if es_url is "DEME" then read from "a local pcap file" else read from "ES"
+    #     if self.es_url == "DEME":
+    #         # Example usage
+    #         pcap_file = 'demo-cnit_testbed-deme-ntp-attack.pcap'  # Replace with your pcap file path
+    #         start_time, end_time, ip_packets_count = fun.print_ip_packet_counts(pcap_file)
+            
+    #         # Example usage
+    #         fun.pcap_file = 'demo-cnit_testbed-deme-dns-attack.pcap'  # Replace with your pcap file path
+    #         start_time, end_time, dns_bytes_count = fun.print_dns_packet_bytes(pcap_file)
+            
+    #         # Construct the payload
+    #         payload = [
+    #             {
+    #                 "timestamp": str(int(time.time())),  # current Unix timestamp
+    #                 "instances": [
+    #                     {
+    #                         "instance": "Test_Instance",
+    #                         "features": [
+    #                             {"feature": "NTP", "value": ip_packets_count},
+    #                             {"feature": "DNS", "value": dns_bytes_count}
+    #                         ]
+    #                     }
+    #                 ]
+    #             }
+    #         ]
+
+    #         # Set the headers
+    #         headers = {'Content-Type': 'application/json'}
+
+    #         # Send the POST request
+    #         response = requests.post(url, json=payload, headers=headers)
+            
+            
+            
+    #         return "OK"
+    #     elif self.es_url == "NKUA-DTE":
+    #         #using nkua functions to read from a local pcap file and send the results to the endpoint
+    #         output_directory = "./pcap_files"
+    #         output_filename = "demo-cnit_testbed-a.pcap"
+    #         pcap_file = os.path.join(output_directory, output_filename)
+            
+    #         fun.process_capture(pcap_file)
+    #         return "OK"
+    #     else:
+    #         url = f"{self.es_url}/{self.index}/_count"
+    #     try:
+    #         qry = {"query": self.query}
+
+    #         # If the query is a string, convert it to a dictionary
+    #         if isinstance(qry["query"], str):
+    #             key, value = qry["query"].split(":", 1)
+    #             qry["query"] = {key: eval(value.strip())}
+
+    #         logging.info("=========================== Executing query ===========================")
+    #         logging.info("Query: %s", str(json.dumps(qry)))
+    #         logging.info("URL: %s", url)
+
+    #         response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
+
+    #         if response.status_code == 200:
+    #             logging.info("=========Query executed successfully=========")
+    #             return response.json()
+    #         else:
+    #             logging.error("Failed to execute query with status code %s", response.status_code)
+    #             return None
+    #     except Exception as e:
+    #         logging.error("=========Failed to execute query=========", str(e))
+    #         return None
+
+
     def run_query(self):
-        #if es_url is "DEME" then read from "a local pcap file" else read from "ES"
-        if self.es_url == "DEME":
-            return "OK"
-        elif self.es_url == "NKUA-DTE":
-            #using nkua functions to read from a local pcap file and send the results to the endpoint
-            fun.process_capture_in_background("test.pcap")
-            return "OK"
-        else:
-            url = f"{self.es_url}/{self.index}/_search"
-            try:
-                qry = {"query": self.query}
-                
+        url = f"{self.es_url}/{self.index}/_count"
+        try:
+            # Convert query string to dictionary if necessary
+            if isinstance(query, str):
+                qry = {"query": json.loads(query)}
+            else:
+                qry = {"query": query}
 
+            logging.info("=========================== Executing query ===========================")
+            logging.info("Query: %s", json.dumps(qry, indent=2))
+            logging.info("URL: %s", url)
 
-                # If the query is a string, convert it to a dictionary
-                key,value = qry["query"].split(":", 1)
-                qry["query"] = {key:eval(value.strip())}
-                
-                logging.info("=========================== Executing query ===========================")
-                logging.info("Query: %s", str(json.dumps(qry)))
-                logging.info("URL: %s", url)
-                
-                response = requests.post(url, data=json.dumps(qry), headers=self.headers)
-                
-                if response.status_code == 200:
-                    logging.info("=========Query executed successfully=========")
-                    return response.json()
-                else:
-                    logging.error("Failed to execute query with status code %s", response.status_code)
-                    return None
-            except Exception as e:
-                logging.error("=========Failed to execute query=========",str(e))
+            response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
+
+            if response.status_code == 200:
+                logging.info("=========Query executed successfully=========")
+                return response.json()
+            else:
+                logging.error("Failed to execute query with status code %s", response.status_code)
+                logging.error("Response: %s", response.text)
                 return None
+        except Exception as e:
+            logging.error("=========Failed to execute query=========", str(e))
+            return None
+
+
 
     def post_results(self, results):
         """Posts query results to a specified endpoint."""
@@ -129,3 +196,53 @@ class ElasticQuery:
         fun.send_to_bentoml(message_counts)
         
         return None
+    
+    
+
+# Example usage
+if __name__ == "__main__":
+    es_url = "http://192.168.130.48:9200"
+    index = "packets-2024-07-09"
+    headers = {'Content-Type': 'application/json'}
+    username = "elastic"
+    password = "HoR$e2024!eLk@sPh#ynX"
+    
+    query = '''
+    {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "exists": {
+                "field": "layers.ip"
+              }
+            },
+            {
+              "exists": {
+                "field": "layers.udp"
+              }
+            },
+            {
+              "exists": {
+                "field": "layers.ntp"
+              }
+            },
+            {
+              "term": {
+                "layers.udp.udp_udp_dstport": 123
+              }
+            }
+          ]
+        }
+      }
+    }
+    '''
+    
+    executor = ElasticsearchQueryExecutor(es_url, index, headers, username, password)
+    result = executor.execute_query(query)
+
+    if result:
+        print("Query Result:", json.dumps(result, indent=2))
+    else:
+        print("Query failed.")
+    

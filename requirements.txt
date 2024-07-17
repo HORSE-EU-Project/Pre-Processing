@@ -12,5 +12,6 @@ flask_restful
 marshmallow
 flask_oidc
 oauth2client
+pyshark
 itsdangerous<2.1
 PyYAML>=5.1
