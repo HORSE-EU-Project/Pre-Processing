@@ -118,10 +118,10 @@ class ElasticQuery:
         url = f"{self.es_url}/{self.index}/_count"
         try:
             # Convert query string to dictionary if necessary
-            if isinstance(self.query, str):
-                qry = {"query": json.loads(self.query)}
+            if isinstance(query, str):
+                qry = json.loads(query)
             else:
-                qry = {"query": self.query}
+                qry = query
 
             logging.info("=========================== Executing query ===========================")
             logging.info("Query: %s", json.dumps(qry, indent=2))
