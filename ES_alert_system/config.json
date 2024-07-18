@@ -1,50 +1,41 @@
 {
     "rules": [
         {
-            "subscription_id": "0XFW2EJLGDS8KGL3LED3",
-            "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
-            "subscription_type": "ES",
-            "endpoint_url": "http://10.10.10.14:5000/dff-data",
-            "DB_url": "http://localhost:9200",
-            "query": "match_all: {}",
-            "interval": "12",
-            "active": 1,
-            "created_at": "2024-05-29 12:49:45",
-            "updated_at": "2024-05-29 12:49:45"
-        },
-        {
             "subscription_id": "DMVSLGF1YD1W0Q7Z2SVC",
             "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
             "subscription_type": "ES",
             "endpoint_url": "http://10.10.10.14:5000/dff-data",
-            "DB_url": "http://localhost:9200",
+            "DB_url": "http://192.168.130.48:9200",
+            "index": "packets-2024-07-09",
             "query": {
-                  "bool": {
-                    "must": [
-                      {
-                        "exists": {
-                          "field": "layers.ip"
-                        }
-                      },
-                      {
-                        "exists": {
-                          "field": "layers.udp"
-                        }
-                      },
-                      {
-                        "exists": {
-                          "field": "layers.ntp"
-                        }
-                      },
-                      {
-                        "term": {
-                          "layers.udp.udp_udp_dstport": 123
-                        }
-                      }
-                    ]
-                  }
-                
-              },
+              "query": {
+                              "bool": {
+                                "must": [
+                                  {
+                                    "exists": {
+                                      "field": "layers.ip"
+                                    }
+                                  },
+                                  {
+                                    "exists": {
+                                      "field": "layers.udp"
+                                    }
+                                  },
+                                  {
+                                    "exists": {
+                                      "field": "layers.ntp"
+                                    }
+                                  },
+                                  {
+                                    "term": {
+                                      "layers.udp.udp_udp_dstport": 123
+                                    }
+                                  }
+                                ]
+                              }
+                            
+                          }
+            },
             "interval": "12",
             "active": 1,
             "created_at": "2024-07-08 07:43:41",

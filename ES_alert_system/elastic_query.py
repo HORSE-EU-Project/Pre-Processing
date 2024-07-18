@@ -66,69 +66,21 @@ class ElasticQuery:
 
 
     def post_results(self, results):
-        """Posts query results to a specified endpoint."""
-        if not results or 'hits' not in results or not results['hits'].get('hits', []):
-            logging.warning("No results to post or empty results.")
-            return None
-
-        try:
-            response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=6)
-            if response.status_code == 200:
-                logging.info("Results successfully posted.")
-            else:
-                logging.warning("Failed to post results: HTTP %s", response.status_code)
-            return response.status_code
-        except Exception as e:
-            logging.error("=========Error posting results=========")
-            return None
-
-    def print_results(self, results):
-        """Prints query results if available."""
+        #if results are available print them and then post them, else print a message    
         if results:
             print(results)
+            try:
+                response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=6)
+                if response.status_code == 200:
+                    logging.info("Results successfully posted.")
+                else:
+                    logging.warning("Failed to post results: HTTP %s", response.status_code)
+                return response.status_code
+            except Exception as e:
+                logging.error("=========Error posting results=========")
+                return None
         else:
-            logging.info("No results available to print.")
-
-    
-    def convert_query_string(input_string):
-        try :
-            # Strip leading and trailing spaces and remove the initial "query:" part
-            json_part = input_string.split("query:", 1)[1].strip()
-
-            # Properly format the string for JSON conversion by replacing single quotes if necessary
-            json_part = json_part.replace('\'', '\"')
-
-            # Convert the string to a dictionary
-            query_dict = json.loads(json_part)
-
-            # Create the final dictionary expected
-            result = {"query": query_dict}
-
-            # Return the result as a JSON string for clarity and to match the expected output format
-            return json.dumps(result)
-        
-        except Exception as e:
-            # Handle exceptions that may arise from incorrect formatting or parsing
-            return str(e)
-        
-    def execute_DEME(self):
-        # Read from a local pcap file
-        logging.info("Reading from DEME")
-        response_json = fun.read_pcap_for_DEME("test.pcap")
-        fun.send_data_to_DEME(response_json)
-        return None
-    
-    def execute_NKUA_DTE(self):
-        logging.info("Reading from NKUA-DTE")
-        
-        # use nkua functions to read from a local pcap file
-        message_counts = fun.count_pfcp_messages("test.pcap")
-        
-        #send the message counts to the endpoint
-        fun.send_to_bentoml(message_counts)
-        
-        return None
-    
+            logging.info("No results available to post.")
     
 
 # Example usage
