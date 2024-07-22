@@ -3,6 +3,7 @@ import requests
 import logging
 from datetime import datetime, timedelta
 import DEMO_functions as fun
+import time
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -119,14 +120,16 @@ class ElasticQuery:
         dns_count = results['aggregations']['dns_packets']['doc_count']
         ntp_count = results['aggregations']['ntp_packets']['doc_count']
         
+        # Convert the last_run datetime to a Unix timestamp (seconds since the epoch)
+        timestamp_unix = int(time.mktime(self.last_run.timetuple()))
         
         # Transform the results to the DEME API format
         transformed_results = [
             {
-                "timestamp": self.last_run,
+                "timestamp": str(timestamp_unix),
                 "instances": [
                     {
-                        "instance": "Test_Instance",
+                        "instance": "node1:Genoa RtA",
                         "features": [
                             {
                                 "feature": "NTP",
@@ -135,16 +138,14 @@ class ElasticQuery:
                             {
                                 "feature": "DNS",
                                 "value": dns_count
-                            },
-                            {
-                                "feature": "PFCP",
-                                "value": 0
                             }
                         ]
                     }
                 ]
             }
         ]
+        
+
         
         return transformed_results
 
