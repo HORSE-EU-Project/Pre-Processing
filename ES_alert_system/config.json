@@ -4,39 +4,73 @@
             "subscription_id": "DMVSLGF1YD1W0Q7Z2SVC",
             "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
             "subscription_type": "ES",
-            "endpoint_url": "http://10.10.10.14:5000/dff-data",
+            "endpoint_url": "http://192.168.130.110:8090/estimate",
             "DB_url": "http://192.168.130.48:9200",
             "index": "packets-2024-07-09",
             "query": {
+  
               "query": {
-                              "bool": {
-                                "must": [
-                                  {
-                                    "exists": {
-                                      "field": "layers.ip"
-                                    }
-                                  },
-                                  {
-                                    "exists": {
-                                      "field": "layers.udp"
-                                    }
-                                  },
-                                  {
-                                    "exists": {
-                                      "field": "layers.ntp"
-                                    }
-                                  },
-                                  {
-                                    "term": {
-                                      "layers.udp.udp_udp_dstport": 123
-                                    }
-                                  }
-                                ]
-                              }
-                            
+                "bool": {
+                  "must": [
+                    {
+                      "exists": {
+                        "field": "layers.ip"
+                      }
+                    },
+                    {
+                      "exists": {
+                        "field": "layers.udp"
+                      }
+                    },
+                    {
+                      "range": {
+                        "layers.frame.frame_frame_time": {
+                          "gte": "2024-07-09T09:09:33.540984000Z",
+                          "lt": "2024-07-09T09:11:37.162609000Z"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "aggs": {
+                "ntp_packets": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "exists": {
+                            "field": "layers.ntp"
                           }
-            },
-            "interval": "12",
+                        },
+                        {
+                          "term": {
+                            "layers.udp.udp_udp_dstport": 123
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "dns_packets": {
+                  "filter": {
+                    "bool": {
+                      "must": [
+                        {
+                          "exists": {
+                            "field": "layers.dns"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+            ,
+            "query_type": "_search",
+            "interval": "2000",
             "active": 1,
             "created_at": "2024-07-08 07:43:41",
             "updated_at": "2024-07-08 07:43:41"

@@ -13,7 +13,7 @@ ES_password = 'HoR$e2024!eLk@sPh#ynX'
 #thoughts excerpt
 class ElasticQuery:
     def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
-                 query='', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=10, active=True, 
+                 query='', query_type = '_count', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=10, active=True, 
                  username=ES_username, password=ES_password, **kwargs):
         self.subscription_id = subscription_id
         self.user_id = user_id
@@ -25,9 +25,13 @@ class ElasticQuery:
         self.headers = headers
         self.interval = timedelta(seconds= int(interval))
         self.active = active
-        self.last_run = None
+        #put in the self.last_run the datetime 2024-07-09T09:11:37.162609000Z
+        self.last_run = datetime(2024, 7, 9, 9, 11, 37, 162609)
+        self.previous_last_run = self.last_run - self.interval
+        
         self.username = username
         self.password = password
+        self.query_type = query_type
         
         print("ES URL: ", self.es_url)
         print("Index: ", self.index)
@@ -38,7 +42,15 @@ class ElasticQuery:
         print("Last Run: ", self.last_run)
 
     def run_query(self):
-        url = f"{self.es_url}/{self.index}/_count"
+        url = f"{self.es_url}/{self.index}/{self.query_type}"
+        self.previous_last_run = self.last_run
+        
+        #put in the self.last_run the previous last run + interval
+        self.last_run = self.previous_last_run + self.interval
+        
+        #Only for the demo #1
+        self.query = self.set_query_time_window(self.previous_last_run, self.last_run, self.query)
+        
         try:
             # Convert query string to dictionary if necessary
             if isinstance(self.query, str):
@@ -68,9 +80,13 @@ class ElasticQuery:
     def post_results(self, results):
         #if results are available print them and then post them, else print a message    
         if results:
-            print(results)
+            
+            if self.endpoint == 'http://192.168.130.110:8090/estimate':
+                results = self.DEME_transformation(results)
+                print(results)
             try:
-                response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=6)
+                
+                response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=10)
                 if response.status_code == 200:
                     logging.info("Results successfully posted.")
                 else:
@@ -82,6 +98,56 @@ class ElasticQuery:
         else:
             logging.info("No results available to post.")
     
+    
+    def set_query_time_window(self, previous_last_run, last_run, query):
+        # Convert datetime objects to ISO format strings if they are not already
+        if isinstance(previous_last_run, datetime):
+            previous_last_run = previous_last_run.isoformat() + 'Z'
+        if isinstance(last_run, datetime):
+            last_run = last_run.isoformat() + 'Z'
+
+        # Update the query object with the new timestamps
+        for clause in query['query']['bool']['must']:
+            if 'range' in clause and 'layers.frame.frame_frame_time' in clause['range']:
+                clause['range']['layers.frame.frame_frame_time']['gte'] = previous_last_run
+                clause['range']['layers.frame.frame_frame_time']['lt'] = last_run
+
+        return query
+
+    def DEME_transformation(self, results):
+        # Extract counts from the results
+        dns_count = results['aggregations']['dns_packets']['doc_count']
+        ntp_count = results['aggregations']['ntp_packets']['doc_count']
+        
+        
+        # Transform the results to the DEME API format
+        transformed_results = [
+            {
+                "timestamp": self.last_run,
+                "instances": [
+                    {
+                        "instance": "Test_Instance",
+                        "features": [
+                            {
+                                "feature": "NTP",
+                                "value": ntp_count
+                            },
+                            {
+                                "feature": "DNS",
+                                "value": dns_count
+                            },
+                            {
+                                "feature": "PFCP",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        
+        return transformed_results
+
 
 # Example usage
 if __name__ == "__main__":
