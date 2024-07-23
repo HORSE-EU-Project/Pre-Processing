@@ -87,7 +87,7 @@ class ElasticQuery:
                 print(results)
             try:
                 
-                response = requests.post(self.endpoint, json=results, headers=self.headers, timeout=10)
+                response = requests.post(self.endpoint, json=results, headers=self.headers)
                 if response.status_code == 200:
                     logging.info("Results successfully posted.")
                 else:
@@ -152,48 +152,13 @@ class ElasticQuery:
 
 # Example usage
 if __name__ == "__main__":
-    es_url = "http://192.168.130.48:9200"
+    endpoint = "http://192.168.130.110:8090/estimate"
     index = "packets-2024-07-09"
     headers = {'Content-Type': 'application/json'}
     username = "elastic"
     password = "HoR$e2024!eLk@sPh#ynX"
+    results = [{'timestamp': '1720507497', 'instances': [{'instance': 'node1:Genoa RtA', 'features': [{'feature': 'NTP', 'value': 0}, {'feature': 'DNS', 'value': 698}]}]}]
     
-    query = '''
-    {
-      "query": {
-        "bool": {
-          "must": [
-            {
-              "exists": {
-                "field": "layers.ip"
-              }
-            },
-            {
-              "exists": {
-                "field": "layers.udp"
-              }
-            },
-            {
-              "exists": {
-                "field": "layers.ntp"
-              }
-            },
-            {
-              "term": {
-                "layers.udp.udp_udp_dstport": 123
-              }
-            }
-          ]
-        }
-      }
-    }
-    '''
-    
-    executor = ElasticQuery(es_url, index, headers, username, password, query)
-    result = executor.run_query()
-
-    if result:
-        print("Query Result:", json.dumps(result, indent=2))
-    else:
-        print("Query failed.")
+    response = requests.post(endpoint, json=results, headers=headers)
+    print(response.status_code)
     
