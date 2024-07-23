@@ -22,6 +22,10 @@ ENV DB_NAME=${DB_NAME}
 
 # Install dependencies
 COPY requirements.txt .
+
+# Update pip to the latest version
+RUN pip install --upgrade pip
+
 RUN pip install -r requirements.txt
 
 # Copy the application code
