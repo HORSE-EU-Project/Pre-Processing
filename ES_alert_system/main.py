@@ -54,7 +54,7 @@ def main():
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
             #if query.last_run is larger that 2024-07-09T16:09:37.162609000Z print the message
-            if query.last_run > datetime(2024, 7, 9, 9, 15, 37, 162609):
+            if query.last_run > datetime(2024, 7, 9, 16, 9, 37, 162609):
                 print("==========================Query reached the end of the data============================")
                 query.active = False        
                 #query.last_run = now
