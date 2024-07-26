@@ -18,22 +18,8 @@ import secrets
 # Load environment variables from .env file
 load_dotenv()
 
-
-
 app = Flask(__name__ , template_folder='templates') 
 secret = secrets.token_urlsafe(16)
-
-
-
-
-
-# Email configuration
-# app.config['MAIL_SERVER'] = 'smtp.yourmailserver.com'
-# app.config['MAIL_PORT'] = 587
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USERNAME'] = 'your-email@example.com'
-# app.config['MAIL_PASSWORD'] = 'your-email-password'
-# mail = Mail(app)
 
 
 print("==================================== APP LETS GO====================================")
@@ -89,9 +75,6 @@ if not os.path.exists(db_path):
 def load_user(user_id):
     return User.get(user_id)
 
-# Upload folder
-UPLOAD_FOLDER = 'static/json'
-app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 @app.route('/', methods= ['GET', 'POST'], endpoint='index')
 @decoratorCheckAppOrg
