@@ -2,29 +2,10 @@ version: "3"
 
 services:
   dff-app-keycloak:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - DATABASE_URL=${DATABASE_URL}
-        - API_KEY=${API_KEY}
-        - SECRET_KEY=${SECRET_KEY}
-        - DB_HOST=${DB_HOST}
-        - DB_USER=${DB_USER}
-        - DB_PASSWORD=${DB_PASSWORD}
-        - DB_NAME=${DB_NAME}
     image: dff-app-keycloak:latest
     container_name: "dff-app-keycloak"
     networks: 
       - dff-network
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - API_KEY=${API_KEY}
-      - SECRET_KEY=${SECRET_KEY}
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
     ports:
       - 5005:5005
     volumes:
