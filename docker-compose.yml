@@ -2,6 +2,9 @@ version: "3"
 
 services:
   dff-app-keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: dff-app-keycloak:latest
     container_name: "dff-app-keycloak"
     networks: 
