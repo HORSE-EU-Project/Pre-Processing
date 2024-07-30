@@ -108,6 +108,7 @@ def get_userinfo():
     response = get_kc_userinfo(token)
     r_code = response.status_code
     if r_code != 200 and r_code != 302:
+       # To do: Expose less information about the error to the user
        flash('Keycloak is not responding. Status code: ' + str(response.status_code) + ' Try again later!', 'error')
        return render_template('index.html')
     user_name = response.json()["preferred_username"]

@@ -15,8 +15,6 @@ KEYCLOAK_CREDENTIALS_URL = os.getenv('KEYCLOAK_CREDENTIALS_URL')
 CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET_KEY')
 
-print("Secret Key keycloak request: ", SECRET)
-
 # Define retry strategy and http adapter for requests
 retry_strategy = Retry(
     total=3,
@@ -46,8 +44,18 @@ def get_kc_token(username, password):
 
         current_app.logger.debug("get_kc_token===============================")
         response = http.post(url=KEYCLOAK_TOKEN_URL, headers=header, data=data, verify=True)  # Consider your SSL strategy
-    except Exception as e:
-        return str(e)
+    except requests.exceptions.HTTPError as errh:
+        current_app.logger.error(f"Http Error: {errh}")
+        return {"error": "HTTP error occurred"}
+    except requests.exceptions.ConnectionError as errc:
+        current_app.logger.error(f"Error Connecting: {errc}")
+        return {"error": "Error connecting to Keycloak"}
+    except requests.exceptions.Timeout as errt:
+        current_app.logger.error(f"Timeout Error: {errt}")
+        return {"error": "Request timed out"}
+    except requests.exceptions.RequestException as err:
+        current_app.logger.error(f"Something went wrong: {err}")
+        return {"error": "An error occurred"}
     return response
 
 def get_kc_userinfo(token):
@@ -70,5 +78,7 @@ def change_password(currentPassword, newPassword, confirmation):
         "Authorization": "Bearer {}".format(current_user.token),
         "Content-Type": "application/json"
     }
+    
+    # To do: ensure SSL verification is enabled
     r = http.post(url=KEYCLOAK_CREDENTIALS_URL, headers=headers, data=payload, verify=False)
     return r
