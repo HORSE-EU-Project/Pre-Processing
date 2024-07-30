@@ -16,104 +16,156 @@ ES_INDEX = os.getenv('ES_INDEX', 'test_index')
 ORION_URL = os.getenv('ORION_URL', 'http://orion:1026')
 
 
+# Security functions to validate input
+def is_valid_subscription_id(subscription_id):
+    # Example validation: alphanumeric with length between 5 and 20
+    return bool(re.match(r'^[a-zA-Z0-9]{5,20}$', subscription_id))
+
+def is_valid_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+def is_valid_json(json_data):
+    try:
+        json.loads(json_data)
+        return True
+    except ValueError:
+        return False
+
+# Functions to manage subscriptions
 def add_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                     query, interval, active, es_index='test_index', entity=None ):
-        if subscription_type == 'ES':
+                     query, interval, active, es_index='test_index', entity=None):
+    if not is_valid_subscription_id(subscription_id):
+        return 'Invalid subscription_id format'
+    if not is_valid_url(endpoint_url):
+        return 'Invalid endpoint_url format'
+    if not is_valid_json(json.dumps(query)):
+        return 'Invalid query format'
+    
+    
+    if subscription_type == 'ES':
+        
+        
+        # Create the new rule as a dictionary
+        new_rule = {
+            "subscription_id": subscription_id,
+            "user_id": user_id,
+            "subscription_type": "ES",
+            "es_url": str(DB_url),
+            "index": es_index,  # Meaningful value based on the subscription type
+            "query": {json.dumps(query)},  # Keep as dictionary, not string
+            "headers": {"Content-Type": "application/json"},
+            "endpoint": str(endpoint_url),
+            "interval": interval,
+            "active": active
+        }
+
+        # Open the config file in read mode and load existing data
+        try:
+            with open(CONFIG_FILE_PATH, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = {'rules': []}  # Initialize if file doesn't exist
+
+        # Append the new rule to the list of rules
+        data['rules'].append(new_rule)
+
+        # Write the updated data back to the config file
+        try:
+            with open(CONFIG_FILE_PATH, 'w') as file:
+                json.dump(data, file, indent=4)
             
-            
-            # Create the new rule as a dictionary
-            new_rule = {
-                "subscription_id": subscription_id,
-                "user_id": user_id,
-                "subscription_type": "ES",
-                "es_url": str(DB_url),
-                "index": es_index,  # Meaningful value based on the subscription type
-                "query": {json.dumps(query)},  # Keep as dictionary, not string
-                "headers": {"Content-Type": "application/json"},
-                "endpoint": str(endpoint_url),
-                "interval": interval,
-                "active": active
-            }
+            current_app.logger.debug("New rule added successfully.")
+            return 'Subscription added successfully'
+        except Exception as e:
+            current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
+            traceback_str = traceback.format_exc()
+            return traceback_str
 
-            # Open the config file in read mode and load existing data
-            try:
-                with open(CONFIG_FILE_PATH, 'r') as file:
-                    data = json.load(file)
-            except FileNotFoundError:
-                data = {'rules': []}  # Initialize if file doesn't exist
+    #else if subscription_type is 'ORION', add the subscription to the Orion Context Broker
+    elif subscription_type == 'ORION':
+        try:
+            result = createOrionRequest(str(entity), str(endpoint_url))
+            return result           
 
-            # Append the new rule to the list of rules
-            data['rules'].append(new_rule)
-
-            # Write the updated data back to the config file
-            try:
-                with open(CONFIG_FILE_PATH, 'w') as file:
-                    json.dump(data, file, indent=4)
-                
-                current_app.logger.debug("New rule added successfully.")
-                return 'Subscription added successfully'
-            except Exception as e:
-                current_app.logger.debug(f"An unexpected error occurred: {str(e)}")
-                traceback_str = traceback.format_exc()
-                return traceback_str
-
-        #else if subscription_type is 'ORION', add the subscription to the Orion Context Broker
-        elif subscription_type == 'ORION':
-            try:
-                result = createOrionRequest(str(entity), str(endpoint_url))
-                return result           
-
-            
-            except Exception as e:
-                traceback_str = traceback.format_exc()
-                return traceback_str
+        
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            return traceback_str
         
         
 def update_subscription(subscription_id, user_id, subscription_type, endpoint_url, DB_url, 
-                        query, interval, active, es_index='test_index', entity=None ):
+                        query, interval, active, es_index='test_index', entity=None):
+    if not is_valid_subscription_id(subscription_id):
+        return 'Invalid subscription_id format'
+    if not is_valid_url(endpoint_url):
+        return 'Invalid endpoint_url format'
+    if not is_valid_json(json.dumps(query)):
+        return 'Invalid query format'
+
     try:
         if subscription_type == 'ES':
-            
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
-                #search for the subscription_id and update the subscription
-                for rule in data['rules']:
-                    if rule['subscription_id'] == subscription_id:
-                        rule['user_id'] = user_id
-                        rule["subscription_type"] = "ES"
-                        rule['es_url'] = DB_url
-                        rule['index'] = es_index
-                        rule['query'] = json.dumps(query)
-                        rule['headers'] = {"Content-Type": "application/json"}
-                        rule['endpoint'] = endpoint_url
-                        rule['interval'] = interval
-                        break
-            with open(CONFIG_FILE_PATH, 'w') as file:
-                json.dump(data, file, indent=4)
-                
-        
-    except EOFError as e:
+
+            updated = False
+            for rule in data['rules']:
+                if rule['subscription_id'] == subscription_id:
+                    rule['user_id'] = user_id
+                    rule["subscription_type"] = "ES"
+                    rule['es_url'] = DB_url
+                    rule['index'] = es_index
+                    rule['query'] = query
+                    rule['headers'] = {"Content-Type": "application/json"}
+                    rule['endpoint'] = endpoint_url
+                    rule['interval'] = interval
+                    updated = True
+                    break
+
+            if updated:
+                with open(CONFIG_FILE_PATH, 'w') as file:
+                    json.dump(data, file, indent=4)
+                return 'Subscription updated successfully'
+            else:
+                return 'Subscription not found'
+
+    except Exception as e:
         return str(e)
-    return 'Subscription updated successfully'
+
 
 def delete_subscription(subscription_id, subscription_type):
+    if not is_valid_subscription_id(subscription_id):
+        return 'Invalid subscription_id format'
+
     try:
         if subscription_type == 'ES':
             with open(CONFIG_FILE_PATH, 'r') as file:
                 data = json.load(file)
-                #search for the subscription_id and update the subscription
-                for rule in data['rules']:
-                    if rule['subscription_id'] == subscription_id:
-                        data['rules'].remove(rule)
-                        break
-            with open(CONFIG_FILE_PATH, 'w') as file:
-                json.dump(data, file, indent=4)
+
+            updated = False
+            for rule in data['rules']:
+                if rule['subscription_id'] == subscription_id:
+                    data['rules'].remove(rule)
+                    updated = True
+                    break
+
+            if updated:
+                with open(CONFIG_FILE_PATH, 'w') as file:
+                    json.dump(data, file, indent=4)
+                return 'Subscription deleted successfully'
+            else:
+                return 'Subscription not found'
+
         elif subscription_type == 'ORION':
             result = deleteOrionSubscription(subscription_id)
             return result
-    except EOFError as e:
+
+    except Exception as e:
         return str(e)
-    return 'Subscription deleted successfully'
+
 
 
 
