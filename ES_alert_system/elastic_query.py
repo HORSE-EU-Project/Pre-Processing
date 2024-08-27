@@ -14,7 +14,7 @@ ES_password = 'HoR$e2024!eLk@sPh#ynX'
 #thoughts excerpt
 class ElasticQuery:
     def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
-                 query='', query_type = '_count', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=2000, active=True, 
+                 query='', query_type = '_count', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=120, active=True, 
                  username=ES_username, password=ES_password, **kwargs):
         self.subscription_id = subscription_id
         self.user_id = user_id
