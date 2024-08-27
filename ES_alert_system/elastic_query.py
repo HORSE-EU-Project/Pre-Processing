@@ -27,7 +27,7 @@ class ElasticQuery:
         self.interval = timedelta(seconds= int(interval))
         self.active = active
         #put in the self.last_run the datetime 2024-07-09T09:11:37.162609000Z
-        self.last_run = datetime(2024, 7, 9, 9, 11, 37, 162609)
+        self.last_run = datetime(2024, 7, 9, 9, 9, 33, 540984)
         self.previous_last_run = self.last_run - self.interval
         
         self.username = username

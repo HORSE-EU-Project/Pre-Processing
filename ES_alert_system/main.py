@@ -37,7 +37,7 @@ def main():
         now = datetime.now()
         for query in queries.ES_queries:
             print("=========================++++++====================================")
-            if not query.last_run or now >= query.last_run + query.interval:
+            if (not query.last_run or now >= query.last_run + query.interval) and query.active:
                 try:
                     results = query.run_query()
                     status_code = query.post_results(results)  
@@ -53,10 +53,17 @@ def main():
                     logging.error(f"HTTP error occurred: {e}")
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
-                    
+            #if query.last_run is larger that 2024-07-09T16:09:37.162609000Z print the message
+            if query.last_run > datetime(2024, 7, 9, 16, 9, 37, 162609):
+                print("==========================Query reached the end of the data============================")
+                query.active = False        
                 #query.last_run = now
         print("=============================================================")
+<<<<<<< HEAD
         time.sleep(3)
+=======
+        time.sleep(5)
+>>>>>>> 775856d80d632c3f1157f6b750c333fb0c01ceff
         
 
 
