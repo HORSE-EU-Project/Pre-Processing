@@ -30,7 +30,8 @@ def main():
         logging.error(f"Failed to read configuration file: {e}", exc_info=True)
         
     #every 10 seconds run the queries
-    while True:
+    flag = True
+    while flag:
             #Read the configuration file
         
         
@@ -54,10 +55,10 @@ def main():
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
             #if query.last_run is larger that 2024-07-09T16:09:37.162609000Z print the message
-            if query.last_run > datetime(2024, 7, 9, 9, 15, 37, 162609):
+            if query.last_run > datetime(2024, 7, 9, 9, 12, 37, 162609):
                 print("==========================Query reached the end of the data============================")
                 query.active = False
-                break        
+                flag = False        
                 #query.last_run = now
         print("=============================================================")
         # time.sleep(3)
