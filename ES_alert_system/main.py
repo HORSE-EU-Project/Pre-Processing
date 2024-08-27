@@ -59,11 +59,8 @@ def main():
                 query.active = False        
                 #query.last_run = now
         print("=============================================================")
-<<<<<<< HEAD
         time.sleep(3)
-=======
-        time.sleep(5)
->>>>>>> 775856d80d632c3f1157f6b750c333fb0c01ceff
+
         
 
 
