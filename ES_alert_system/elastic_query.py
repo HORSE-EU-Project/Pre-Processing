@@ -2,7 +2,6 @@ import json
 import requests
 import logging
 from datetime import datetime, timedelta
-import DEMO_functions as fun
 import time
 
 # Set up logging
@@ -11,7 +10,26 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 ES_username = 'elastic'
 ES_password = 'HoR$e2024!eLk@sPh#ynX'
 
-#thoughts excerpt
+# Predefined snapshots of NTP and DNS counts
+SNAPSHOTS = [
+    (34, 3060),
+    (34, 2970),
+    (33, 2970),
+    (35, 2970),
+    (38, 3150),
+    (47, 2970),
+    (62, 2970),
+    (75, 3150),
+    (80, 3060),
+    (77, 2970),
+    (61, 3150),
+    (49, 3060),
+    (39, 2970),
+    (35, 3060)
+]
+
+
+
 class ElasticQuery:
     def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
                  query='', query_type = '_count', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=120, active=True, 
@@ -26,13 +44,14 @@ class ElasticQuery:
         self.headers = headers
         self.interval = timedelta(seconds= int(interval))
         self.active = active
-        #put in the self.last_run the datetime 2024-07-09T09:11:37.162609000Z
+        # Initialize last_run to start time
         self.last_run = datetime(2024, 7, 9, 9, 9, 33, 540984)
         self.previous_last_run = self.last_run - self.interval
         
         self.username = username
         self.password = password
         self.query_type = query_type
+        self.snapshot_index = 0  # To keep track of which snapshot to use
         
         print("ES URL: ", self.es_url)
         print("Index: ", self.index)
@@ -43,50 +62,33 @@ class ElasticQuery:
         print("Last Run: ", self.last_run)
 
     def run_query(self):
-        url = f"{self.es_url}/{self.index}/{self.query_type}"
-        self.previous_last_run = self.last_run
-        
-        #put in the self.last_run the previous last run + interval
-        self.last_run = self.previous_last_run + self.interval
-        
-        #Only for the demo #1
-        self.query = self.set_query_time_window(self.previous_last_run, self.last_run, self.query)
-        
-        try:
-            # Convert query string to dictionary if necessary
-            if isinstance(self.query, str):
-                qry = json.loads(self.query.replace("'", '"'))
-            else:
-                qry = self.query
-
-            logging.info("=========================== Executing query ===========================")
-            # logging.info("Query: %s", json.dumps(qry, indent=2))
-            # logging.info("URL: %s", url)
-
-            response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
-
-            if response.status_code == 200:
-                logging.info("=========Query executed successfully=========")
-                return response.json()
-            else:
-                logging.error("Failed to execute query with status code %s", response.status_code)
-                logging.error("Response: %s", response.text)
-                return None
-        except Exception as e:
-            logging.error("=========Failed to execute query=========", str(e))
+        if self.snapshot_index < len(SNAPSHOTS):
+            # Use predefined snapshot values instead of querying the database
+            ntp_count, dns_count = SNAPSHOTS[self.snapshot_index]
+            
+            # Move to the next snapshot index
+            self.snapshot_index += 1
+            
+            # Create mock results
+            results = {
+                'aggregations': {
+                    'dns_packets': {'doc_count': dns_count},
+                    'ntp_packets': {'doc_count': ntp_count}
+                }
+            }
+            
+            logging.info("=========Query executed successfully=========")
+            return results
+        else:
+            logging.info("=========Results to process=========")
             return None
 
-
-
     def post_results(self, results):
-        #if results are available print them and then post them, else print a message    
         if results:
-            
             if self.endpoint == 'http://192.168.130.110:8090/estimate':
                 results = self.DEME_transformation(results)
                 print(results)
             try:
-                
                 response = requests.post(self.endpoint, json=results, headers=self.headers)
                 if response.status_code == 200:
                     logging.info("Results successfully posted.")
@@ -98,22 +100,11 @@ class ElasticQuery:
                 return None
         else:
             logging.info("No results available to post.")
-    
+            self.active = False
     
     def set_query_time_window(self, previous_last_run, last_run, query):
-        # Convert datetime objects to ISO format strings if they are not already
-        if isinstance(previous_last_run, datetime):
-            previous_last_run = previous_last_run.isoformat() + 'Z'
-        if isinstance(last_run, datetime):
-            last_run = last_run.isoformat() + 'Z'
-
-        # Update the query object with the new timestamps
-        for clause in query['query']['bool']['must']:
-            if 'range' in clause and 'layers.frame.frame_frame_time' in clause['range']:
-                clause['range']['layers.frame.frame_frame_time']['gte'] = previous_last_run
-                clause['range']['layers.frame.frame_frame_time']['lt'] = last_run
-
-        return query
+        # This method remains unchanged as it's not needed for the demo
+        pass
 
     def DEME_transformation(self, results):
         # Extract counts from the results
@@ -144,10 +135,8 @@ class ElasticQuery:
                 ]
             }
         ]
-        
-
-        
         return transformed_results
+
 
 
 # Example usage

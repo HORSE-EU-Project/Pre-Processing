@@ -60,6 +60,7 @@ def main():
                 query.active = False
                 flag = False        
                 #query.last_run = now
+        flag = False
         print("=============================================================")
         # time.sleep(3)
 
