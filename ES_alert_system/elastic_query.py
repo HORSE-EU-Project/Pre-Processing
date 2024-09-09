@@ -28,6 +28,11 @@ SNAPSHOTS = [
     (35, 3060)
 ]
 
+SNAPSHOTS = [
+    (34, 3060),
+    (34, 2970)
+]
+
 
 
 class ElasticQuery:
@@ -76,12 +81,10 @@ class ElasticQuery:
                     'ntp_packets': {'doc_count': ntp_count}
                 }
             }
-            
-            logging.info("=========Query executed successfully=========")
-            return results
+            return results, True
         else:
-            logging.info("=========Results to process=========")
-            return None
+            logging.info("=========No results to process=========")
+            return None, False
 
     def post_results(self, results):
         if results:
@@ -100,7 +103,6 @@ class ElasticQuery:
                 return None
         else:
             logging.info("No results available to post.")
-            self.active = False
     
     def set_query_time_window(self, previous_last_run, last_run, query):
         # This method remains unchanged as it's not needed for the demo

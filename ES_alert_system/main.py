@@ -40,7 +40,9 @@ def main():
             print("=========================++++++====================================")
             if (not query.last_run or now >= query.last_run + query.interval) and query.active:
                 try:
-                    results = query.run_query()
+                    results,flag = query.run_query()
+                    if flag == False:
+                        break
                     status_code = query.post_results(results)  
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
@@ -60,7 +62,7 @@ def main():
                 query.active = False
                 flag = False        
                 #query.last_run = now
-        flag = False
+        
         print("=============================================================")
         # time.sleep(3)
 
