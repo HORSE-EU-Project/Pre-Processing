@@ -1,23 +1,9 @@
-.\env\Scripts\activate
 
-#fiware central
-set KEYROCK_CLIENT_ID=32f0b8fe995d4c46b49bf36eb195efd6
-set KEYROCK_CLIENT_SECRET=f73e34836bd34ca2b5388226f12212e0
-
-#wsl
------ Authentication GUI ----------
-export KEYROCK_CLIENT_ID=bb5f6ea7-61f1-4637-bcc2-912fd2b6f1bd
-export KEYROCK_CLIENT_SECRET=12eab5b6-f063-417f-83e3-85ed61c45fe9
------------------------------------
-
------- DFF API --------------------
-export KEYROCK_CLIENT_ID=23a8072b-5fd2-412d-b485-287243c5e486
-export KEYROCK_CLIENT_SECRET=79745999-794b-46a1-9c59-8508c9a96c63
------------------------------------
-
-
-#local keyrock instance
-set KEYROCK_CLIENT_ID=23a8072b-5fd2-412d-b485-287243c5e486
-set KEYROCK_CLIENT_SECRET=79745999-794b-46a1-9c59-8508c9a96c63
-
-Header 'Auhtorization: Basic {base64{client_id:client_secret}}'
+#elastic search
+ES_USERNAME=elastic
+ES_PASSWORD=HoR$e2024!eLk@sPh#ynX
+ES_URL=http://10.19.2.15:9200
+ES_INDEX=pcap_data
+ES_DATA_START_TIME=2025-01-31T13:59:20.729871000Z
+ES_DATA_END_TIME=2025-01-31T14:15:20.729871000Z
+ePEM_URL=http://192.168.130.110:8090/estimate

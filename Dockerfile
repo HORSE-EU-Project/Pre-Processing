@@ -1,28 +1,24 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9.12
+# Use a Python base image (e.g., Python 3.9)
+FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /dff
+# Set working directory in the container
+WORKDIR /app
 
-# Copy only the requirements.txt initially to leverage Docker cache
-COPY requirements.txt ./
+# Copy the requirements.txt to the working directory
+COPY requirements.txt /app/
 
-# Install any needed packages specified in requirements.txt
-RUN pip --no-cache-dir install -r requirements.txt
+# Install the dependencies from the requirements.txt file
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
-COPY schema.sql user.py db.py app.py keycloak_requests.py ./
-COPY ./Web_app ./Web_app
-COPY ./templates ./templates
-COPY ./static ./static
-COPY ./ES_alert_system/ ./ES_alert_system/  
-# Assuming you have this file ready
+# Copy the .env file to the working directory
+COPY .env /app/
 
+# Copy the entire app folder contents into the container
+COPY app /app/
 
-# Copy your ElastAlert rules if you have them ready
-# COPY path_to_your_rules/*.yaml ./elastalert/rules/
+# Set the environment variables from the .env file
+# This automatically loads the variables inside the container for use in the application
+ENV $(cat .env | xargs)
 
-# Start Alert in the background & then start the Flask app
-CMD ["python3", "app.py"]
-
-
+# Set the default command to run the application (main.py)
+CMD ["python", "main.py"]

@@ -1,18 +1,1 @@
-Werkzeug==2.0.0
-Flask==2.0.3
-oauthlib==3.0.1
-requests>=2.31.0
-pyOpenSSL==20.0.1
-cryptography==3.4.7
-Flask-Login==0.4.1
-plotly==4.14.3
-numpy==1.20.3
-pandas==1.2.4  # Adjusted version
-flask_restful
-marshmallow
-flask_oidc
-oauth2client
-pyshark
-scapy
-itsdangerous<2.1
-PyYAML>=5.1
+requests
