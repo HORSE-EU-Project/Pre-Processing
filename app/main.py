@@ -23,7 +23,7 @@ def main():
     try:
                 
         # queries = ConfigReader.read_config('./ES_alert_system/config.json')
-        queries = ES_queries('./ES_alert_system/config.json')
+        queries = ES_queries('./config.json')
         
         logging.info("Configuration file read successfully.")
     except Exception as e:
