@@ -16,15 +16,17 @@ load_dotenv()
 # Load and parse ES_DATA_END_TIME
 es_data_end_time_str = os.getenv('ES_DATA_END_TIME')
 
-# Remove 'Z' and handle the nanosecond part
+# Remove 'Z' and truncate the nanoseconds part if present
 if es_data_end_time_str:
-    # Adjust format to handle nanoseconds correctly
     if es_data_end_time_str.endswith('Z'):
         es_data_end_time_str = es_data_end_time_str.rstrip('Z')
     
-    # Now parse the datetime, making sure to handle nanoseconds
+    # Truncate to ignore nanoseconds (first 19 characters)
+    es_data_end_time_str = es_data_end_time_str[:19]
+    
     try:
-        ES_DATA_END_TIME = datetime.strptime(es_data_end_time_str, '%Y-%m-%dT%H:%M:%S.%f')
+        # Parse the datetime, ignoring nanoseconds
+        ES_DATA_END_TIME = datetime.strptime(es_data_end_time_str, '%Y-%m-%dT%H:%M:%S')
     except ValueError:
         raise ValueError("Invalid datetime format for ES_DATA_END_TIME in .env file.")
 else:
