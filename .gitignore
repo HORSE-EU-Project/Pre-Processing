@@ -1,5 +1,5 @@
 # Ignore .env file
-.env
+#.env
 
 # Ignore Python bytecode files
 *.pyc
@@ -38,4 +38,4 @@ Thumbs.db
 *.dist-info/
 
 # Ignore the env_setup.txt file (if you choose to use it for other purposes)
-env_setup.txt
+#env_setup.txt
