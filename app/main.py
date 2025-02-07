@@ -6,6 +6,21 @@ import time
 from datetime import datetime, timedelta
 from elastic_query import ElasticQuery
 from ES_queries import ES_queries
+from dotenv import dotenv_values
+from datetime import datetime
+
+# Load environment variables from the .env file
+env = dotenv_values(".env")
+
+# Load ES_DATA_END_TIME from .env and parse it
+ES_DATA_END_TIME = env.get('ES_DATA_END_TIME')
+
+if ES_DATA_END_TIME:
+    try:
+        # Convert ES_DATA_END_TIME to a datetime object
+        ES_DATA_END_TIME = datetime.fromisoformat(ES_DATA_END_TIME.rstrip('Z'))
+    except ValueError:
+        raise ValueError("Invalid datetime format for ES_DATA_END_TIME in .env file.")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -54,8 +69,8 @@ def main():
                     logging.error(f"HTTP error occurred: {e}")
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
-            #if query.last_run is larger that 2024-07-09T16:09:37.162609000Z print the message
-            if query.last_run > datetime(2025, 1, 31, 14, 20, 1, 162609):
+            #if query.last_run is larger that ES_DATA_END_TIME print the message
+            if query.last_run > ES_DATA_END_TIME:
                 print("==========================Query reached the end of the data============================")
                 query.active = False
                 flag = False        
