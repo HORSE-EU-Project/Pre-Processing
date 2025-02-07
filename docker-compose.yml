@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    container_name: pre-processing
+    env_file:
+      - .env  # Load environment variables from the .env file
+    ports:
+      - "5000:5000"  # Expose port 5000 of the container to 5000 on the host (adjust as needed)
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+    restart: always  # Restart the container if it fails
