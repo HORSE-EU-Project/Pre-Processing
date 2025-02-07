@@ -80,10 +80,10 @@ class ElasticQuery:
                 dns_count = results['aggregations']['dns_packets']['doc_count']
                 ntp_count = results['aggregations']['ntp_packets']['doc_count']
                 
-                logging.info("From time: ", self.previous_last_run)
-                logging.info("To time: ", self.last_run)
-                logging.info("DNS count: ", dns_count)
-                logging.info("NTP count: ", ntp_count)
+                logging.info("From time: %s", self.previous_last_run)
+                logging.info("To time: %s", self.last_run)
+                logging.info("DNS count: %s", dns_count)
+                logging.info("NTP count: %s", ntp_count)
                 logging.info("=============================================================")
                 
                 return results
