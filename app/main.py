@@ -6,7 +6,8 @@ import time
 from datetime import datetime, timedelta
 from elastic_query import ElasticQuery
 from ES_queries import ES_queries
-from dotenv import dotenv_values
+from dotenv import load_dotenv
+import os
 from datetime import datetime
 
 # Load environment variables
