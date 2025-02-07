@@ -1,24 +1,18 @@
-# Use a Python base image (e.g., Python 3.9)
-FROM python:3.9-slim
+# Start with a Python base image
+FROM python:3.8-slim
 
-# Set working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements.txt to the working directory
+# Copy the requirements file and install dependencies
 COPY requirements.txt /app/
+RUN pip install -r requirements.txt
 
-# Install the dependencies from the requirements.txt file
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the application code into the container
+COPY ./app /app
 
-# Copy the .env file to the working directory
-COPY .env /app/
+# Set the environment variable to specify the Python path
+ENV PYTHONPATH=/app
 
-# Copy the entire app folder contents into the container
-COPY app /app/
-
-# Set the environment variables from the .env file
-# This automatically loads the variables inside the container for use in the application
-ENV $(cat .env | xargs)
-
-# Set the default command to run the application (main.py)
+# Command to run the application
 CMD ["python", "main.py"]
