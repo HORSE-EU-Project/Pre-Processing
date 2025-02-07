@@ -3,17 +3,27 @@ import requests
 import logging
 from datetime import datetime, timedelta
 import time
+from dotenv import dotenv_values
+
+# Load environment variables from the .env file
+env = dotenv_values(".env")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-ES_username = 'elastic'
-ES_password = 'HoR$e2024!eLk@sPh#ynX'
+# Default values in case .env is missing some variables
+ES_username = env.get('ES_USERNAME', 'elastic')
+ES_password = env.get('ES_PASSWORD', 'default_password')
+ES_url = env.get('ES_URL', 'http://localhost:9200')
+ENDPOINT_url = env.get('ePEM_URL', 'http://localhost:8090')
+ES_index = env.get('ES_INDEX', 'default_index')
+INTERVAL = int(env.get('INTERVAL', 120))
 
-#thoughts excerpt
+# Class definition
 class ElasticQuery:
-    def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url='', index='packets-2024-07-09', 
-                 query='', query_type = '_count', headers = {"Content-Type": "application/json"}, endpoint_url='', interval=120, active=True, 
+    def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url=ES_url, index=ES_index, 
+                 query='', query_type='_count', headers={"Content-Type": "application/json"}, 
+                 endpoint_url=ENDPOINT_url, interval=INTERVAL, active=True, 
                  username=ES_username, password=ES_password, **kwargs):
         self.subscription_id = subscription_id
         self.user_id = user_id
@@ -23,23 +33,23 @@ class ElasticQuery:
         self.query = query
         self.endpoint = endpoint_url
         self.headers = headers
-        self.interval = timedelta(seconds= int(interval))
+        self.interval = timedelta(seconds=int(interval))
         self.active = active
-        #put in the self.last_run the datetime 2024-07-09T09:11:37.162609000Z
+        # Set the last_run datetime
         self.last_run = datetime(2025, 1, 31, 14, 3, 20, 729870)
         self.previous_last_run = self.last_run - self.interval
-        
         self.username = username
         self.password = password
         self.query_type = query_type
         
-        print("ES URL: ", self.es_url)
-        print("Index: ", self.index)
-        print("Query: ", self.query)
-        print("Headers: ", self.headers)
-        print("Endpoint: ", self.endpoint)
-        print("Interval: ", self.interval)
-        print("Last Run: ", self.last_run)
+        # Logging the initialized values
+        logging.info(f"ES URL: {self.es_url}")
+        logging.info(f"Index: {self.index}")
+        logging.info(f"Query: {self.query}")
+        logging.info(f"Headers: {self.headers}")
+        logging.info(f"Endpoint: {self.endpoint}")
+        logging.info(f"Interval: {self.interval}")
+        logging.info(f"Last Run: {self.last_run}")
 
     def run_query(self):
         url = f"{self.es_url}/{self.index}/{self.query_type}"
