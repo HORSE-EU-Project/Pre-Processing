@@ -2,7 +2,6 @@ import json
 import requests
 import logging
 from datetime import datetime, timedelta
-import DEMO_functions as fun
 import time
 
 # Set up logging
