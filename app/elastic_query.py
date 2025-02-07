@@ -13,10 +13,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Default values in case .env is missing some variables
 ES_username = env.get('ES_USERNAME', 'elastic')
-ES_password = env.get('ES_PASSWORD', 'default_password')
+ES_password = env.get('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
 ES_url = env.get('ES_URL', 'http://localhost:9200')
 ENDPOINT_url = env.get('ePEM_URL', 'http://localhost:8090')
-ES_index = env.get('ES_INDEX', 'default_index')
+ES_index = env.get('ES_INDEX', 'pcap_data')
 INTERVAL = int(env.get('INTERVAL', 120))
 
 # Class definition
