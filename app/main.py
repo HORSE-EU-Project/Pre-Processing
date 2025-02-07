@@ -9,18 +9,25 @@ from ES_queries import ES_queries
 from dotenv import dotenv_values
 from datetime import datetime
 
-# Load environment variables from the .env file
-env = dotenv_values(".env")
+# Load environment variables
+load_dotenv()
 
-# Load ES_DATA_END_TIME from .env and parse it
-ES_DATA_END_TIME = env.get('ES_DATA_END_TIME')
+# Load and parse ES_DATA_END_TIME
+es_data_end_time_str = os.getenv('ES_DATA_END_TIME')
 
-if ES_DATA_END_TIME:
+# Remove 'Z' and handle the nanosecond part
+if es_data_end_time_str:
+    # Adjust format to handle nanoseconds correctly
+    if es_data_end_time_str.endswith('Z'):
+        es_data_end_time_str = es_data_end_time_str.rstrip('Z')
+    
+    # Now parse the datetime, making sure to handle nanoseconds
     try:
-        # Convert ES_DATA_END_TIME to a datetime object
-        ES_DATA_END_TIME = datetime.fromisoformat(ES_DATA_END_TIME.rstrip('Z'))
+        ES_DATA_END_TIME = datetime.strptime(es_data_end_time_str, '%Y-%m-%dT%H:%M:%S.%f')
     except ValueError:
         raise ValueError("Invalid datetime format for ES_DATA_END_TIME in .env file.")
+else:
+    raise ValueError("ES_DATA_END_TIME is not set or invalid in the .env file")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
