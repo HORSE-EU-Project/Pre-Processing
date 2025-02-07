@@ -5,7 +5,7 @@ FROM python:3.8-slim
 WORKDIR /app
 
 # Copy the requirements file and install dependencies
-COPY requirements.txt /app/
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Copy the application code into the container
@@ -15,4 +15,4 @@ COPY ./app /app
 ENV PYTHONPATH=/app
 
 # Command to run the application
-CMD ["python", "main.py"]
+CMD ["python", "/app/main.py"]
