@@ -35,12 +35,13 @@ class ElasticQuery:
         self.headers = headers
         self.interval = timedelta(seconds=int(interval))
         self.active = active
-        # Set the last_run datetime
-        self.last_run = datetime(2025, 1, 31, 14, 3, 20, 729870)
-        self.previous_last_run = self.last_run - self.interval
         self.username = username
         self.password = password
         self.query_type = query_type
+        
+        # We'll set these in run_query, no need to initialize here
+        self.last_run = None
+        self.previous_last_run = None
         
         # Logging the initialized values
         logging.info(f"ES URL: {self.es_url}")
@@ -49,17 +50,23 @@ class ElasticQuery:
         logging.info(f"Headers: {self.headers}")
         logging.info(f"Endpoint: {self.endpoint}")
         logging.info(f"Interval: {self.interval}")
-        logging.info(f"Last Run: {self.last_run}")
 
     def run_query(self):
         url = f"{self.es_url}/{self.index}/{self.query_type}"
-        self.previous_last_run = self.last_run
         
-        #put in the self.last_run the previous last run + interval
-        self.last_run = self.previous_last_run + self.interval
+        # Get time reference - either from environment or current time
+        try:
+            last_data_time = env.get('ES_DATA_END_TIME')
+            now = datetime.fromisoformat(last_data_time) if last_data_time else datetime.now()
+        except ValueError:
+            logging.warning("Invalid ES_DATA_END_TIME format in .env, using current time")
+            now = datetime.now()
+            
+        self.previous_last_run = now - self.interval
+        self.last_run = now
         
-        #Only for the demo #1
-        self.query = self.set_query_time_window(self.previous_last_run, self.last_run, self.query)
+        # Use the latest time window for the query
+        self.query = self.set_latest_time_window(self.query)
         
         try:
             # Convert query string to dictionary if necessary
@@ -92,10 +99,22 @@ class ElasticQuery:
                 logging.error("Response: %s", response.text)
                 return None
         except Exception as e:
-            logging.error("=========Failed to execute query=========", str(e))
+            logging.error(f"=========Failed to execute query========= {str(e)}")
             return None
 
-
+    def set_latest_time_window(self, query):
+        """Set the query time window to fetch the latest data based on the interval"""
+        window_end = self.last_run.isoformat() + 'Z'
+        window_start = self.previous_last_run.isoformat() + 'Z'
+        
+        # Update the query object with the new timestamps
+        for clause in query['query']['bool']['must']:
+            if 'range' in clause and 'layers.frame.frame_frame_time' in clause['range']:
+                clause['range']['layers.frame.frame_frame_time']['gte'] = window_start
+                clause['range']['layers.frame.frame_frame_time']['lt'] = window_end
+                
+        logging.info(f"Query time window set to: {window_start} - {window_end}")
+        return query
 
     def post_results(self, results):
         #if results are available print them and then post them, else print a message    
@@ -117,22 +136,6 @@ class ElasticQuery:
                 return None
         else:
             logging.info("No results available to post.")
-    
-    
-    def set_query_time_window(self, previous_last_run, last_run, query):
-        # Convert datetime objects to ISO format strings if they are not already
-        if isinstance(previous_last_run, datetime):
-            previous_last_run = previous_last_run.isoformat() + 'Z'
-        if isinstance(last_run, datetime):
-            last_run = last_run.isoformat() + 'Z'
-
-        # Update the query object with the new timestamps
-        for clause in query['query']['bool']['must']:
-            if 'range' in clause and 'layers.frame.frame_frame_time' in clause['range']:
-                clause['range']['layers.frame.frame_frame_time']['gte'] = previous_last_run
-                clause['range']['layers.frame.frame_frame_time']['lt'] = last_run
-
-        return query
 
     def DEME_transformation(self, results):
         # Extract counts from the results
@@ -163,8 +166,6 @@ class ElasticQuery:
                 ]
             }
         ]
-        
-
         
         return transformed_results
 
