@@ -14,17 +14,17 @@
                   "must": [
                     {
                       "exists": {
-                        "field": "layers.ip"
+                        "field": "ip"
                       }
                     },
                     {
                       "exists": {
-                        "field": "layers.udp"
+                        "field": "udp"
                       }
                     },
                     {
                       "range": {
-                        "layers.frame.frame_frame_time": {
+                        "frame.frame_frame_time": {
                           "gte": "2025-01-31T13:59:20.729871000Z",
                           "lt": "2025-01-31T14:10:20.729871000Z"
                         }
@@ -40,12 +40,12 @@
                       "must": [
                         {
                           "exists": {
-                            "field": "layers.ntp"
+                            "field": "ntp"
                           }
                         },
                         {
                           "term": {
-                            "layers.udp.udp_udp_dstport": 123
+                            "udp.udp_udp_dstport": 123
                           }
                         }
                       ]
@@ -58,7 +58,7 @@
                       "must": [
                         {
                           "exists": {
-                            "field": "layers.dns"
+                            "field": "dns"
                           }
                         }
                       ]
