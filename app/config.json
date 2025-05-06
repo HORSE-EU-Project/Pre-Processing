@@ -4,8 +4,6 @@
             "subscription_id": "DMVSLGF1YD1W0Q7Z2SVC",
             "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
             "subscription_type": "ES",
-            "endpoint_url": "http://127.0.0.1:8090/estimate",
-            "DB_url": "http://127.0.0.1:9200",
             "index": "pcap_data",
             "query": {
   

@@ -1,10 +1,19 @@
 version: "3.8"
 services:
   app:
-    build: .  # Build the image from the Dockerfile in the current directory
+    build: .
     container_name: pre-processing
-    env_file:
-      - .env  # Load environment variables from the .env file
+    environment:
+      - ES_USERNAME=${ES_USERNAME}
+      - ES_PASSWORD=${ES_PASSWORD}
+      - ES_INDEX=${ES_INDEX}
+      - ES_DATA_START_TIME=${ES_DATA_START_TIME}
+      - ES_DATA_END_TIME=${ES_DATA_END_TIME}
+      - ES_URL=${ES_URL}
+      - AFTER_PRE-PROCESSING_URL=${AFTER_PRE-PROCESSING_URL}
     ports:
-      - "5001:5000"  # Map host port 5000 to container port 5000
-    restart: always  # Restart the container if it fails
+      - "5001:5000"
+    restart: always
+    volumes:
+      - ./app:/app
+

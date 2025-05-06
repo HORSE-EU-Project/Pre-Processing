@@ -3,21 +3,18 @@ import requests
 import logging
 from datetime import datetime, timedelta
 import time
-from dotenv import dotenv_values
-
-# Load environment variables from the .env file
-env = dotenv_values(".env")
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Default values in case .env is missing some variables
-ES_username = env.get('ES_USERNAME', 'elastic')
-ES_password = env.get('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
-ES_url = env.get('ES_URL', 'http://localhost:9200')
-ENDPOINT_url = env.get('ePEM_URL', 'http://localhost:8090')
-ES_index = env.get('ES_INDEX', 'pcap_data')
-INTERVAL = int(env.get('INTERVAL', 120))
+ES_username = os.getenv('ES_USERNAME', 'elastic')
+ES_password = os.getenv('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
+ES_url = os.getenv('ES_URL', 'http://localhost:9200')
+ENDPOINT_url = os.getenv('ePEM_URL', 'http://localhost:8090')
+ES_index = os.getenv('ES_INDEX', 'pcap_data')
+INTERVAL = int(os.getenv('INTERVAL', 120))
 
 # Class definition
 class ElasticQuery:
@@ -56,7 +53,7 @@ class ElasticQuery:
         
         # Get time reference - either from environment or current time
         try:
-            last_data_time = env.get('ES_DATA_END_TIME')
+            last_data_time = os.getenv('ES_DATA_END_TIME')
             now = datetime.fromisoformat(last_data_time) if last_data_time else datetime.now()
         except ValueError:
             logging.warning("Invalid ES_DATA_END_TIME format in .env, using current time")
@@ -76,8 +73,10 @@ class ElasticQuery:
                 qry = self.query
 
             logging.info("=========================== Executing query ===========================")
-            # logging.info("Query: %s", json.dumps(qry, indent=2))
-            # logging.info("URL: %s", url)
+            logging.info("Password: %s", self.password)
+            logging.info("Username: %s", self.username)
+            logging.info("Query: %s", json.dumps(qry, indent=2))
+            logging.info("URL: %s", url)
 
             response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
 
