@@ -73,9 +73,6 @@ class ElasticQuery:
                 qry = self.query
 
             logging.info("=========================== Executing query ===========================")
-            logging.info("Password: %s", self.password)
-            logging.info("Username: %s", self.username)
-            logging.info("Query: %s", json.dumps(qry, indent=2))
             logging.info("URL: %s", url)
 
             response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
