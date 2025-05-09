@@ -50,67 +50,89 @@ class ElasticQuery:
 
     def run_query(self):
         url = f"{self.es_url}/{self.index}/{self.query_type}"
-        
-        # Get time reference - either from environment or current time
+
+        last_data_time = os.getenv('ES_DATA_END_TIME')
         try:
-            last_data_time = os.getenv('ES_DATA_END_TIME')
-            now = datetime.fromisoformat(last_data_time) if last_data_time else datetime.now()
-        except ValueError:
-            logging.warning("Invalid ES_DATA_END_TIME format in .env, using current time")
+            if last_data_time:
+                # Convert 'Z' to '+00:00' for ISO compliance
+                last_data_time = last_data_time.replace('Z', '+00:00')
+                now = datetime.fromisoformat(last_data_time)
+            else:
+                now = datetime.now()
+        except ValueError as e:
+            logging.warning("Invalid ES_DATA_END_TIME format ('%s'): %s. Using current time.", last_data_time, str(e))
             now = datetime.now()
-            
+
         self.previous_last_run = now - self.interval
         self.last_run = now
-        
-        # Use the latest time window for the query
-        self.query = self.set_latest_time_window(self.query)
-        
+
         try:
             # Convert query string to dictionary if necessary
             if isinstance(self.query, str):
-                qry = json.loads(self.query.replace("'", '"'))
-            else:
-                qry = self.query
+                self.query = json.loads(self.query.replace("'", '"'))
+
+            # Set the latest time window
+            self.query = self.set_latest_time_window(self.query)
 
             logging.info("=========================== Executing query ===========================")
             logging.info("URL: %s", url)
 
-            response = requests.post(url, data=json.dumps(qry), headers=self.headers, auth=(self.username, self.password))
+            response = requests.post(url, data=json.dumps(self.query), headers=self.headers, auth=(self.username, self.password))
 
             if response.status_code == 200:
                 logging.info("=========Query executed successfully=========")
                 results = response.json()
-                dns_count = results['aggregations']['dns_packets']['doc_count']
-                ntp_count = results['aggregations']['ntp_packets']['doc_count']
-                
-                logging.info("From time: %s", self.previous_last_run)
-                logging.info("To time: %s", self.last_run)
-                logging.info("DNS count: %s", dns_count)
-                logging.info("NTP count: %s", ntp_count)
-                logging.info("=============================================================")
-                
-                return results
-            else:
-                logging.error("Failed to execute query with status code %s", response.status_code)
-                logging.error("Response: %s", response.text)
-                return None
+
+                if isinstance(results, dict) and 'aggregations' in results:
+                    # Get IP request counts
+                    requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
+
+                    logging.info("From time: %s", self.previous_last_run)
+                    logging.info("To time: %s", self.last_run)
+                    logging.info("Requests per IP:")
+
+                    for bucket in requests_per_ip:
+                        ip = bucket.get('key')
+                        count = bucket.get('doc_count')
+                        logging.info("IP: %s - Count: %d", ip, count)
+
+                    logging.info("=============================================================")
+
+                    return results
+                else:
+                    logging.error("Unexpected response format: %s", results)
+                    return None
+
+        except json.JSONDecodeError as jde:
+            logging.error("JSON decode error in query: %s", str(jde), exc_info=True)
+            return None
         except Exception as e:
-            logging.error(f"=========Failed to execute query========= {str(e)}")
+            logging.error(f"=========Failed to execute query========= {str(e)}", exc_info=True)
             return None
 
+
     def set_latest_time_window(self, query):
-        """Set the query time window to fetch the latest data based on the interval"""
-        window_end = self.last_run.isoformat() + 'Z'
-        window_start = self.previous_last_run.isoformat() + 'Z'
-        
-        # Update the query object with the new timestamps
-        for clause in query['query']['bool']['must']:
-            if 'range' in clause and 'layers.frame.frame_frame_time' in clause['range']:
-                clause['range']['layers.frame.frame_frame_time']['gte'] = window_start
-                clause['range']['layers.frame.frame_frame_time']['lt'] = window_end
-                
-        logging.info(f"Query time window set to: {window_start} - {window_end}")
-        return query
+        try:
+            if "query" in query:
+                if "bool" in query["query"] and "must" in query["query"]["bool"]:
+                    for clause in query["query"]["bool"]["must"]:
+                        if "range" in clause and "@timestamp" in clause["range"]:
+                            clause["range"]["@timestamp"]["gte"] = self.previous_last_run.isoformat()
+                            clause["range"]["@timestamp"]["lte"] = self.last_run.isoformat()
+                elif "range" in query["query"] and "@timestamp" in query["query"]["range"]:
+                    # Direct range query
+                    query["query"]["range"]["@timestamp"]["gte"] = self.previous_last_run.isoformat()
+                    query["query"]["range"]["@timestamp"]["lte"] = self.last_run.isoformat()
+                else:
+                    logging.warning("No recognizable time range found in query.")
+            else:
+                logging.warning("Query does not contain a 'query' field.")
+            return query
+        except Exception as e:
+            logging.error("Failed to set time window in query: %s", str(e))
+            return query
+
+
 
     def post_results(self, results):
         #if results are available print them and then post them, else print a message    
