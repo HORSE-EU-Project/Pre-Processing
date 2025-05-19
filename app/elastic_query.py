@@ -136,13 +136,11 @@ class ElasticQuery:
 
     def post_results(self, results):
         #if results are available print them and then post them, else print a message    
-        if results:
-            
-            if self.endpoint == 'http://192.168.130.110:8090/estimate':
-                results = self.DEME_transformation(results)
-                print(results)
+        if results:   
             try:
-                
+                logging.info("Transforming results for DEME API...")
+                results = self.HOLO_transformation(results)
+                logging.info(results)
                 response = requests.post(self.endpoint, json=results, headers=self.headers)
                 if response.status_code == 200:
                     logging.info("Results successfully posted.")
@@ -186,6 +184,55 @@ class ElasticQuery:
         ]
         
         return transformed_results
+    
+    def HOLO_transformation(self, results, timestamp=None):
+        """
+        Transforms Elasticsearch aggregation results to the specified custom format.
+
+        Args:
+            results (dict): Parsed JSON from Elasticsearch response.
+            timestamp (str or int, optional): Unix timestamp to use; if None, current time is used.
+
+        Returns:
+            list: A list containing a single dictionary with transformed data.
+        """
+        if not isinstance(results, dict) or 'aggregations' not in results:
+            raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
+
+        requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
+        
+        try:
+            if timestamp is None:
+                timestamp = str(int(time.time()))  # current UNIX timestamp as string
+            elif isinstance(timestamp, datetime):
+                timestamp = str(int(timestamp.timestamp()))
+            else:
+                timestamp = str(timestamp)
+            
+            instances = []
+            for bucket in requests_per_ip:
+                ip = bucket.get('key')
+                count = bucket.get('doc_count')
+
+                instances.append({
+                    "instance": ip,
+                    "features": [
+                        {
+                            "feature": "NEF",
+                            "value": count
+                        }
+                    ]
+                })
+
+            return [
+                {
+                    "timestamp": timestamp,
+                    "instances": instances
+                }
+            ]
+        except Exception as e:
+            logging.error("Error transforming results: %s", str(e))
+            raise
 
 
 # Example usage
