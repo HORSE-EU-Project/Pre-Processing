@@ -145,57 +145,37 @@ class ElasticQuery:
                 transformed_results = self.HOLO_transformation(results)
                 
                 # Use a dummy payload instead
-                transformed_results = [
-                    {
-                        "timestamp": "1705240560",
-                        "instances": [
-                            {
-                                "instance": "node1:Genoa RtA",
-                                "features": [
-                                    {
-                                        "feature": "NEF",
-                                        "value": 34.0
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                # transformed_results = [{"timestamp":"1705240560","instances":[
+                #     {"instance":"172.19.2.30","features":[{"feature":"NEF","value":34}]},
+                #     {"instance":"172.19.2.31","features":[{"feature":"NEF","value":35}]},
+                #     {"instance":"172.19.2.32","features":[{"feature":"NEF","value":32}]},
+                #     {"instance":"172.19.2.33","features":[{"feature":"NEF","value":34}]},
+                #     {"instance":"172.19.2.34","features":[{"feature":"NEF","value":33}]},
+                #     {"instance":"172.19.2.35","features":[{"feature":"NEF","value":33}]},
+                #     {"instance":"172.19.2.36","features":[{"feature":"NEF","value":33}]},
+                #     {"instance":"172.19.2.37","features":[{"feature":"NEF","value":35}]},
+                #     {"instance":"172.19.2.38","features":[{"feature":"NEF","value":34}]}]}]
                 
                 
                 # Print the exact message to be sent
                 logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results, indent=2))
-
+                
+                # Post to Elasticsearch analytics index
+                self.post_to_analytics_index(transformed_results)
+                
                 # Use AFTER_PRE-PROCESSING_URL from .env if available
                 self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
                 
                 logging.info("Posting results to DEME API at %s", self.endpoint)
                 # Post to DEME API
+                #response  = None
                 response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
                 if response.status_code == 200:
                     logging.info("Results successfully posted to DEME API.")
                 else:
                     logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
 
-                # Post to Elasticsearch analytics index
-                analytics_index = os.getenv('ES_ANALYTICS_INDEX', 'analytics_index')
-                es_url = os.getenv('ES_URL', 'http://localhost:9200')
-                es_username = os.getenv('ES_USERNAME', 'elastic')
-                es_password = os.getenv('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
-
-                es_analytics_url = f"{es_url}/{analytics_index}/_doc"
-                # Post each result as a separate document
-                for doc in transformed_results:
-                    es_response = requests.post(
-                        es_analytics_url,
-                        json=doc,
-                        headers=self.headers,
-                        auth=(es_username, es_password)
-                    )
-                    if es_response.status_code in (200, 201):
-                        logging.info("Result successfully posted to ES analytics index.")
-                    else:
-                        logging.warning("Failed to post result to ES analytics index: HTTP %s, %s", es_response.status_code, es_response.text)
+                
 
                 return response.status_code
             except Exception as e:
@@ -203,6 +183,28 @@ class ElasticQuery:
                 return None
         else:
             logging.info("No results available to post.")
+
+    def post_to_analytics_index(self, docs):
+        """
+        Posts a list of documents to the Elasticsearch analytics index as separate documents.
+        """
+        analytics_index = os.getenv('ES_ANALYTICS_INDEX', 'analytics_index')
+        # self.es_url = os.getenv('ES_URL', 'http://localhost:9200')
+        # self.username = os.getenv('ES_USERNAME', 'elastic')
+        # self.password = os.getenv('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
+
+        es_analytics_url = f"{self.es_url}/{analytics_index}/_doc"
+        for doc in docs:
+            es_response = requests.post(
+                es_analytics_url,
+                json=doc,
+                headers=self.headers,
+                auth=(self.username, self.password)
+            )
+            if es_response.status_code in (200, 201):
+                logging.info("Result successfully posted to ES analytics index.")
+            else:
+                logging.warning("Failed to post result to ES analytics index: HTTP %s, %s", es_response.status_code, es_response.text)
 
     def DEME_transformation(self, results):
         # Extract counts from the results
