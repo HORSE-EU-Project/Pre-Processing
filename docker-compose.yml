@@ -10,7 +10,7 @@ services:
       - ES_DATA_START_TIME=${ES_DATA_START_TIME}
       - ES_DATA_END_TIME=${ES_DATA_END_TIME}
       - ES_URL=${ES_URL}
-      - AFTER_PRE-PROCESSING_URL=${AFTER_PRE-PROCESSING_URL}
+      - AFTER_PRE_PROCESSING_URL=${AFTER_PRE_PROCESSING_URL}
     ports:
       - "5001:5000"
     restart: always

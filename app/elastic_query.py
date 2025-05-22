@@ -4,6 +4,8 @@ import logging
 from datetime import datetime, timedelta
 import time
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -135,17 +137,66 @@ class ElasticQuery:
 
 
     def post_results(self, results):
-        #if results are available print them and then post them, else print a message    
+        # If results are available, print them and then post them, else print a message    
         if results:   
             try:
                 logging.info("Transforming results for DEME API...")
-                results = self.HOLO_transformation(results)
-                logging.info(results)
-                response = requests.post(self.endpoint, json=results, headers=self.headers)
+
+                transformed_results = self.HOLO_transformation(results)
+                
+                # Use a dummy payload instead
+                transformed_results = [
+                    {
+                        "timestamp": "1705240560",
+                        "instances": [
+                            {
+                                "instance": "node1:Genoa RtA",
+                                "features": [
+                                    {
+                                        "feature": "NEF",
+                                        "value": 34.0
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+                
+                
+                # Print the exact message to be sent
+                logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results, indent=2))
+
+                # Use AFTER_PRE-PROCESSING_URL from .env if available
+                self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
+                
+                logging.info("Posting results to DEME API at %s", self.endpoint)
+                # Post to DEME API
+                response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
                 if response.status_code == 200:
-                    logging.info("Results successfully posted.")
+                    logging.info("Results successfully posted to DEME API.")
                 else:
-                    logging.warning("Failed to post results: HTTP %s", response.status_code)
+                    logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
+
+                # Post to Elasticsearch analytics index
+                analytics_index = os.getenv('ES_ANALYTICS_INDEX', 'analytics_index')
+                es_url = os.getenv('ES_URL', 'http://localhost:9200')
+                es_username = os.getenv('ES_USERNAME', 'elastic')
+                es_password = os.getenv('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
+
+                es_analytics_url = f"{es_url}/{analytics_index}/_doc"
+                # Post each result as a separate document
+                for doc in transformed_results:
+                    es_response = requests.post(
+                        es_analytics_url,
+                        json=doc,
+                        headers=self.headers,
+                        auth=(es_username, es_password)
+                    )
+                    if es_response.status_code in (200, 201):
+                        logging.info("Result successfully posted to ES analytics index.")
+                    else:
+                        logging.warning("Failed to post result to ES analytics index: HTTP %s, %s", es_response.status_code, es_response.text)
+
                 return response.status_code
             except Exception as e:
                 logging.error("=========Error posting results=========")
@@ -246,4 +297,3 @@ if __name__ == "__main__":
     
     response = requests.post(endpoint, json=results, headers=headers)
     print(response.status_code)
-    
