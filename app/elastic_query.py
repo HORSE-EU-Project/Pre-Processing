@@ -160,12 +160,12 @@ class ElasticQuery:
                 #===================================================
                 # Post the transformed results to the DEME API
                 #===================================================
-                # response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
+                response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
                 
-                # if response.status_code == 200:
-                #     logging.info("Results successfully posted to DEME API.")
-                # else:
-                #     logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
+                if response.status_code == 200:
+                    logging.info("Results successfully posted to DEME API.")
+                else:
+                    logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
 
                 
 
