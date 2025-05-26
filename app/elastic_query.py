@@ -142,23 +142,10 @@ class ElasticQuery:
             try:
                 logging.info("Transforming results for DEME API...")
 
-                transformed_results = self.HOLO_transformation(results)
-                
-                # Use a dummy payload instead
-                # transformed_results = [{"timestamp":"1705240560","instances":[
-                #     {"instance":"172.19.2.30","features":[{"feature":"NEF","value":34}]},
-                #     {"instance":"172.19.2.31","features":[{"feature":"NEF","value":35}]},
-                #     {"instance":"172.19.2.32","features":[{"feature":"NEF","value":32}]},
-                #     {"instance":"172.19.2.33","features":[{"feature":"NEF","value":34}]},
-                #     {"instance":"172.19.2.34","features":[{"feature":"NEF","value":33}]},
-                #     {"instance":"172.19.2.35","features":[{"feature":"NEF","value":33}]},
-                #     {"instance":"172.19.2.36","features":[{"feature":"NEF","value":33}]},
-                #     {"instance":"172.19.2.37","features":[{"feature":"NEF","value":35}]},
-                #     {"instance":"172.19.2.38","features":[{"feature":"NEF","value":34}]}]}]
-                
+                transformed_results = self.HOLO_transformation(results)               
                 
                 # Print the exact message to be sent
-                logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results, indent=2))
+                logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
                 
                 # Post to Elasticsearch analytics index
                 self.post_to_analytics_index(transformed_results)
@@ -169,11 +156,16 @@ class ElasticQuery:
                 logging.info("Posting results to DEME API at %s", self.endpoint)
                 # Post to DEME API
                 #response  = None
-                response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
-                if response.status_code == 200:
-                    logging.info("Results successfully posted to DEME API.")
-                else:
-                    logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
+                
+                #===================================================
+                # Post the transformed results to the DEME API
+                #===================================================
+                # response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
+                
+                # if response.status_code == 200:
+                #     logging.info("Results successfully posted to DEME API.")
+                # else:
+                #     logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
 
                 
 
@@ -189,9 +181,6 @@ class ElasticQuery:
         Posts a list of documents to the Elasticsearch analytics index as separate documents.
         """
         analytics_index = os.getenv('ES_ANALYTICS_INDEX', 'analytics_index')
-        # self.es_url = os.getenv('ES_URL', 'http://localhost:9200')
-        # self.username = os.getenv('ES_USERNAME', 'elastic')
-        # self.password = os.getenv('ES_PASSWORD', 'HoR$e2024!eLk@sPh#ynX')
 
         es_analytics_url = f"{self.es_url}/{analytics_index}/_doc"
         for doc in docs:
@@ -213,6 +202,7 @@ class ElasticQuery:
         
         # Convert the last_run datetime to a Unix timestamp (seconds since the epoch)
         timestamp_unix = int(time.mktime(self.last_run.timetuple()))
+        
         
         # Transform the results to the DEME API format
         transformed_results = [
@@ -239,21 +229,39 @@ class ElasticQuery:
         return transformed_results
     
     def HOLO_transformation(self, results, timestamp=None):
-        """
-        Transforms Elasticsearch aggregation results to the specified custom format.
-
-        Args:
-            results (dict): Parsed JSON from Elasticsearch response.
-            timestamp (str or int, optional): Unix timestamp to use; if None, current time is used.
-
-        Returns:
-            list: A list containing a single dictionary with transformed data.
-        """
         if not isinstance(results, dict) or 'aggregations' not in results:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
 
+        # Dummy payload template
+        transformed_results = [{
+            "timestamp": "1705240560",
+            "instances": [
+                {"instance": "172.19.2.30", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.31", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.32", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.33", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.34", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.35", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.36", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.37", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "172.19.2.38", "features": [{"feature": "NEF", "value": 0}]}
+            ]
+        }]
+
         requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
-        
+
+        # Build a mapping from IP to doc_count
+        ip_counts = {bucket.get('key'): bucket.get('doc_count') for bucket in requests_per_ip}
+
+        # Overwrite the "value" feature if the IP matches
+        for instance in transformed_results[0]["instances"]:
+            ip = instance["instance"]
+            if ip in ip_counts:
+                for feature in instance["features"]:
+                    if feature["feature"] == "NEF":
+                        feature["value"] = ip_counts[ip]
+
+        # Set timestamp if provided
         try:
             if timestamp is None:
                 timestamp = str(int(time.time()))  # current UNIX timestamp as string
@@ -261,28 +269,8 @@ class ElasticQuery:
                 timestamp = str(int(timestamp.timestamp()))
             else:
                 timestamp = str(timestamp)
-            
-            instances = []
-            for bucket in requests_per_ip:
-                ip = bucket.get('key')
-                count = bucket.get('doc_count')
-
-                instances.append({
-                    "instance": ip,
-                    "features": [
-                        {
-                            "feature": "NEF",
-                            "value": count
-                        }
-                    ]
-                })
-
-            return [
-                {
-                    "timestamp": timestamp,
-                    "instances": instances
-                }
-            ]
+            transformed_results[0]["timestamp"] = timestamp
+            return transformed_results
         except Exception as e:
             logging.error("Error transforming results: %s", str(e))
             raise

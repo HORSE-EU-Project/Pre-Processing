@@ -32,6 +32,7 @@ def main():
     logging.info(f"Starting main loop with polling interval of {POLLING_INTERVAL} seconds")
     
     while True:
+        loop_start = time.time()
         logging.info("Polling for new data...")
         
         for query in queries.ES_queries:
@@ -56,8 +57,10 @@ def main():
                     logging.error(f"An unexpected error occurred: {e}")
         
         # Sleep until next polling interval
-        logging.info(f"Sleeping for {POLLING_INTERVAL} seconds before next poll")
-        time.sleep(POLLING_INTERVAL)
+        elapsed = time.time() - loop_start
+        sleep_time = max(0, POLLING_INTERVAL - elapsed)
+        logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
+        time.sleep(sleep_time)
 
 
 if __name__ == "__main__":
