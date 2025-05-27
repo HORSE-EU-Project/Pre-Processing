@@ -236,15 +236,15 @@ class ElasticQuery:
         transformed_results = [{
             "timestamp": "1705240560",
             "instances": [
-                {"instance": "172.19.2.30", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.31", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.32", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.33", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.34", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.35", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.36", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.37", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "172.19.2.38", "features": [{"feature": "NEF", "value": 0}]}
+                {"instance": "192.168.130.47", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.103", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.27", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.93", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.133", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.68", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.6", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.96", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "192.168.130.132", "features": [{"feature": "NEF", "value": 0}]}
             ]
         }]
 
