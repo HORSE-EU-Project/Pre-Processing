@@ -136,13 +136,13 @@ class ElasticQuery:
 
 
 
-    def post_results(self, results):
+    def post_results(self, results, row=0):
         # If results are available, print them and then post them, else print a message    
         if results:   
             try:
                 logging.info("Transforming results for DEME API...")
 
-                transformed_results = self.HOLO_transformation(results)               
+                transformed_results = self.HOLO_transformation(results, row=row)               
                 
                 # Print the exact message to be sent
                 logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
@@ -228,7 +228,7 @@ class ElasticQuery:
         
         return transformed_results
     
-    def HOLO_transformation(self, results, timestamp=None):
+    def HOLO_transformation(self, results, row = 0, timestamp=None):
         if not isinstance(results, dict) or 'aggregations' not in results:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
 
@@ -264,21 +264,29 @@ class ElasticQuery:
         # 39,35,34,34,35,34,34,35,35
         # 36,35,34,34,35,36,34,35,37
         # 35,35,34,34,34,34,35,36,37
+        static_ip_values = [
+            [34, 35, 32, 34, 33, 33, 33, 35, 34],
+            [34, 35, 34, 33, 33, 33, 33, 34, 35],
+            [33, 35, 33, 34, 35, 33, 35, 35, 35],
+            [35, 36, 34, 33, 34, 34, 33, 33, 35],
+            [38, 36, 34, 34, 32, 34, 34, 35, 36],
+            [46, 35, 34, 33, 35, 34, 34, 37, 33],
+            [62, 34, 34, 33, 34, 35, 34, 35, 35],
+            [76, 35, 35, 35, 34, 33, 34, 35, 35],
+            [80, 35, 34,35 ,35 ,34 ,34 ,35 ,36],
+            [77 ,33 ,34 ,33 ,34 ,35 ,34 ,36 ,35],
+            [61 ,34 ,35 ,35 ,35 ,35 ,35 ,35 ,36],
+            [49 ,35 ,35 ,34 ,34 ,34 ,34 ,35 ,36],
+            [39 ,35 ,34 ,34 ,35 ,34 ,34 ,35 ,35],
+            [36 ,35 ,34 ,34 ,35 ,36 ,34 ,35 ,37],
+            [35 ,35 ,34 ,34 ,34 ,34 ,35 ,36 ,37]
+        ]
         
+        # Fill the transformed results with static values depending on row value
+        for i, instance in enumerate(transformed_results[0]["instances"]):
+            if row < len(static_ip_values) and i < len(static_ip_values[row]):
+                instance["features"][0]["value"] = static_ip_values[row][i]
         
-
-        requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
-
-        # Build a mapping from IP to doc_count
-        ip_counts = {bucket.get('key'): bucket.get('doc_count') for bucket in requests_per_ip}
-
-        # Overwrite the "value" feature if the IP matches
-        for instance in transformed_results[0]["instances"]:
-            ip = instance["instance"]
-            if ip in ip_counts:
-                for feature in instance["features"]:
-                    if feature["feature"] == "NEF":
-                        feature["value"] = ip_counts[ip]
 
         # Set timestamp if provided
         try:

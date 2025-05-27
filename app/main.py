@@ -31,6 +31,9 @@ def main():
     # Main loop - poll at regular intervals
     logging.info(f"Starting main loop with polling interval of {POLLING_INTERVAL} seconds")
     
+    # Counter for static values
+    static_counter = 0
+    
     while True:
         loop_start = time.time()
         logging.info("Polling for new data...")
@@ -40,7 +43,7 @@ def main():
                 try:
                     logging.info(f"Running query for subscription: {query.subscription_id}")
                     results = query.run_query()
-                    status_code = query.post_results(results)  
+                    status_code = query.post_results(results, row = static_counter)  
                     
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
@@ -56,6 +59,8 @@ def main():
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
         
+        static_counter += 1
+        static_counter %= 15
         # Sleep until next polling interval
         elapsed = time.time() - loop_start
         sleep_time = max(0, POLLING_INTERVAL - elapsed)
