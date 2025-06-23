@@ -87,17 +87,15 @@ class ElasticQuery:
 
                 if isinstance(results, dict) and 'aggregations' in results:
                     # Get IP request counts
-                    requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
-
+                    logging.info("=========Query executed successfully=========")
+                    results = response.json()
+                    dns_count = results['aggregations']['dns_packets']['doc_count']
+                    ntp_count = results['aggregations']['ntp_packets']['doc_count']
+                    
                     logging.info("From time: %s", self.previous_last_run)
                     logging.info("To time: %s", self.last_run)
-                    logging.info("Requests per IP:")
-
-                    for bucket in requests_per_ip:
-                        ip = bucket.get('key')
-                        count = bucket.get('doc_count')
-                        logging.info("IP: %s - Count: %d", ip, count)
-
+                    logging.info("DNS count: %s", dns_count)
+                    logging.info("NTP count: %s", ntp_count)
                     logging.info("=============================================================")
 
                     return results
@@ -142,7 +140,7 @@ class ElasticQuery:
             try:
                 logging.info("Transforming results for DEME API...")
 
-                transformed_results = self.HOLO_transformation(results, row=row)               
+                transformed_results = self.DEME_transformation(results, row=row)               
                 
                 # Print the exact message to be sent
                 logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
