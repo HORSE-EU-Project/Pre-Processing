@@ -68,7 +68,7 @@ def main():
                     logging.error(f"An unexpected error occurred: {e}")
         
         static_counter += 1
-        static_counter %= 14
+        static_counter %= 14 # Len of the static snapshots
         # Sleep until next polling interval
         elapsed = time.time() - loop_start
         sleep_time = max(0, POLLING_INTERVAL - elapsed)
