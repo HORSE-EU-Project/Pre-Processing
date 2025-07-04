@@ -12,6 +12,7 @@ services:
       - ES_URL=${ES_URL}
       - POLLING_INTERVAL=${POLLING_INTERVAL}
       - AFTER_PRE_PROCESSING_URL=${AFTER_PRE_PROCESSING_URL}
+      - LIVE_DATA=${LIVE_DATA}
     ports:
       - "5001:5000"
     restart: always

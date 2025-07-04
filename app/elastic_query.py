@@ -18,6 +18,27 @@ ENDPOINT_url = os.getenv('ePEM_URL', 'http://localhost:8090')
 ES_index = os.getenv('ES_INDEX', 'pcap_data')
 INTERVAL = int(os.getenv('INTERVAL', 120))
 
+
+# Predefined snapshots of NTP and DNS counts
+SNAPSHOTS = [
+    (34, 3060),
+    (34, 2970),
+    (33, 2970),
+    (35, 2970),
+    (38, 3150),
+    (47, 2970),
+    (62, 2970),
+    (75, 3150),
+    (80, 3060),
+    (77, 2970),
+    (61, 3150),
+    (49, 3060),
+    (39, 2970),
+    (35, 3060)
+]
+
+
+
 # Class definition
 class ElasticQuery:
     def __init__(self, subscription_id, user_id, subscription_type='ES', DB_url=ES_url, index=ES_index, 
@@ -134,45 +155,57 @@ class ElasticQuery:
 
 
 
-    def post_results(self, results, row=0):
+    def post_results(self, results, live_data=False, row=-1):
         # If results are available, print them and then post them, else print a message    
-        if results:   
-            try:
-                logging.info("Transforming results for DEME API...")
-
-                transformed_results = self.DEME_transformation(results, row=row)               
-                
-                # Print the exact message to be sent
-                logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
-                
-                # Post to Elasticsearch analytics index
-                self.post_to_analytics_index(transformed_results)
-                
-                # Use AFTER_PRE-PROCESSING_URL from .env if available
-                self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
-                
-                logging.info("Posting results to DEME API at %s", self.endpoint)
-                # Post to DEME API
-                #response  = None
-                
-                #===================================================
-                # Post the transformed results to the DEME API
-                #===================================================
-                response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
-                
-                if response.status_code == 200:
-                    logging.info("Results successfully posted to DEME API.")
-                else:
-                    logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
-
-                
-
-                return response.status_code
-            except Exception as e:
-                logging.error("=========Error posting results=========")
-                return None
+        if results and live_data:
+            logging.info("Transforming results for DEME API...")
+            transformed_results = self.DEME_transformation(results)   
+        elif not live_data and row >= 0 and row < len(SNAPSHOTS):
+            logging.info("No results available to post.")
+            ntp_count, dns_count = SNAPSHOTS[row]
+            
+            # Create mock results
+            results = {
+                'aggregations': {
+                    'dns_packets': {'doc_count': dns_count},
+                    'ntp_packets': {'doc_count': ntp_count}
+                }
+            }
+            transformed_results = self.DEME_transformation(results)
         else:
             logging.info("No results available to post.")
+                
+        try:    
+            # Print the exact message to be sent
+            logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
+            
+            # Post to Elasticsearch analytics index
+            self.post_to_analytics_index(transformed_results)
+            
+            # Use AFTER_PRE-PROCESSING_URL from .env if available
+            self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
+            
+            logging.info("Posting results to DEME API at %s", self.endpoint)
+            # Post to DEME API
+            #response  = None
+            
+            #===================================================
+            # Post the transformed results to the DEME API
+            #===================================================
+            response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
+            
+            if response.status_code == 200:
+                logging.info("Results successfully posted to DEME API.")
+            else:
+                logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
+
+            
+
+            return response.status_code
+        except Exception as e:
+            logging.error("=========Error posting results=========")
+            return None
+        
 
     def post_to_analytics_index(self, docs):
         """

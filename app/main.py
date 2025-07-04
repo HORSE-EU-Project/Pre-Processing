@@ -31,8 +31,16 @@ def main():
     # Main loop - poll at regular intervals
     logging.info(f"Starting main loop with polling interval of {POLLING_INTERVAL} seconds")
     
-    # Counter for static values
-    static_counter = 0
+    #Read environment variable for live data
+    live_data = os.getenv('LIVE_DATA', 'true').lower() == 'true'
+    
+    if live_data:
+        logging.info("Running in live data mode.")
+        static_counter = None
+    else:
+        logging.info("Running in non-live data mode. Static values will be used.")
+        # Set the static values for testing
+        static_counter = 0
     
     while True:
         loop_start = time.time()
@@ -43,7 +51,7 @@ def main():
                 try:
                     logging.info(f"Running query for subscription: {query.subscription_id}")
                     results = query.run_query()
-                    status_code = query.post_results(results, row = static_counter)  
+                    status_code = query.post_results(results, live_data = live_data, row = static_counter)  
                     
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
@@ -60,7 +68,7 @@ def main():
                     logging.error(f"An unexpected error occurred: {e}")
         
         static_counter += 1
-        static_counter %= 15
+        static_counter %= 14
         # Sleep until next polling interval
         elapsed = time.time() - loop_start
         sleep_time = max(0, POLLING_INTERVAL - elapsed)
