@@ -229,11 +229,11 @@ class ElasticQuery:
     def DEME_transformation(self, results):
         # Extract counts from the results
         dns_count = results['aggregations']['dns_packets']['doc_count']
-        ntp_count = results['aggregations']['ntp_packets']['doc_count']
+        
+        # ntp_count = results['aggregations']['ntp_packets']['doc_count']  # Commented out
         
         # Convert the last_run datetime to a Unix timestamp (seconds since the epoch)
         timestamp_unix = int(time.mktime(self.last_run.timetuple()))
-        
         
         # Transform the results to the DEME API format
         transformed_results = [
@@ -241,22 +241,18 @@ class ElasticQuery:
                 "timestamp": str(timestamp_unix),
                 "instances": [
                     {
-                        "instance": "node1:Genoa RtA",
+                        "instance": "Athens",
                         "features": [
-                            {
-                                "feature": "NTP",
-                                "value": ntp_count
-                            },
                             {
                                 "feature": "DNS",
                                 "value": dns_count
                             }
+                            # Removed NTP feature from here
                         ]
                     }
                 ]
             }
         ]
-        
         return transformed_results
     
     def HOLO_transformation(self, results, row = 0, timestamp=None):
