@@ -176,30 +176,24 @@ class ElasticQuery:
             logging.info("No results available to post.")
                 
         try:    
-            # Print the exact message to be sent
-            logging.info("Message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results))
+            # Print the exact JSON message to be sent
+            logging.info("JSON message to AFTER_PRE_PROCESSING_URL: %s", json.dumps(transformed_results, indent=2))
             
             # Post to Elasticsearch analytics index
             self.post_to_analytics_index(transformed_results)
             
             # Use AFTER_PRE-PROCESSING_URL from .env if available
-            self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
+            self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8091/estimate')
             
             logging.info("Posting results to DEME API at %s", self.endpoint)
-            # Post to DEME API
-            #response  = None
             
-            #===================================================
             # Post the transformed results to the DEME API
-            #===================================================
             response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
             
             if response.status_code == 200:
                 logging.info("Results successfully posted to DEME API.")
             else:
                 logging.warning("Failed to post results to DEME API: HTTP %s", response.status_code)
-
-            
 
             return response.status_code
         except Exception as e:
