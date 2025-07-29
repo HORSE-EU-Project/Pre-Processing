@@ -183,7 +183,7 @@ class ElasticQuery:
             self.post_to_analytics_index(transformed_results)
             
             # Use AFTER_PRE-PROCESSING_URL from .env if available
-            self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8091/estimate')
+            self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://10.19.2.16:8091/estimate')
             
             logging.info("Posting results to DEME API at %s", self.endpoint)
             
