@@ -184,6 +184,7 @@ class ElasticQuery:
             
             # Use AFTER_PRE-PROCESSING_URL from .env if available
             self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://10.19.2.16:8091/estimate')
+            self.endpoint = 'http://10.19.2.16:8091/estimate'
             
             logging.info("Posting results to DEME API at %s", self.endpoint)
             # Print the exact JSON message to be sent
