@@ -227,9 +227,9 @@ class ElasticQuery:
 
     def DEME_transformation(self, results):
         # Extract counts from the results
-        dns_count = results['aggregations']['dns_packets']['doc_count']
+        #dns_count = results['aggregations']['dns_packets']['doc_count']
         
-        # ntp_count = results['aggregations']['ntp_packets']['doc_count']  # Commented out
+        ntp_count = results['aggregations']['ntp_packets']['doc_count']  # Commented out
         
         # Convert the last_run datetime to a Unix timestamp (seconds since the epoch)
         timestamp_unix = int(time.mktime(self.last_run.timetuple()))
@@ -240,13 +240,12 @@ class ElasticQuery:
                 "timestamp": str(timestamp_unix),
                 "instances": [
                     {
-                        "instance": "Athens",
+                        "instance": "172.22.1.1",
                         "features": [
                             {
-                                "feature": "DNS",
-                                "value": dns_count
+                                "feature": "NTP",
+                                "value": ntp_count
                             }
-                            # Removed NTP feature from here
                         ]
                     }
                 ]
