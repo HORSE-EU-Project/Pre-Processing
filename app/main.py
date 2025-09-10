@@ -77,7 +77,8 @@ def main():
         # Sleep until next polling interval
         elapsed = time.time() - loop_start
         sleep_time = max(0, POLLING_INTERVAL - elapsed)
-        logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
+        #logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
+        logging.info(f"Sleeping for before next poll")
         time.sleep(sleep_time)
 
 
