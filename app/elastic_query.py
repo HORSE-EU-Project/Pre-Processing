@@ -128,7 +128,7 @@ class ElasticQuery:
             logging.error("JSON decode error in query: %s", str(jde), exc_info=True)
             return None
         except Exception as e:
-            logging.error(f"=========Failed to execute query========= {str(e)}", exc_info=True)
+            logging.error(f"=========Failed to execute query========= {str(e)}")
             return None
 
 
@@ -161,7 +161,7 @@ class ElasticQuery:
             logging.info("Transforming results for DEME API...")
             transformed_results = self.DEME_transformation(results)   
         elif not live_data and row >= 0 and row < len(SNAPSHOTS):
-            logging.info("No results available to post.")
+            logging.info("Posting results for instance: %d", row)
             ntp_count, dns_count = SNAPSHOTS[row]
             
             # Create mock results

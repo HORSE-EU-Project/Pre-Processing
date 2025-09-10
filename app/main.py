@@ -51,6 +51,11 @@ def main():
                 try:
                     logging.info(f"Running query for subscription: {query.subscription_id}")
                     results = query.run_query()
+                    
+                    #if results is None then put an empty dict
+                    if results is None:
+                        results = {}
+                    
                     status_code = query.post_results(results, live_data = live_data, row = static_counter)  
                     
                     if status_code == 200:
