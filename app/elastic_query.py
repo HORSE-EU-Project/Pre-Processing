@@ -320,15 +320,15 @@ class ElasticQuery:
                 else:
                     logging.warning("No buckets found in 'requests_per_ip' aggregation. Using static values.")
                     # Fill the transformed results with static values depending on row value
-                    for i, instance in enumerate(transformed_results[0]["instances"]):
-                        if row < len(static_ip_values) and i < len(static_ip_values[row]):
-                            instance["features"][0]["value"] = static_ip_values[row][i]
+                    # for i, instance in enumerate(transformed_results[0]["instances"]):
+                    #     if row < len(static_ip_values) and i < len(static_ip_values[row]):
+                    #         instance["features"][0]["value"] = static_ip_values[row][i]
         except Exception as e:
             logging.error("Error processing 'requests_per_ip' aggregation: %s. Using static values.", str(e))
             # Fill the transformed results with static values depending on row value
-            for i, instance in enumerate(transformed_results[0]["instances"]):
-                if row < len(static_ip_values) and i < len(static_ip_values[row]):
-                    instance["features"][0]["value"] = static_ip_values[row][i]
+            # for i, instance in enumerate(transformed_results[0]["instances"]):
+            #     if row < len(static_ip_values) and i < len(static_ip_values[row]):
+            #         instance["features"][0]["value"] = static_ip_values[row][i]
         
 
         # Set timestamp if provided
