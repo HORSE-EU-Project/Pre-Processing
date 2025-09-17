@@ -103,27 +103,32 @@ class ElasticQuery:
             response = requests.post(url, data=json.dumps(self.query), headers=self.headers, auth=(self.username, self.password))
 
             if response.status_code == 200:
-                logging.info("=========Query executed successfully=========")
+                logging.info("=========Query executed=========")
                 results = response.json()
 
                 if isinstance(results, dict) and 'aggregations' in results:
                     # Get IP request counts
-                    logging.info("=========Query executed successfully=========")
-                    results = response.json()
-                    dns_count = results['aggregations']['dns_packets']['doc_count']
-                    ntp_count = results['aggregations']['ntp_packets']['doc_count']
+                    logging.info("=========Results are the following=========")
+                    #results = response.json()
+                    #dns_count = results['aggregations']['dns_packets']['doc_count']
+                    #ntp_count = results['aggregations']['ntp_packets']['doc_count']
+                    
+                    logging.info("Query results: %s", json.dumps(results, indent=2))
+                    
                     
                     logging.info("From time: %s", self.previous_last_run)
                     logging.info("To time: %s", self.last_run)
-                    logging.info("DNS count: %s", dns_count)
-                    logging.info("NTP count: %s", ntp_count)
+                    #logging.info("DNS count: %s", dns_count)
+                    #logging.info("NTP count: %s", ntp_count)
                     logging.info("=============================================================")
 
                     return results
                 else:
                     logging.error("Unexpected response format: %s", results)
                     return None
-
+            else:
+                logging.error("Failed to execute query: HTTP %s, %s", response.status_code, response.text)
+                return None
         except json.JSONDecodeError as jde:
             logging.error("JSON decode error in query: %s", str(jde), exc_info=True)
             return None
@@ -155,11 +160,14 @@ class ElasticQuery:
 
 
 
-    def post_results(self, results, live_data=False, row=-1):
+    def post_results(self, results, live_data=False, row=-1, transformation_type='DEME'):
         # If results are available, print them and then post them, else print a message    
         if results and live_data:
             logging.info("Transforming results for DEME API...")
-            transformed_results = self.DEME_transformation(results)   
+            if transformation_type == 'HOLO':
+                transformed_results = self.HOLO_transformation(results)
+            else:
+                transformed_results = self.DEME_transformation(results)
         elif not live_data and row >= 0 and row < len(SNAPSHOTS):
             logging.info("Posting results for instance: %d", row)
             ntp_count, dns_count = SNAPSHOTS[row]
@@ -184,7 +192,6 @@ class ElasticQuery:
             
             # Use AFTER_PRE-PROCESSING_URL from .env if available
             self.endpoint = os.getenv('AFTER_PRE_PROCESSING_URL', 'http://192.168.130.110:8090/estimate')
-            self.endpoint = 'http://192.168.130.110:8090/estimate'
 
             logging.info("Posting results to DEME API at %s", self.endpoint)
             # Print the exact JSON message to be sent
@@ -274,21 +281,6 @@ class ElasticQuery:
         }]
         
         # The following is a sample of the expected output format:
-        # 34,35,32,34,33,33,33,35,34
-        # 34,35,34,33,33,33,33,34,35
-        # 33,35,33,34,35,33,35,35,35
-        # 35,36,34,33,34,34,33,33,35
-        # 38,36,34,34,32,34,34,35,36
-        # 46,35,34,33,35,34,34,37,33
-        # 62,34,34,33,34,35,34,35,35
-        # 76,35,35,35,34,33,34,35,35
-        # 80,35,34,35,35,34,34,35,36
-        # 77,33,34,33,34,35,34,36,35
-        # 61,34,35,35,35,35,35,35,36
-        # 49,35,35,34,34,34,34,35,36
-        # 39,35,34,34,35,34,34,35,35
-        # 36,35,34,34,35,36,34,35,37
-        # 35,35,34,34,34,34,35,36,37
         static_ip_values = [
             [34, 35, 32, 34, 33, 33, 33, 35, 34],
             [34, 35, 34, 33, 33, 33, 33, 34, 35],
@@ -307,10 +299,36 @@ class ElasticQuery:
             [35 ,35 ,34 ,34 ,34 ,34 ,35 ,36 ,37]
         ]
         
-        # Fill the transformed results with static values depending on row value
-        for i, instance in enumerate(transformed_results[0]["instances"]):
-            if row < len(static_ip_values) and i < len(static_ip_values[row]):
-                instance["features"][0]["value"] = static_ip_values[row][i]
+        #if results have values for the IP addresses then use them
+        #this is a case where results come from ES query are empty
+        # "aggregations": {
+        #     "requests_per_ip": {
+        #       "doc_count_error_upper_bound": 0,
+        #       "sum_other_doc_count": 0,
+        #       "buckets": []
+        #     }
+        #   }
+        try:
+            if 'requests_per_ip' in results['aggregations']:
+                buckets = results['aggregations']['requests_per_ip'].get('buckets', [])
+                if buckets:
+                    for i, instance in enumerate(transformed_results[0]["instances"]):
+                        if i < len(buckets):
+                            instance["features"][0]["value"] = buckets[i]['doc_count']
+                        else:
+                            instance["features"][0]["value"] = 0  # Default to 0 if no bucket available
+                else:
+                    logging.warning("No buckets found in 'requests_per_ip' aggregation. Using static values.")
+                    # Fill the transformed results with static values depending on row value
+                    for i, instance in enumerate(transformed_results[0]["instances"]):
+                        if row < len(static_ip_values) and i < len(static_ip_values[row]):
+                            instance["features"][0]["value"] = static_ip_values[row][i]
+        except Exception as e:
+            logging.error("Error processing 'requests_per_ip' aggregation: %s. Using static values.", str(e))
+            # Fill the transformed results with static values depending on row value
+            for i, instance in enumerate(transformed_results[0]["instances"]):
+                if row < len(static_ip_values) and i < len(static_ip_values[row]):
+                    instance["features"][0]["value"] = static_ip_values[row][i]
         
 
         # Set timestamp if provided

@@ -17,11 +17,18 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Load polling interval from environment or use default
 POLLING_INTERVAL = int(os.getenv('POLLING_INTERVAL', 10))  # in seconds
+
+CONFIG_PATH = os.getenv('CONFIG_FILE', './config.json')
+logging.info(f"Using configuration file: {CONFIG_PATH}")
+logging.info(f"Polling interval set to: {POLLING_INTERVAL} seconds")
+logging.info(f"Live data mode: {os.getenv('LIVE_DATA', 'true')}")
+logging.info(f"Transformation type: {os.getenv('TRANSFORMATION_TYPE', 'DEME')}")
+logging.info(f"========================================================")
   
 def main():
     try:       
         # Initialize the queries from config
-        queries = ES_queries('./config.json')
+        queries = ES_queries(CONFIG_PATH)
         logging.info("Configuration file read successfully.")
         
     except Exception as e:
@@ -34,13 +41,18 @@ def main():
     #Read environment variable for live data
     live_data = os.getenv('LIVE_DATA', 'true').lower() == 'true'
     
+    #transformation type
+    transformation_type = os.getenv('TRANSFORMATION_TYPE', 'DEME').upper()
+    if transformation_type not in ['DEME', 'HOLO']:
+        logging.warning(f"Invalid TRANSFORMATION_TYPE '{transformation_type}' specified. Defaulting to 'DEME'.")
+        transformation_type = 'DEME'
+    
     if live_data:
         logging.info("Running in live data mode.")
-        static_counter = None
     else:
-        logging.info("Running in non-live data mode. Static values will be used.")
+        logging.info("Running in n-live data mode. Static values will be used.")
         # Set the static values for testing
-        static_counter = 0
+    static_counter = 0
     
     while True:
         loop_start = time.time()
@@ -56,7 +68,7 @@ def main():
                     if results is None:
                         results = {}
                     
-                    status_code = query.post_results(results, live_data = live_data, row = static_counter)  
+                    status_code = query.post_results(results, live_data = live_data, row = static_counter, transformation_type=transformation_type)  
                     
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
