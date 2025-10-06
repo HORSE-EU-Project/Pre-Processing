@@ -19,6 +19,8 @@ ES_index = os.getenv('ES_INDEX', 'pcap_data')
 INTERVAL = int(os.getenv('INTERVAL', 120))
 
 
+
+
 # Predefined snapshots of NTP and DNS counts
 SNAPSHOTS = [
     (34, 3060),
@@ -166,6 +168,8 @@ class ElasticQuery:
             logging.info("Transforming results for DEME API...")
             if transformation_type == 'HOLO':
                 transformed_results = self.HOLO_transformation(results)
+            elif transformation_type == 'DEME_MULTIDOMAIN':
+                transformed_results = self.DEME_transformation_multidomain(results)
             else:
                 transformed_results = self.DEME_transformation(results)
         elif not live_data and row >= 0 and row < len(SNAPSHOTS):
@@ -259,6 +263,127 @@ class ElasticQuery:
             }
         ]
         return transformed_results
+    
+    
+    def DEME_transformation_multidomain(self, results):
+        """
+        Transform results into the HOLO payload format and return it (no HTTP calls).
+        - Uses static instance IPs (set once).
+        - Uses static DNS counter values (15 rows x 9 instances).
+        - If `results` contains 'requests_per_ip' aggregation with buckets, use those doc_count values.
+        - Otherwise use the static row selected by `row` (clamped to available rows).
+        - Timestamp: system time (or provided timestamp/datetime).
+        """
+        if not isinstance(results, dict) or 'aggregations' not in results:
+            raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
+
+        # Template with static instances (edit these IPs if you need)
+        transformed_results = [{
+            "timestamp": "0",
+            "instances": [
+                {"instance": "192.168.130.47", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.103", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.27", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.93", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.133", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.68", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.6", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.96", "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": "192.168.130.132", "features": [{"feature": "DNS", "value": 0}]}
+            ]
+        }]
+
+        # Static DNS counters (rows correspond to snapshots; 9 values per row)
+        static_ip_values = [
+            [34, 35, 32, 34, 33, 33, 33, 35, 34],
+            [34, 35, 34, 33, 33, 33, 33, 34, 35],
+            [33, 35, 33, 34, 35, 33, 35, 35, 35],
+            [35, 36, 34, 33, 34, 34, 33, 33, 35],
+            [38, 36, 34, 34, 32, 34, 34, 35, 36],
+            [46, 35, 34, 33, 35, 34, 34, 37, 33],
+            [62, 34, 34, 33, 34, 35, 34, 35, 35],
+            [76, 35, 35, 35, 34, 33, 34, 35, 35],
+            [80, 35, 34, 35, 35, 34, 34, 35, 36],
+            [77, 33, 34, 33, 34, 35, 34, 36, 35],
+            [61, 34, 35, 35, 35, 35, 35, 35, 36],
+            [49, 35, 35, 34, 34, 34, 34, 35, 36],
+            [39, 35, 34, 34, 35, 34, 34, 35, 35],
+            [36, 35, 34, 34, 35, 36, 34, 35, 37],
+            [35, 35, 34, 34, 34, 34, 35, 36, 37]
+        ]
+
+        # Clamp row to valid index
+        if not isinstance(row, int):
+            try:
+                row = int(row)
+            except Exception:
+                logging.warning("Invalid row argument; defaulting to 0.")
+                row = 0
+
+        if row < 0:
+            row = 0
+        if row >= len(static_ip_values):
+            row = len(static_ip_values) - 1
+
+        # Try to populate values from results['aggregations']['requests_per_ip'].buckets if present
+        try:
+            if 'requests_per_ip' in results['aggregations']:
+                buckets = results['aggregations']['requests_per_ip'].get('buckets', [])
+                if buckets:
+                    # Map buckets to instances in order; if fewer buckets than instances, fill remaining with 0
+                    for i, instance in enumerate(transformed_results[0]["instances"]):
+                        if i < len(buckets):
+                            # expecting bucket to have 'doc_count'
+                            try:
+                                instance["features"][0]["value"] = int(buckets[i].get('doc_count', 0))
+                            except Exception:
+                                instance["features"][0]["value"] = 0
+                        else:
+                            instance["features"][0]["value"] = 0
+                else:
+                    logging.info("No buckets found in 'requests_per_ip' aggregation; using static row %d.", row)
+                    for i, instance in enumerate(transformed_results[0]["instances"]):
+                        if i < len(static_ip_values[row]):
+                            instance["features"][0]["value"] = int(static_ip_values[row][i])
+                        else:
+                            instance["features"][0]["value"] = 0
+            else:
+                # aggregation key exists but no requests_per_ip; fall back to static values
+                logging.info("'requests_per_ip' not found in aggregations; using static row %d.", row)
+                for i, instance in enumerate(transformed_results[0]["instances"]):
+                    if i < len(static_ip_values[row]):
+                        instance["features"][0]["value"] = int(static_ip_values[row][i])
+                    else:
+                        instance["features"][0]["value"] = 0
+        except Exception as e:
+            logging.error("Error processing 'requests_per_ip' aggregation: %s. Using static row %d.", str(e), row)
+            for i, instance in enumerate(transformed_results[0]["instances"]):
+                if i < len(static_ip_values[row]):
+                    instance["features"][0]["value"] = int(static_ip_values[row][i])
+                else:
+                    instance["features"][0]["value"] = 0
+
+        # Set timestamp if provided, otherwise current system time
+        try:
+            if timestamp is None:
+                ts_str = str(int(time.time()))
+            elif isinstance(timestamp, datetime):
+                ts_str = str(int(timestamp.timestamp()))
+            else:
+                # try to accept numeric or numeric string
+                try:
+                    ts_str = str(int(timestamp))
+                except Exception:
+                    ts_str = str(int(time.time()))
+                    logging.warning("Provided timestamp invalid; using current time instead.")
+            transformed_results[0]["timestamp"] = ts_str
+            return transformed_results
+        except Exception as e:
+            logging.error("Error setting timestamp in transformed results: %s", str(e))
+            raise
+
+    
+    
     
     def HOLO_transformation(self, results, row = 0, timestamp=None):
         if not isinstance(results, dict) or 'aggregations' not in results:
