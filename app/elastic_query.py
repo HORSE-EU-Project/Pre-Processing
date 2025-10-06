@@ -169,6 +169,7 @@ class ElasticQuery:
             if transformation_type == 'HOLO':
                 transformed_results = self.HOLO_transformation(results)
             elif transformation_type == 'DEME_MULTIDOMAIN':
+                logging.info("Transforming results for DEME_MULTIDOMAIN API...")
                 transformed_results = self.DEME_transformation_multidomain(results)
             else:
                 transformed_results = self.DEME_transformation(results)
@@ -274,42 +275,35 @@ class ElasticQuery:
         - Otherwise use the static row selected by `row` (clamped to available rows).
         - Timestamp: system time (or provided timestamp/datetime).
         """
-        if not isinstance(results, dict) or 'aggregations' not in results:
-            raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
+        # if not isinstance(results, dict) or 'aggregations' not in results:
+        #     raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
 
         # Template with static instances (edit these IPs if you need)
         transformed_results = [{
             "timestamp": "0",
             "instances": [
                 {"instance": "192.168.130.47", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.103", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.27", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.93", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.133", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.68", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.6", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.96", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.132", "features": [{"feature": "DNS", "value": 0}]}
+                {"instance": "192.168.130.103", "features": [{"feature": "DNS", "value": 0}]}
             ]
         }]
 
         # Static DNS counters (rows correspond to snapshots; 9 values per row)
         static_ip_values = [
-            [34, 35, 32, 34, 33, 33, 33, 35, 34],
-            [34, 35, 34, 33, 33, 33, 33, 34, 35],
-            [33, 35, 33, 34, 35, 33, 35, 35, 35],
-            [35, 36, 34, 33, 34, 34, 33, 33, 35],
-            [38, 36, 34, 34, 32, 34, 34, 35, 36],
-            [46, 35, 34, 33, 35, 34, 34, 37, 33],
-            [62, 34, 34, 33, 34, 35, 34, 35, 35],
-            [76, 35, 35, 35, 34, 33, 34, 35, 35],
-            [80, 35, 34, 35, 35, 34, 34, 35, 36],
-            [77, 33, 34, 33, 34, 35, 34, 36, 35],
-            [61, 34, 35, 35, 35, 35, 35, 35, 36],
-            [49, 35, 35, 34, 34, 34, 34, 35, 36],
-            [39, 35, 34, 34, 35, 34, 34, 35, 35],
-            [36, 35, 34, 34, 35, 36, 34, 35, 37],
-            [35, 35, 34, 34, 34, 34, 35, 36, 37]
+            [34, 35],
+            [34, 35],
+            [33, 35],
+            [35, 36],
+            [38, 36],
+            [46, 35],
+            [62, 34],
+            [76, 35],
+            [80, 35],
+            [77, 33],
+            [61, 34],
+            [49, 35],
+            [39, 35],
+            [36, 35],
+            [35, 35]
         ]
 
         # Clamp row to valid index

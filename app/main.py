@@ -43,7 +43,7 @@ def main():
     
     #transformation type
     transformation_type = os.getenv('TRANSFORMATION_TYPE', 'DEME').upper()
-    if transformation_type not in ['DEME', 'HOLO']:
+    if transformation_type not in ['DEME', 'HOLO', 'DEME_MULTIDOMAIN']:
         logging.warning(f"Invalid TRANSFORMATION_TYPE '{transformation_type}' specified. Defaulting to 'DEME'.")
         transformation_type = 'DEME'
     
