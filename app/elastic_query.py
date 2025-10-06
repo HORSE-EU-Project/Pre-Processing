@@ -18,6 +18,8 @@ ENDPOINT_url = os.getenv('ePEM_URL', 'http://localhost:8090')
 ES_index = os.getenv('ES_INDEX', 'pcap_data')
 INTERVAL = int(os.getenv('INTERVAL', 120))
 
+UPC_node_ip="192.168.130.103"
+CNIT_node_ip="192.168.130.47"
 
 
 
@@ -184,7 +186,10 @@ class ElasticQuery:
                     'ntp_packets': {'doc_count': ntp_count}
                 }
             }
-            transformed_results = self.DEME_transformation(results)
+            if transformation_type == 'DEME_MULTIDOMAIN':
+                transformed_results = self.DEME_transformation_multidomain(results, row=row)
+            else:
+                transformed_results = self.DEME_transformation(results)
         else:
             logging.info("No results available to post.")
                 
@@ -264,49 +269,59 @@ class ElasticQuery:
             }
         ]
         return transformed_results
-    
-    
-    def DEME_transformation_multidomain(self, results):
-        """
-        Transform results into the HOLO payload format and return it (no HTTP calls).
-        - Uses static instance IPs (set once).
-        - Uses static DNS counter values (15 rows x 9 instances).
-        - If `results` contains 'requests_per_ip' aggregation with buckets, use those doc_count values.
-        - Otherwise use the static row selected by `row` (clamped to available rows).
-        - Timestamp: system time (or provided timestamp/datetime).
-        """
-        # if not isinstance(results, dict) or 'aggregations' not in results:
-        #     raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
 
-        # Template with static instances (edit these IPs if you need)
+
+
+    def DEME_transformation_multidomain(self, results, row=0, timestamp=None):
+
+        # Template with static instances (edit if needed)
         transformed_results = [{
             "timestamp": "0",
             "instances": [
-                {"instance": "192.168.130.47", "features": [{"feature": "DNS", "value": 0}]},
-                {"instance": "192.168.130.103", "features": [{"feature": "DNS", "value": 0}]}
+                {"instance": CNIT_node_ip, "features": [{"feature": "DNS", "value": 0}]},
+                {"instance": UPC_node_ip, "features": [{"feature": "DNS", "value": 0}]}
             ]
         }]
 
-        # Static DNS counters (rows correspond to snapshots; 9 values per row)
+        # Static DNS counters (CNIT, UPC) per snapshot
         static_ip_values = [
-            [34, 35],
-            [34, 35],
-            [33, 35],
-            [35, 36],
-            [38, 36],
-            [46, 35],
-            [62, 34],
-            [76, 35],
-            [80, 35],
-            [77, 33],
-            [61, 34],
-            [49, 35],
-            [39, 35],
-            [36, 35],
-            [35, 35]
+            [26, 26],
+            [26, 27],
+            [25, 27],
+            [27, 29],
+            [30, 33],
+            [38, 41],
+            [54, 53],
+            [68, 68],
+            [72, 74],
+            [69, 67],
+            [53, 54],
+            [41, 42],
+            [31, 33],
+            [28, 29],
+            [27, 27]
         ]
 
-        # Clamp row to valid index
+        # Static timestamps aligned with the above
+        static_timestamps = [
+            1752501360,
+            1752501480,
+            1752501600,
+            1752501720,
+            1752501840,
+            1752501960,
+            1752502080,
+            1752502200,
+            1752502320,
+            1752502440,
+            1752502560,
+            1752502680,
+            1752502800,
+            1752502920,
+            1752503040
+        ]
+
+        # Clamp row to valid range
         if not isinstance(row, int):
             try:
                 row = int(row)
@@ -321,13 +336,11 @@ class ElasticQuery:
 
         # Try to populate values from results['aggregations']['requests_per_ip'].buckets if present
         try:
-            if 'requests_per_ip' in results['aggregations']:
+            if isinstance(results, dict) and 'aggregations' in results and 'requests_per_ip' in results['aggregations']:
                 buckets = results['aggregations']['requests_per_ip'].get('buckets', [])
                 if buckets:
-                    # Map buckets to instances in order; if fewer buckets than instances, fill remaining with 0
                     for i, instance in enumerate(transformed_results[0]["instances"]):
                         if i < len(buckets):
-                            # expecting bucket to have 'doc_count'
                             try:
                                 instance["features"][0]["value"] = int(buckets[i].get('doc_count', 0))
                             except Exception:
@@ -338,40 +351,45 @@ class ElasticQuery:
                     logging.info("No buckets found in 'requests_per_ip' aggregation; using static row %d.", row)
                     for i, instance in enumerate(transformed_results[0]["instances"]):
                         if i < len(static_ip_values[row]):
-                            instance["features"][0]["value"] = int(static_ip_values[row][i])
+                            instance["features"][0]["value"] = static_ip_values[row][i]
                         else:
                             instance["features"][0]["value"] = 0
             else:
-                # aggregation key exists but no requests_per_ip; fall back to static values
+                # No aggregation found, fallback to static values
                 logging.info("'requests_per_ip' not found in aggregations; using static row %d.", row)
                 for i, instance in enumerate(transformed_results[0]["instances"]):
                     if i < len(static_ip_values[row]):
-                        instance["features"][0]["value"] = int(static_ip_values[row][i])
+                        instance["features"][0]["value"] = static_ip_values[row][i]
                     else:
                         instance["features"][0]["value"] = 0
         except Exception as e:
             logging.error("Error processing 'requests_per_ip' aggregation: %s. Using static row %d.", str(e), row)
             for i, instance in enumerate(transformed_results[0]["instances"]):
                 if i < len(static_ip_values[row]):
-                    instance["features"][0]["value"] = int(static_ip_values[row][i])
+                    instance["features"][0]["value"] = static_ip_values[row][i]
                 else:
                     instance["features"][0]["value"] = 0
 
-        # Set timestamp if provided, otherwise current system time
+        # Timestamp selection
+        timestamp = None  # Use provided timestamp if any
         try:
-            if timestamp is None:
-                ts_str = str(int(time.time()))
-            elif isinstance(timestamp, datetime):
-                ts_str = str(int(timestamp.timestamp()))
+            # Prefer explicit timestamp argument
+            if timestamp is not None:
+                if isinstance(timestamp, datetime):
+                    ts_str = str(int(timestamp.timestamp()))
+                else:
+                    try:
+                        ts_str = str(int(timestamp))
+                    except Exception:
+                        ts_str = str(int(time.time()))
+                        logging.warning("Provided timestamp invalid; using current time instead.")
             else:
-                # try to accept numeric or numeric string
-                try:
-                    ts_str = str(int(timestamp))
-                except Exception:
-                    ts_str = str(int(time.time()))
-                    logging.warning("Provided timestamp invalid; using current time instead.")
+                # Use static timestamp from table
+                ts_str = str(static_timestamps[row])
+
             transformed_results[0]["timestamp"] = ts_str
             return transformed_results
+
         except Exception as e:
             logging.error("Error setting timestamp in transformed results: %s", str(e))
             raise
