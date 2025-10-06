@@ -284,55 +284,16 @@ class ElasticQuery:
         }]
 
         # Static DNS counters (CNIT, UPC) per snapshot
-        static_ip_values = [
-            [26, 26],
-            [26, 27],
-            [25, 27],
-            [27, 29],
-            [30, 33],
-            [38, 41],
-            [54, 53],
-            [68, 68],
-            [72, 74],
-            [69, 67],
-            [53, 54],
-            [41, 42],
-            [31, 33],
-            [28, 29],
-            [27, 27]
-        ]
+        static_ip_values = [[26, 26], [26, 27], [25, 27], [27, 29], [30, 33], [38, 41], [54, 53], [68, 68], [72, 74], 
+                            [69, 67], [53, 54], [41, 42], [31, 33], [28, 29], [27, 27]]
 
         # Static timestamps aligned with the above
-        static_timestamps = [
-            1752501360,
-            1752501480,
-            1752501600,
-            1752501720,
-            1752501840,
-            1752501960,
-            1752502080,
-            1752502200,
-            1752502320,
-            1752502440,
-            1752502560,
-            1752502680,
-            1752502800,
-            1752502920,
-            1752503040
-        ]
+        static_timestamps = [1752501360,1752501480,1752501600,1752501720,1752501840,1752501960,1752502080,1752502200,1752502320,
+                            1752502440,1752502560,1752502680,1752502800,1752502920,1752503040]
 
-        # Clamp row to valid range
-        if not isinstance(row, int):
-            try:
-                row = int(row)
-            except Exception:
-                logging.warning("Invalid row argument; defaulting to 0.")
-                row = 0
 
-        if row < 0:
-            row = 0
-        if row >= len(static_ip_values):
-            row = len(static_ip_values) - 1
+        # Ensure row is within bounds
+        row = max(0, min(row if isinstance(row, int) else 0, len(static_ip_values) - 1))
 
         # Try to populate values from results['aggregations']['requests_per_ip'].buckets if present
         try:
