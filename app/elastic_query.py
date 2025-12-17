@@ -238,35 +238,49 @@ class ElasticQuery:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
 
         # Dummy payload template
-        transformed_results = [{
-            "timestamp": "1705240560",
-            "instances": [
-                {"instance": "192.168.130.47", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.103", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.27", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.93", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.133", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.68", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.6", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.96", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "192.168.130.132", "features": [{"feature": "NEF", "value": 0}]}
-            ]
-        }]
-        
         # transformed_results = [{
         #     "timestamp": "1705240560",
         #     "instances": [
-        #         {"instance": "10.1.0.71", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.74", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.73", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]}
+        #         {"instance": "192.168.130.47", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.103", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.27", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.93", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.133", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.68", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.6", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.96", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "192.168.130.132", "features": [{"feature": "NEF", "value": 0}]}
         #     ]
         # }]
+        
+        # - UE-10 (10.1.0.72)
+        # - UE-7 (10.1.0.76)
+        # - UE-6 (10.1.0.78)
+        # - UE-8 (10.1.0.79)
+        # - UE-5 (10.1.0.80)
+        # - UE-1 (10.1.0.71)
+        # - UE-9 (10.1.0.73)
+        # - UE-3 (10.1.0.74)
+        # - UE-4 (10.1.0.75)
+        # - UE-2 (10.1.0.77)
+        
+        transformed_results = [{
+            "timestamp": "1705240560",
+            "instances": [
+                {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.76", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.71", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.73", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.74", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},               
+                {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]}
+                               
+                
+            ]
+        }]
         
         # The following is a sample of the expected output format:
         # 34,35,32,34,33,33,33,35,34
