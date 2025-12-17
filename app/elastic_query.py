@@ -50,20 +50,25 @@ class ElasticQuery:
         logging.info(f"Endpoint: {self.endpoint}")
         logging.info(f"Interval: {self.interval}")
 
-    def run_query(self):
+    def run_query(self, current_time=None):
         url = f"{self.es_url}/{self.index}/{self.query_type}"
 
-        last_data_time = os.getenv('ES_DATA_END_TIME')
-        try:
-            if last_data_time:
-                # Convert 'Z' to '+00:00' for ISO compliance
-                last_data_time = last_data_time.replace('Z', '+00:00')
-                now = datetime.fromisoformat(last_data_time)
-            else:
+        # If current_time is provided (iteration mode), use it
+        if current_time is not None:
+            now = current_time
+        else:
+            # Otherwise use ES_DATA_END_TIME or current time
+            last_data_time = os.getenv('ES_DATA_END_TIME')
+            try:
+                if last_data_time:
+                    # Convert 'Z' to '+00:00' for ISO compliance
+                    last_data_time = last_data_time.replace('Z', '+00:00')
+                    now = datetime.fromisoformat(last_data_time)
+                else:
+                    now = datetime.now()
+            except ValueError as e:
+                logging.warning("Invalid ES_DATA_END_TIME format ('%s'): %s. Using current time.", last_data_time, str(e))
                 now = datetime.now()
-        except ValueError as e:
-            logging.warning("Invalid ES_DATA_END_TIME format ('%s'): %s. Using current time.", last_data_time, str(e))
-            now = datetime.now()
 
         self.previous_last_run = now - self.interval
         self.last_run = now
@@ -247,6 +252,21 @@ class ElasticQuery:
                 {"instance": "192.168.130.132", "features": [{"feature": "NEF", "value": 0}]}
             ]
         }]
+        
+        # transformed_results = [{
+        #     "timestamp": "1705240560",
+        #     "instances": [
+        #         {"instance": "10.1.0.71", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.74", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.73", "features": [{"feature": "NEF", "value": 0}]},
+        #         {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]}
+        #     ]
+        # }]
         
         # The following is a sample of the expected output format:
         # 34,35,32,34,33,33,33,35,34

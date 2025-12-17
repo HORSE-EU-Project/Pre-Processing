@@ -27,19 +27,56 @@ def main():
     except Exception as e:
         logging.error(f"Failed to read configuration file: {e}", exc_info=True)
         return
-        
-    # Main loop - poll at regular intervals
-    logging.info(f"Starting main loop with polling interval of {POLLING_INTERVAL} seconds")
     
+    # Check if we're in time-range iteration mode
+    start_time_str = os.getenv('ES_DATA_START_TIME')
+    end_time_str = os.getenv('ES_DATA_END_TIME')
+    iteration_mode = False
+    current_time = None
+    end_time = None
+    
+    if start_time_str and end_time_str:
+        try:
+            # Parse start and end times
+            start_time_str = start_time_str.replace('Z', '+00:00')
+            end_time_str = end_time_str.replace('Z', '+00:00')
+            current_time = datetime.fromisoformat(start_time_str)
+            end_time = datetime.fromisoformat(end_time_str)
+            iteration_mode = True
+            logging.info(f"Time-range iteration mode enabled: {start_time_str} to {end_time_str}")
+            logging.info(f"Iteration interval: {POLLING_INTERVAL} seconds")
+        except ValueError as e:
+            logging.warning(f"Invalid ES_DATA_START_TIME or ES_DATA_END_TIME format: {e}. Falling back to continuous polling mode.")
+            iteration_mode = False
+    
+    if not iteration_mode:
+        logging.info(f"Continuous polling mode with interval of {POLLING_INTERVAL} seconds")
+    
+    # Main loop
     while True:
         loop_start = time.time()
-        logging.info("Polling for new data...")
+        
+        if iteration_mode:
+            # Check if we've reached the end time
+            if current_time >= end_time:
+                logging.info("Reached end time. Iteration complete.")
+                break
+            
+            logging.info(f"Processing time window: {current_time.isoformat()}")
+        else:
+            logging.info("Polling for new data...")
         
         for query in queries.ES_queries:
             if query.active:
                 try:
                     logging.info(f"Running query for subscription: {query.subscription_id}")
-                    results = query.run_query()
+                    
+                    # Pass current_time in iteration mode, None in continuous mode
+                    if iteration_mode:
+                        results = query.run_query(current_time=current_time)
+                    else:
+                        results = query.run_query()
+                    
                     status_code = query.post_results(results)  
                     
                     if status_code == 200:
@@ -56,11 +93,16 @@ def main():
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
         
-        # Sleep until next polling interval
-        elapsed = time.time() - loop_start
-        sleep_time = max(0, POLLING_INTERVAL - elapsed)
-        logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
-        time.sleep(sleep_time)
+        if iteration_mode:
+            # Increment current_time by POLLING_INTERVAL
+            current_time += timedelta(seconds=POLLING_INTERVAL)
+            time.sleep(10)  # Short sleep to avoid tight loop
+        else:
+            # Sleep until next polling interval in continuous mode
+            elapsed = time.time() - loop_start
+            sleep_time = max(0, POLLING_INTERVAL - elapsed)
+            logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
+            time.sleep(sleep_time)
 
 
 if __name__ == "__main__":
