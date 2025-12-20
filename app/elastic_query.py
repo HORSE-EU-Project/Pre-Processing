@@ -168,13 +168,13 @@ class ElasticQuery:
                 #===================================================
                 # Post the transformed results to the DEME API
                 #===================================================
-                #response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
+                response = requests.post(self.endpoint, json=transformed_results, headers=self.headers)
                 
-                # save a fake successful response code for return
-                class FakeResponse:
-                    status_code = 200
+                # # save a fake successful response code for return
+                # class FakeResponse:
+                #     status_code = 200
                 
-                response = FakeResponse()
+                # response = FakeResponse()
                 
                 
                 

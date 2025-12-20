@@ -99,7 +99,7 @@ def main():
         if iteration_mode:
             # Increment current_time by POLLING_INTERVAL
             current_time += timedelta(seconds=POLLING_INTERVAL)
-            time.sleep(10)  # Short sleep to avoid tight loop
+            time.sleep(POLLING_INTERVAL)  # Short sleep to avoid tight loop
         else:
             # Sleep until next polling interval in continuous mode
             elapsed = time.time() - loop_start
