@@ -9,7 +9,7 @@
         "size": 0,
         "query": {
           "range": {
-            "timestamp": {
+            "layers.frame.frame_frame_time_utc": {
               "gte": "now-120s",
               "lte": "now"
             }
@@ -19,7 +19,7 @@
           "requests_per_ip": {
             "terms": {
               "script": {
-                "source": "def matcher = /^(\\d+\\.\\d+\\.\\d+\\.\\d+)/.matcher(doc['message.keyword'].value); if (matcher.find()) { return matcher.group(1); } else { return 'unknown'; }",
+                "source": "if (doc.containsKey('layers.ip.ip_ip_addr.keyword') && !doc['layers.ip.ip_ip_addr.keyword'].empty) { return doc['layers.ip.ip_ip_addr.keyword']; } return 'unknown';",
                 "lang": "painless"
               },
               "size": 1000

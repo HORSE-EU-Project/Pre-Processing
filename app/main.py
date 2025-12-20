@@ -17,11 +17,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Load polling interval from environment or use default
 POLLING_INTERVAL = int(os.getenv('POLLING_INTERVAL', 10))  # in seconds
+
+# Json config file path
+CONFIG_FILE_PATH = './config_demo10.json'
   
 def main():
     try:       
         # Initialize the queries from config
-        queries = ES_queries('./config.json')
+        queries = ES_queries(CONFIG_FILE_PATH)
         logging.info("Configuration file read successfully.")
         
     except Exception as e:
@@ -94,11 +97,9 @@ def main():
                     logging.error(f"An unexpected error occurred: {e}")
         
         if iteration_mode:
-            # Sleep until next polling interval in continuous mode
-            elapsed = time.time() - loop_start
-            sleep_time = max(0, POLLING_INTERVAL - elapsed)
-            logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
-            time.sleep(sleep_time)
+            # Increment current_time by POLLING_INTERVAL
+            current_time += timedelta(seconds=POLLING_INTERVAL)
+            time.sleep(10)  # Short sleep to avoid tight loop
         else:
             # Sleep until next polling interval in continuous mode
             elapsed = time.time() - loop_start
