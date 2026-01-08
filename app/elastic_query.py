@@ -133,7 +133,7 @@ class ElasticQuery:
             
             # Load the file if not already cached
             if self.static_data_cache is None:
-                logging.info("=========================== Loading static data file ===========================")
+                logging.info("=========================== Loading st. data file ===========================")
                 logging.info("Reading from file: %s", demo_file_path)
                 
                 with open(demo_file_path, 'r') as f:
@@ -154,7 +154,7 @@ class ElasticQuery:
             # Get current row (with wraparound)
             current_row = data_rows[self.static_data_index % len(data_rows)]
             
-            logging.info("=========================== Reading static data (row %d/%d) ===========================", 
+            logging.info("=========================== Reading st. data (row %d/%d) ===========================", 
                         self.static_data_index + 1, len(data_rows))
             logging.info("Timestamp: %s", current_row.get('timestamp'))
             
@@ -179,7 +179,7 @@ class ElasticQuery:
             self.previous_last_run = now - self.interval
             self.last_run = now
             
-            logging.info("=========Static data loaded successfully=========")
+            logging.info("=========St. data loaded successfully=========")
             logging.info("From time: %s", self.previous_last_run)
             logging.info("To time: %s", self.last_run)
             logging.info("Requests per IP:")
@@ -196,7 +196,7 @@ class ElasticQuery:
             
             # Optional: loop back to start when reaching the end
             if self.static_data_index >= len(data_rows):
-                logging.info("Reached end of static data, looping back to start")
+                logging.info("Reached end of st. data, looping back to start")
                 self.static_data_index = 0
             
             return results
@@ -208,7 +208,7 @@ class ElasticQuery:
             logging.error("Invalid JSON in demo_values.json: %s", str(jde), exc_info=True)
             return None
         except Exception as e:
-            logging.error("Error reading static data: %s", str(e), exc_info=True)
+            logging.error("Error reading st. data: %s", str(e), exc_info=True)
             return None
 
     def set_latest_time_window(self, query):
