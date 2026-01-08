@@ -42,6 +42,10 @@ class ElasticQuery:
         self.last_run = None
         self.previous_last_run = None
         
+        # For static mode: track current row index in demo_values.json
+        self.static_data_index = 0
+        self.static_data_cache = None
+        
         # Logging the initialized values
         logging.info(f"ES URL: {self.es_url}")
         logging.info(f"Index: {self.index}")
@@ -117,6 +121,95 @@ class ElasticQuery:
             logging.error(f"=========Failed to execute query========= {str(e)}", exc_info=True)
             return None
 
+    def run_query_static(self):
+        """
+        Reads and returns results from a static JSON file (demo_values.json)
+        instead of querying Elasticsearch. Used for demo/testing purposes.
+        Iterates through the data rows on each call.
+        """
+        try:
+            # Path to the demo values JSON file
+            demo_file_path = os.path.join(os.path.dirname(__file__), 'demo_values.json')
+            
+            # Load the file if not already cached
+            if self.static_data_cache is None:
+                logging.info("=========================== Loading static data file ===========================")
+                logging.info("Reading from file: %s", demo_file_path)
+                
+                with open(demo_file_path, 'r') as f:
+                    self.static_data_cache = json.load(f)
+                
+                if 'data' not in self.static_data_cache or not isinstance(self.static_data_cache['data'], list):
+                    logging.error("Invalid format in demo_values.json: expected 'data' array")
+                    return None
+                
+                logging.info("Loaded %d data rows from demo_values.json", len(self.static_data_cache['data']))
+            
+            # Get the current row
+            data_rows = self.static_data_cache['data']
+            if not data_rows:
+                logging.error("No data rows found in demo_values.json")
+                return None
+            
+            # Get current row (with wraparound)
+            current_row = data_rows[self.static_data_index % len(data_rows)]
+            
+            logging.info("=========================== Reading static data (row %d/%d) ===========================", 
+                        self.static_data_index + 1, len(data_rows))
+            logging.info("Timestamp: %s", current_row.get('timestamp'))
+            
+            # Convert the row data to Elasticsearch aggregation format
+            buckets = []
+            for ip, count in current_row.get('values', {}).items():
+                buckets.append({
+                    "key": ip,
+                    "doc_count": count
+                })
+            
+            results = {
+                "aggregations": {
+                    "requests_per_ip": {
+                        "buckets": buckets
+                    }
+                }
+            }
+            
+            # Set time window for logging purposes
+            now = datetime.now()
+            self.previous_last_run = now - self.interval
+            self.last_run = now
+            
+            logging.info("=========Static data loaded successfully=========")
+            logging.info("From time: %s", self.previous_last_run)
+            logging.info("To time: %s", self.last_run)
+            logging.info("Requests per IP:")
+            
+            for bucket in buckets:
+                ip = bucket.get('key')
+                count = bucket.get('doc_count')
+                logging.info("IP: %s - Count: %d", ip, count)
+            
+            logging.info("=============================================================")
+            
+            # Advance to next row for next call
+            self.static_data_index += 1
+            
+            # Optional: loop back to start when reaching the end
+            if self.static_data_index >= len(data_rows):
+                logging.info("Reached end of static data, looping back to start")
+                self.static_data_index = 0
+            
+            return results
+            
+        except FileNotFoundError:
+            logging.error("demo_values.json file not found at %s", demo_file_path)
+            return None
+        except json.JSONDecodeError as jde:
+            logging.error("Invalid JSON in demo_values.json: %s", str(jde), exc_info=True)
+            return None
+        except Exception as e:
+            logging.error("Error reading static data: %s", str(e), exc_info=True)
+            return None
 
     def set_latest_time_window(self, query):
         try:
@@ -279,17 +372,16 @@ class ElasticQuery:
         transformed_results = [{
             "timestamp": "1705240560",
             "instances": [
-                {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.76", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]},
                 {"instance": "10.1.0.71", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]},
                 {"instance": "10.1.0.73", "features": [{"feature": "NEF", "value": 0}]},
                 {"instance": "10.1.0.74", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},               
-                {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]}
-                               
+                {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.76", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
+                {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]}                               
                 
             ]
         }]

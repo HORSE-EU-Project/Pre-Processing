@@ -12,6 +12,7 @@ services:
       - ES_URL=${ES_URL}
       - POLLING_INTERVAL=${POLLING_INTERVAL}
       - AFTER_PRE_PROCESSING_URL=${AFTER_PRE_PROCESSING_URL}
+      - STATIC_MODE=${STATIC_MODE}
     ports:
       - "5001:5000"
     restart: always

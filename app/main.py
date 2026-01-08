@@ -18,6 +18,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Load polling interval from environment or use default
 POLLING_INTERVAL = int(os.getenv('POLLING_INTERVAL', 10))  # in seconds
 
+#static mode flag
+STATIC_MODE = os.getenv('STATIC_MODE', 'false').lower() == 'true'
+
 # Json config file path
 CONFIG_FILE_PATH = './config_demo10.json'
   
@@ -75,10 +78,12 @@ def main():
                     logging.info(f"Running query for subscription: {query.subscription_id}")
                     
                     # Pass current_time in iteration mode, None in continuous mode
-                    if iteration_mode:
+                    if iteration_mode and not STATIC_MODE:
                         results = query.run_query(current_time=current_time)
-                    else:
+                    elif not iteration_mode and not STATIC_MODE:
                         results = query.run_query()
+                    else:
+                        results = query.run_query_static()
                     
                     status_code = query.post_results(results)  
                     
