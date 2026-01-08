@@ -101,16 +101,15 @@ def main():
                 except Exception as e:
                     logging.error(f"An unexpected error occurred: {e}")
         
+        # Calculate elapsed time and sleep to maintain consistent interval
+        elapsed = time.time() - loop_start
+        sleep_time = max(0, POLLING_INTERVAL - elapsed)
+        logging.info(f"Loop execution took {elapsed:.2f} seconds. Sleeping for {sleep_time:.2f} seconds before next poll")
+        time.sleep(sleep_time)
+        
         if iteration_mode:
             # Increment current_time by POLLING_INTERVAL
             current_time += timedelta(seconds=POLLING_INTERVAL)
-            time.sleep(POLLING_INTERVAL)  # Short sleep to avoid tight loop
-        else:
-            # Sleep until next polling interval in continuous mode
-            elapsed = time.time() - loop_start
-            sleep_time = max(0, POLLING_INTERVAL - elapsed)
-            logging.info(f"Sleeping for {sleep_time:.2f} seconds before next poll")
-            time.sleep(sleep_time)
 
 
 if __name__ == "__main__":
