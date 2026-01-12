@@ -42,7 +42,7 @@ class ElasticQuery:
         self.last_run = None
         self.previous_last_run = None
         
-        # For static mode: track current row index in demo_values.json
+        # For static mode: track current row index in demo_10_apiEXP_values.json
         self.static_data_index = 0
         self.static_data_cache = None
         
@@ -123,13 +123,14 @@ class ElasticQuery:
 
     def run_query_static(self):
         """
-        Reads and returns results from a static JSON file (demo_values.json)
+        Reads and returns results from a static JSON file (demo_10_apiEXP_values.json)
         instead of querying Elasticsearch. Used for demo/testing purposes.
         Iterates through the data rows on each call.
         """
         try:
             # Path to the demo values JSON file
-            demo_file_path = os.path.join(os.path.dirname(__file__), 'demo_values.json')
+            demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
+            demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
             
             # Load the file if not already cached
             if self.static_data_cache is None:
@@ -140,15 +141,15 @@ class ElasticQuery:
                     self.static_data_cache = json.load(f)
                 
                 if 'data' not in self.static_data_cache or not isinstance(self.static_data_cache['data'], list):
-                    logging.error("Invalid format in demo_values.json: expected 'data' array")
+                    logging.error("Invalid format in demo_10_apiEXP_values.json: expected 'data' array")
                     return None
                 
-                logging.info("Loaded %d data rows from demo_values.json", len(self.static_data_cache['data']))
+                logging.info("Loaded %d data rows from demo_10_apiEXP_values.json", len(self.static_data_cache['data']))
             
             # Get the current row
             data_rows = self.static_data_cache['data']
             if not data_rows:
-                logging.error("No data rows found in demo_values.json")
+                logging.error("No data rows found in demo_10_apiEXP_values.json")
                 return None
             
             # Get current row (with wraparound)
@@ -202,10 +203,10 @@ class ElasticQuery:
             return results
             
         except FileNotFoundError:
-            logging.error("demo_values.json file not found at %s", demo_file_path)
+            logging.error("demo_10_apiEXP_values.json file not found at %s", demo_file_path)
             return None
         except json.JSONDecodeError as jde:
-            logging.error("Invalid JSON in demo_values.json: %s", str(jde), exc_info=True)
+            logging.error("Invalid JSON in demo_10_apiEXP_values.json: %s", str(jde), exc_info=True)
             return None
         except Exception as e:
             logging.error("Error reading st. data: %s", str(e), exc_info=True)
@@ -369,21 +370,44 @@ class ElasticQuery:
         # - UE-4 (10.1.0.75)
         # - UE-2 (10.1.0.77)
         
+        # Load demo file to get the list of IPs dynamically
+        demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
+        demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
+        
+        try:
+            with open(demo_file_path, 'r') as f:
+                demo_data = json.load(f)
+            
+            # Extract all unique IPs from the demo data
+            unique_ips = set()
+            if 'data' in demo_data and isinstance(demo_data['data'], list):
+                for row in demo_data['data']:
+                    if 'values' in row and isinstance(row['values'], dict):
+                        unique_ips.update(row['values'].keys())
+            
+            # Sort IPs for consistent ordering
+            sorted_ips = sorted(unique_ips)
+            
+            # Build instances array dynamically
+            instances = []
+            for ip in sorted_ips:
+                instances.append({
+                    "instance": ip,
+                    "features": [{"feature": "NEF", "value": 0}]
+                })
+            
+            logging.info("Initialized %d instances from demo file: %s", len(instances), sorted_ips)
+            
+        except FileNotFoundError:
+            logging.warning("Demo file not found at %s, using empty instances", demo_file_path)
+            instances = []
+        except Exception as e:
+            logging.error("Error loading demo file for instances: %s", str(e))
+            instances = []
+        
         transformed_results = [{
             "timestamp": "1705240560",
-            "instances": [
-                {"instance": "10.1.0.71", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.72", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.73", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.74", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.75", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.76", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.77", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.78", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.79", "features": [{"feature": "NEF", "value": 0}]},
-                {"instance": "10.1.0.80", "features": [{"feature": "NEF", "value": 0}]}                               
-                
-            ]
+            "instances": instances
         }]
         
         # The following is a sample of the expected output format:

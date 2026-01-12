@@ -14,6 +14,7 @@ services:
       - AFTER_PRE_PROCESSING_URL=${AFTER_PRE_PROCESSING_URL}
       - STATIC_MODE=${STATIC_MODE}
       - CONFIG_FILE_PATH=${CONFIG_FILE_PATH}
+      - STATIC_DATA_FILE_PATH=${STATIC_DATA_FILE_PATH}
     ports:
       - "5001:5000"
     restart: always
