@@ -342,33 +342,6 @@ class ElasticQuery:
     def HOLO_transformation(self, results, timestamp=None):
         if not isinstance(results, dict) or 'aggregations' not in results:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
-
-        # Dummy payload template
-        # transformed_results = [{
-        #     "timestamp": "1705240560",
-        #     "instances": [
-        #         {"instance": "192.168.130.47", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.103", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.27", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.93", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.133", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.68", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.6", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.96", "features": [{"feature": "NEF", "value": 0}]},
-        #         {"instance": "192.168.130.132", "features": [{"feature": "NEF", "value": 0}]}
-        #     ]
-        # }]
-        
-        # - UE-10 (10.1.0.72)
-        # - UE-7 (10.1.0.76)
-        # - UE-6 (10.1.0.78)
-        # - UE-8 (10.1.0.79)
-        # - UE-5 (10.1.0.80)
-        # - UE-1 (10.1.0.71)
-        # - UE-9 (10.1.0.73)
-        # - UE-3 (10.1.0.74)
-        # - UE-4 (10.1.0.75)
-        # - UE-2 (10.1.0.77)
         
         # Load demo file to get the list of IPs dynamically
         demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
@@ -408,26 +381,7 @@ class ElasticQuery:
         transformed_results = [{
             "timestamp": "1705240560",
             "instances": instances
-        }]
-        
-        # The following is a sample of the expected output format:
-        # 34,35,32,34,33,33,33,35,34
-        # 34,35,34,33,33,33,33,34,35
-        # 33,35,33,34,35,33,35,35,35
-        # 35,36,34,33,34,34,33,33,35
-        # 38,36,34,34,32,34,34,35,36
-        # 46,35,34,33,35,34,34,37,33
-        # 62,34,34,33,34,35,34,35,35
-        # 76,35,35,35,34,33,34,35,35
-        # 80,35,34,35,35,34,34,35,36
-        # 77,33,34,33,34,35,34,36,35
-        # 61,34,35,35,35,35,35,35,36
-        # 49,35,35,34,34,34,34,35,36
-        # 39,35,34,34,35,34,34,35,35
-        # 36,35,34,34,35,36,34,35,37
-        # 35,35,34,34,34,34,35,36,37
-        
-        
+        }]       
 
         requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
 
