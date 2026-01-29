@@ -102,7 +102,7 @@ if [ "$DEMO" = "10" ]; then
         echo "Demo mode: DDoS"
         update_env_file "CONFIG_FILE_PATH" "./config_demo10.json"
         update_env_file "STATIC_DATA_FILE_PATH" "demo_10_DDOS_values.json"
-    elif [ -n "$DEMO_MODE" ]; then|ES_URL|AFTER_PRE_PROCESSING_URL
+    elif [ -n "$DEMO_MODE" ]; then
         echo "Warning: Unknown demo_mode '$DEMO_MODE'. Valid options are: api_exposure, ddos"
     fi
 fi
