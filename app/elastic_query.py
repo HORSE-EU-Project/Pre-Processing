@@ -54,14 +54,17 @@ class ElasticQuery:
         logging.info(f"Endpoint: {self.endpoint}")
         logging.info(f"Interval: {self.interval}")
 
-    def run_query(self, current_time=None):
+    def run_query(self, current_time=None, use_current_time=False):
         url = f"{self.es_url}/{self.index}/{self.query_type}"
 
         # If current_time is provided (iteration mode), use it
         if current_time is not None:
             now = current_time
+        elif use_current_time:
+            # In continuous mode with no time range specified, always use current time
+            now = datetime.now()
         else:
-            # Otherwise use ES_DATA_END_TIME or current time
+            # Otherwise use ES_DATA_END_TIME or current time (backward compatibility)
             last_data_time = os.getenv('ES_DATA_END_TIME')
             try:
                 if last_data_time:

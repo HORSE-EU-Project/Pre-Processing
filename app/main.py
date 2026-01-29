@@ -57,6 +57,7 @@ def main():
     
     if not iteration_mode:
         logging.info(f"Continuous polling mode with interval of {POLLING_INTERVAL} seconds")
+        logging.info(f"Each query will read data from 'now-{POLLING_INTERVAL}s' to 'now'")
     
     # Main loop
     while True:
@@ -77,11 +78,11 @@ def main():
                 try:
                     logging.info(f"Running query for subscription: {query.subscription_id}")
                     
-                    # Pass current_time in iteration mode, None in continuous mode
+                    # Pass current_time in iteration mode, or use_current_time=True in continuous mode
                     if iteration_mode and not STATIC_MODE:
                         results = query.run_query(current_time=current_time)
                     elif not iteration_mode and not STATIC_MODE:
-                        results = query.run_query()
+                        results = query.run_query(use_current_time=True)
                     else:
                         results = query.run_query_static()
                     
