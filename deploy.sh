@@ -64,6 +64,40 @@ update_env_file() {
 
 echo "Starting deployment configuration..."
 
+# Set Demo 10 defaults if demo=10 and parameters are not explicitly provided
+if [ "$DEMO" = "10" ]; then
+    # Set default values only if not already specified by user
+    if [ -z "$DEMO_MODE" ]; then
+        DEMO_MODE="api_exposure"
+        echo "Using Demo 10 default demo_mode: api_exposure"
+    fi
+    
+    if [ -z "$DEPLOYMENT_DOMAIN" ]; then
+        DEPLOYMENT_DOMAIN="CNIT"
+        echo "Using Demo 10 default deployment_domain: CNIT"
+    fi
+    
+    if [ -z "$STATIC_MODE" ]; then
+        STATIC_MODE="false"
+        echo "Using Demo 10 default static_mode: false"
+    fi
+    
+    if [ -z "$LIVE_DATA" ]; then
+        LIVE_DATA="false"
+        echo "Using Demo 10 default live_data: false"
+    fi
+    
+    if [ -z "$ES_DATA_START_TIME" ]; then
+        ES_DATA_START_TIME="2025-12-16T12:28:32.176Z"
+        echo "Using Demo 10 default ES_DATA_START_TIME: 2025-12-16T12:28:32.176Z"
+    fi
+    
+    if [ -z "$ES_DATA_END_TIME" ]; then
+        ES_DATA_END_TIME="2025-12-16T12:40:40.072Z"
+        echo "Using Demo 10 default ES_DATA_END_TIME: 2025-12-16T12:40:40.072Z"
+    fi
+fi
+
 # Handle deployment domain configuration
 if [ -n "$DEPLOYMENT_DOMAIN" ]; then
     echo "Configuring for deployment domain: $DEPLOYMENT_DOMAIN"
