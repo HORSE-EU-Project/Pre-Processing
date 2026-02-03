@@ -8,6 +8,7 @@ LIVE_DATA=""
 ES_DATA_START_TIME=""
 ES_DATA_END_TIME=""
 DEPLOYMENT_DOMAIN=""
+POLLING_INTERVAL=""
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -40,9 +41,13 @@ while [[ $# -gt 0 ]]; do
             DEPLOYMENT_DOMAIN="$2"
             shift 2
             ;;
+        --polling_interval)
+            POLLING_INTERVAL="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--demo <value>] [--demo_mode <api_exposure|ddos>] [--static_mode <true|false>] [--live_data <true|false>] [--deployment_domain <CNIT|UPC|UMU>] [--ES_DATA_START_TIME <time>] [--ES_DATA_END_TIME <time>]"
+            echo "Usage: $0 [--demo <value>] [--demo_mode <api_exposure|ddos>] [--static_mode <true|false>] [--live_data <true|false>] [--deployment_domain <CNIT|UPC|UMU>] [--polling_interval <seconds>] [--ES_DATA_START_TIME <time>] [--ES_DATA_END_TIME <time>]"
             exit 1
             ;;
     esac
@@ -145,10 +150,25 @@ fi
 if [ -n "$STATIC_MODE" ]; then
     echo "Setting static mode: $STATIC_MODE"
     update_env_file "STATIC_MODE" "$STATIC_MODE"
+    
+    # If STATIC_MODE is true, automatically set LIVE_DATA to false
+    if [ "$STATIC_MODE" = "true" ]; then
+        echo "Static mode is enabled - automatically setting LIVE_DATA to false"
+        LIVE_DATA="false"
+        update_env_file "LIVE_DATA" "false"
+    fi
 fi
 
 # Update live data mode if provided
 if [ -n "$LIVE_DATA" ]; then
+    # Check if user is trying to set LIVE_DATA=true while STATIC_MODE=true
+    if [ "$LIVE_DATA" = "true" ] && [ "$STATIC_MODE" = "true" ]; then
+        echo "WARNING: Cannot enable LIVE_DATA while STATIC_MODE is true!"
+        echo "STATIC_MODE and LIVE_DATA are mutually exclusive."
+        echo "Keeping LIVE_DATA as false."
+        LIVE_DATA="false"
+    fi
+    
     echo "Setting live data mode: $LIVE_DATA"
     update_env_file "LIVE_DATA" "$LIVE_DATA"
     
@@ -172,10 +192,16 @@ if [ -n "$ES_DATA_END_TIME" ] && [ "$LIVE_DATA" != "true" ]; then
     update_env_file "ES_DATA_END_TIME" "$ES_DATA_END_TIME"
 fi
 
+# Update POLLING_INTERVAL if provided
+if [ -n "$POLLING_INTERVAL" ]; then
+    echo "Setting POLLING_INTERVAL: $POLLING_INTERVAL seconds"
+    update_env_file "POLLING_INTERVAL" "$POLLING_INTERVAL"
+fi
+
 echo ""
 echo "Configuration updated. Current settings:"
 echo "-------------------------------------------"
-grep -E "CONFIG_FILE_PATH|STATIC_DATA_FILE_PATH|STATIC_MODE|LIVE_DATA|ES_DATA_START_TIME|ES_DATA_END_TIME|ES_URL|AFTER_PRE_PROCESSING_URL" .env
+grep -E "CONFIG_FILE_PATH|STATIC_DATA_FILE_PATH|STATIC_MODE|LIVE_DATA|POLLING_INTERVAL|ES_DATA_START_TIME|ES_DATA_END_TIME|ES_URL|AFTER_PRE_PROCESSING_URL" .env
 echo "-------------------------------------------"
 echo ""
 
