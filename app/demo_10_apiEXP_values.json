@@ -1,4 +1,9 @@
 {
+    "metadata": {
+        "feature_name": "NTP",
+        "value_type": "float",
+        "timestamp_format": "unix"
+    },
     "data": [
         {
             "timestamp": "2025-12-16 13:31:03",

@@ -45,6 +45,7 @@ class ElasticQuery:
         # For static mode: track current row index in demo_10_apiEXP_values.json
         self.static_data_index = 0
         self.static_data_cache = None
+        self.static_data_metadata = None
         
         # Logging the initialized values
         logging.info(f"ES URL: {self.es_url}")
@@ -147,6 +148,13 @@ class ElasticQuery:
                     logging.error("Invalid format in demo_10_apiEXP_values.json: expected 'data' array")
                     return None
                 
+                # Load metadata from the JSON file
+                self.static_data_metadata = self.static_data_cache.get('metadata', {
+                    'feature_name': 'NTP',
+                    'value_type': 'float',
+                    'timestamp_format': 'unix'
+                })
+                logging.info("Loaded metadata: %s", self.static_data_metadata)
                 logging.info("Loaded %d data rows from demo_10_apiEXP_values.json", len(self.static_data_cache['data']))
             
             # Get the current row
@@ -346,13 +354,27 @@ class ElasticQuery:
         if not isinstance(results, dict) or 'aggregations' not in results:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
         
-        # Load demo file to get the list of IPs dynamically
+        # Load demo file to get metadata and IPs dynamically
         demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
         demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
+        
+        # Default metadata if not found
+        metadata = {
+            'feature_name': 'NTP',
+            'value_type': 'float',
+            'timestamp_format': 'unix'
+        }
         
         try:
             with open(demo_file_path, 'r') as f:
                 demo_data = json.load(f)
+            
+            # Load metadata from JSON file
+            if 'metadata' in demo_data:
+                metadata.update(demo_data['metadata'])
+                logging.info("Using metadata from JSON: %s", metadata)
+            else:
+                logging.warning("No metadata found in JSON, using defaults: %s", metadata)
             
             # Extract all unique IPs from the demo data
             unique_ips = set()
@@ -364,22 +386,37 @@ class ElasticQuery:
             # Sort IPs for consistent ordering
             sorted_ips = sorted(unique_ips)
             
-            # Build instances array dynamically
+            # Build instances array dynamically using metadata
+            feature_name = metadata.get('feature_name', 'NTP')
+            value_type = metadata.get('value_type', 'float')
+            
+            # Initialize value based on type
+            if value_type == 'float':
+                initial_value = 0.0
+            elif value_type == 'int':
+                initial_value = 0
+            else:
+                initial_value = 0.0
+            
             instances = []
             for ip in sorted_ips:
                 instances.append({
                     "instance": ip,
-                    "features": [{"feature": "NEF", "value": 0}]
+                    "features": [{"feature": feature_name, "value": initial_value}]
                 })
             
-            logging.info("Initialized %d instances from demo file: %s", len(instances), sorted_ips)
+            logging.info("Initialized %d instances with feature '%s' (type: %s)", len(instances), feature_name, value_type)
             
         except FileNotFoundError:
             logging.warning("Demo file not found at %s, using empty instances", demo_file_path)
             instances = []
+            feature_name = metadata['feature_name']
+            value_type = metadata['value_type']
         except Exception as e:
             logging.error("Error loading demo file for instances: %s", str(e))
             instances = []
+            feature_name = metadata['feature_name']
+            value_type = metadata['value_type']
         
         transformed_results = [{
             "timestamp": "1705240560",
@@ -391,22 +428,41 @@ class ElasticQuery:
         # Build a mapping from IP to doc_count
         ip_counts = {bucket.get('key'): bucket.get('doc_count') for bucket in requests_per_ip}
 
-        # Overwrite the "value" feature if the IP matches
+        # Overwrite the feature value if the IP matches (using metadata-driven feature name)
         for instance in transformed_results[0]["instances"]:
             ip = instance["instance"]
             if ip in ip_counts:
                 for feature in instance["features"]:
-                    if feature["feature"] == "NEF":
-                        feature["value"] = ip_counts[ip]
+                    if feature["feature"] == feature_name:
+                        # Apply value type conversion based on metadata
+                        if value_type == 'float':
+                            feature["value"] = float(ip_counts[ip])
+                        elif value_type == 'int':
+                            feature["value"] = int(ip_counts[ip])
+                        else:
+                            feature["value"] = float(ip_counts[ip])
 
-        # Set timestamp if provided
+        # Set timestamp based on metadata format
         try:
+            timestamp_format = metadata.get('timestamp_format', 'unix')
+            
             if timestamp is None:
-                timestamp = str(int(time.time()))  # current UNIX timestamp as string
+                if timestamp_format == 'unix':
+                    timestamp = str(int(time.mktime(self.last_run.timetuple())))
+                elif timestamp_format == 'iso':
+                    timestamp = self.last_run.isoformat()
+                else:
+                    timestamp = str(int(time.mktime(self.last_run.timetuple())))
             elif isinstance(timestamp, datetime):
-                timestamp = str(int(timestamp.timestamp()))
+                if timestamp_format == 'unix':
+                    timestamp = str(int(time.mktime(timestamp.timetuple())))
+                elif timestamp_format == 'iso':
+                    timestamp = timestamp.isoformat()
+                else:
+                    timestamp = str(int(time.mktime(timestamp.timetuple())))
             else:
                 timestamp = str(timestamp)
+            
             transformed_results[0]["timestamp"] = timestamp
             return transformed_results
         except Exception as e:
