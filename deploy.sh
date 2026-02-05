@@ -92,14 +92,27 @@ if [ "$DEMO" = "10" ]; then
         echo "Using Demo 10 default live_data: false"
     fi
     
-    if [ -z "$ES_DATA_START_TIME" ]; then
-        ES_DATA_START_TIME="2025-12-16T12:28:32.176Z"
-        echo "Using Demo 10 default ES_DATA_START_TIME: 2025-12-16T12:28:32.176Z"
-    fi
-    
-    if [ -z "$ES_DATA_END_TIME" ]; then
-        ES_DATA_END_TIME="2025-12-16T12:40:40.072Z"
-        echo "Using Demo 10 default ES_DATA_END_TIME: 2025-12-16T12:40:40.072Z"
+    # Set default time range based on demo_mode when both static_mode and live_data are false
+    if [ "$STATIC_MODE" = "false" ] && [ "$LIVE_DATA" = "false" ]; then
+        if [ -z "$ES_DATA_START_TIME" ]; then
+            if [ "$DEMO_MODE" = "api_exposure" ]; then
+                ES_DATA_START_TIME="2025-12-16T13:31:03.000Z"
+                echo "Using Demo 10 default ES_DATA_START_TIME for api_exposure: 2025-12-16T13:31:03.000Z"
+            elif [ "$DEMO_MODE" = "ddos" ]; then
+                ES_DATA_START_TIME="2025-12-11T16:00:55.000Z"
+                echo "Using Demo 10 default ES_DATA_START_TIME for ddos: 2025-12-11T16:00:55.000Z"
+            fi
+        fi
+        
+        if [ -z "$ES_DATA_END_TIME" ]; then
+            if [ "$DEMO_MODE" = "api_exposure" ]; then
+                ES_DATA_END_TIME="2025-12-16T13:39:03.000Z"
+                echo "Using Demo 10 default ES_DATA_END_TIME for api_exposure: 2025-12-16T13:39:03.000Z"
+            elif [ "$DEMO_MODE" = "ddos" ]; then
+                ES_DATA_END_TIME="2025-12-11T16:07:55.000Z"
+                echo "Using Demo 10 default ES_DATA_END_TIME for ddos: 2025-12-11T16:07:55.000Z"
+            fi
+        fi
     fi
 fi
 
