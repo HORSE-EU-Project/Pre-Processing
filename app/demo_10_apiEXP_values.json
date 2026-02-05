@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "feature_name": "NTP",
+        "feature_name": "NEF",
         "value_type": "float",
         "timestamp_format": "unix"
     },
