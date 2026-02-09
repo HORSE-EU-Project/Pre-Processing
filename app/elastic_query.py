@@ -133,7 +133,7 @@ class ElasticQuery:
         """
         try:
             # Path to the demo values JSON file
-            demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
+            demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'static_data_config/demo_10_apiEXP_values.json')
             demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
             
             # Load the file if not already cached
@@ -355,7 +355,7 @@ class ElasticQuery:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
         
         # Load demo file to get metadata and IPs dynamically
-        demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'demo_10_apiEXP_values.json')
+        demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'static_data_config/demo_10_apiEXP_values.json')
         demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
         
         # Default metadata if not found

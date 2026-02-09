@@ -1,0 +1,115 @@
+{
+    "metadata": {
+        "feature_name": "DNS",
+        "value_type": "int",
+        "timestamp_format": "unix",
+        "description": "Multi-domain DNS traffic monitoring (CNIT and UPC testbeds)"
+    },
+    "data": [
+        {
+            "timestamp": "1752501360",
+            "values": {
+                "node1:CNIT": 26,
+                "node1:UPC": 26
+            }
+        },
+        {
+            "timestamp": "1752501480",
+            "values": {
+                "node1:CNIT": 26,
+                "node1:UPC": 27
+            }
+        },
+        {
+            "timestamp": "1752501600",
+            "values": {
+                "node1:CNIT": 25,
+                "node1:UPC": 27
+            }
+        },
+        {
+            "timestamp": "1752501720",
+            "values": {
+                "node1:CNIT": 27,
+                "node1:UPC": 29
+            }
+        },
+        {
+            "timestamp": "1752501840",
+            "values": {
+                "node1:CNIT": 30,
+                "node1:UPC": 33
+            }
+        },
+        {
+            "timestamp": "1752501960",
+            "values": {
+                "node1:CNIT": 38,
+                "node1:UPC": 41
+            }
+        },
+        {
+            "timestamp": "1752502080",
+            "values": {
+                "node1:CNIT": 54,
+                "node1:UPC": 53
+            }
+        },
+        {
+            "timestamp": "1752502200",
+            "values": {
+                "node1:CNIT": 68,
+                "node1:UPC": 68
+            }
+        },
+        {
+            "timestamp": "1752502320",
+            "values": {
+                "node1:CNIT": 72,
+                "node1:UPC": 74
+            }
+        },
+        {
+            "timestamp": "1752502440",
+            "values": {
+                "node1:CNIT": 69,
+                "node1:UPC": 67
+            }
+        },
+        {
+            "timestamp": "1752502560",
+            "values": {
+                "node1:CNIT": 53,
+                "node1:UPC": 54
+            }
+        },
+        {
+            "timestamp": "1752502680",
+            "values": {
+                "node1:CNIT": 41,
+                "node1:UPC": 42
+            }
+        },
+        {
+            "timestamp": "1752502800",
+            "values": {
+                "node1:CNIT": 31,
+                "node1:UPC": 33
+            }
+        },
+        {
+            "timestamp": "1752502920",
+            "values": {
+                "node1:CNIT": 28,
+                "node1:UPC": 29
+            }
+        },
+        {
+            "timestamp": "1752503040",
+            "values": {
+                "node1:CNIT": 27,
+                "node1:UPC": 27
+            }
+        }
+    ]
+}

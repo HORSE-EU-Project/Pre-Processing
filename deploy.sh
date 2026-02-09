@@ -69,6 +69,56 @@ update_env_file() {
 
 echo "Starting deployment configuration..."
 
+# Set Demo 5 defaults if demo=5 and parameters are not explicitly provided
+if [ "$DEMO" = "5" ]; then
+    # Set default modes
+    if [ -z "$STATIC_MODE" ]; then
+        STATIC_MODE="true"
+        echo "Using Demo 5 default static_mode: true"
+    fi
+    
+    if [ -z "$LIVE_DATA" ]; then
+        LIVE_DATA="false"
+        echo "Using Demo 5 default live_data: false"
+    fi
+    
+    # Set default time range for Demo 5
+    if [ -z "$ES_DATA_START_TIME" ]; then
+        ES_DATA_START_TIME="2025-07-14T00:36:00.000Z"
+        echo "Using Demo 5 default ES_DATA_START_TIME: 2025-07-14T00:36:00.000Z"
+    fi
+    
+    if [ -z "$ES_DATA_END_TIME" ]; then
+        ES_DATA_END_TIME="2025-07-14T01:04:00.000Z"
+        echo "Using Demo 5 default ES_DATA_END_TIME: 2025-07-14T01:04:00.000Z"
+    fi
+fi
+
+# Set Demo 9 defaults if demo=9 and parameters are not explicitly provided
+if [ "$DEMO" = "9" ]; then
+    # Set default modes
+    if [ -z "$STATIC_MODE" ]; then
+        STATIC_MODE="true"
+        echo "Using Demo 9 default static_mode: true"
+    fi
+    
+    if [ -z "$LIVE_DATA" ]; then
+        LIVE_DATA="false"
+        echo "Using Demo 9 default live_data: false"
+    fi
+    
+    # Set default time range for Demo 9
+    if [ -z "$ES_DATA_START_TIME" ]; then
+        ES_DATA_START_TIME="2024-11-11T13:03:30.146Z"
+        echo "Using Demo 9 default ES_DATA_START_TIME: 2024-11-11T13:03:30.146Z"
+    fi
+    
+    if [ -z "$ES_DATA_END_TIME" ]; then
+        ES_DATA_END_TIME="2025-07-24T13:04:23.133Z"
+        echo "Using Demo 9 default ES_DATA_END_TIME: 2025-07-24T13:04:23.133Z"
+    fi
+fi
+
 # Set Demo 10 defaults if demo=10 and parameters are not explicitly provided
 if [ "$DEMO" = "10" ]; then
     # Set default values only if not already specified by user
@@ -83,8 +133,8 @@ if [ "$DEMO" = "10" ]; then
     fi
     
     if [ -z "$STATIC_MODE" ]; then
-        STATIC_MODE="false"
-        echo "Using Demo 10 default static_mode: false"
+        STATIC_MODE="true"
+        echo "Using Demo 10 default static_mode: true"
     fi
     
     if [ -z "$LIVE_DATA" ]; then
@@ -128,8 +178,8 @@ if [ -n "$DEPLOYMENT_DOMAIN" ]; then
             ;;
         UMU)
             echo "Setting endpoints for UMU Testbed"
-            update_env_file "ES_URL" "http://127.0.0.1:9200"
-            update_env_file "AFTER_PRE_PROCESSING_URL" "http://127.0.0.1:8090/estimate"
+            update_env_file "ES_URL" "http://10.208.11.69:9200"
+            update_env_file "AFTER_PRE_PROCESSING_URL" "http://10.208.11.69:8090/estimate"
             ;;
         UPC)
             echo "Setting endpoints for UPC Testbed"
@@ -143,17 +193,25 @@ if [ -n "$DEPLOYMENT_DOMAIN" ]; then
 fi
 
 # Handle demo configuration
-if [ "$DEMO" = "10" ]; then
+if [ "$DEMO" = "5" ]; then
+    echo "Configuring for Demo 5..."
+    update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo_5.json"
+    update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_5_values.json"
+elif [ "$DEMO" = "9" ]; then
+    echo "Configuring for Demo 9..."
+    update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo_9.json"
+    update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_9_values.json"
+elif [ "$DEMO" = "10" ]; then
     echo "Configuring for Demo 10..."
     
     if [ "$DEMO_MODE" = "api_exposure" ]; then
         echo "Demo mode: API Exposure"
-        update_env_file "CONFIG_FILE_PATH" "./config_demo10.json"
-        update_env_file "STATIC_DATA_FILE_PATH" "demo_10_apiEXP_values.json"
+        update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo10.json"
+        update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_10_apiEXP_values.json"
     elif [ "$DEMO_MODE" = "ddos" ]; then
         echo "Demo mode: DDoS"
-        update_env_file "CONFIG_FILE_PATH" "./config_demo10.json"
-        update_env_file "STATIC_DATA_FILE_PATH" "demo_10_DDOS_values.json"
+        update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo10.json"
+        update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_10_DDOS_values.json"
     elif [ -n "$DEMO_MODE" ]; then
         echo "Warning: Unknown demo_mode '$DEMO_MODE'. Valid options are: api_exposure, ddos"
     fi

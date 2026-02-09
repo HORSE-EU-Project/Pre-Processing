@@ -22,7 +22,7 @@ POLLING_INTERVAL = int(os.getenv('POLLING_INTERVAL', 10))  # in seconds
 STATIC_MODE = os.getenv('STATIC_MODE', 'false').lower() == 'true'
 
 # Json config file path
-CONFIG_FILE_PATH = os.getenv('CONFIG_FILE_PATH', './config.json')
+CONFIG_FILE_PATH = os.getenv('CONFIG_FILE_PATH', './data_queries_config/config.json')
   
 def main():
     try:       
