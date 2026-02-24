@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "feature_name": "NEF",
+        "feature_name": "COUNT",
         "value_type": "int",
         "timestamp_format": "unix"
     },
