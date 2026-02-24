@@ -192,8 +192,8 @@ class ElasticQuery:
             self.last_run = now
             
             logging.info("=========St. data loaded successfully=========")
-            logging.info("From time: %s", self.previous_last_run)
-            logging.info("To time: %s", self.last_run)
+            #logging.info("From time: %s", self.previous_last_run)
+            #logging.info("To time: %s", self.last_run)
             logging.info("Requests per IP:")
             
             for bucket in buckets:

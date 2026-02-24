@@ -69,7 +69,7 @@ def main():
                 logging.info("Reached end time. Iteration complete.")
                 break
             
-            logging.info(f"Processing time window: {current_time.isoformat()}")
+            #logging.info(f"Processing time window: {current_time.isoformat()}")
         else:
             logging.info("Polling for new data...")
         
