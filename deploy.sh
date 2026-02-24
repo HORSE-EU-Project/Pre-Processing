@@ -114,8 +114,8 @@ if [ "$DEMO" = "9" ]; then
     fi
     
     if [ -z "$ES_DATA_END_TIME" ]; then
-        ES_DATA_END_TIME="2025-07-24T13:04:23.133Z"
-        echo "Using Demo 9 default ES_DATA_END_TIME: 2025-07-24T13:04:23.133Z"
+        ES_DATA_END_TIME="2024-11-11T13:31:30.146Z"
+        echo "Using Demo 9 default ES_DATA_END_TIME: 2024-11-11T13:31:30.146Z"
     fi
 fi
 
@@ -163,6 +163,31 @@ if [ "$DEMO" = "10" ]; then
                 echo "Using Demo 10 default ES_DATA_END_TIME for ddos: 2025-12-11T16:07:55.000Z"
             fi
         fi
+    fi
+fi
+
+# Set Demo 11 defaults if demo=11 and parameters are not explicitly provided
+if [ "$DEMO" = "11" ]; then
+    # Set default modes
+    if [ -z "$STATIC_MODE" ]; then
+        STATIC_MODE="true"
+        echo "Using Demo 11 default static_mode: true"
+    fi
+    
+    if [ -z "$LIVE_DATA" ]; then
+        LIVE_DATA="false"
+        echo "Using Demo 11 default live_data: false"
+    fi
+    
+    # Set default time range for Demo 11
+    if [ -z "$ES_DATA_START_TIME" ]; then
+        ES_DATA_START_TIME="2024-11-11T13:03:30.146Z"
+        echo "Using Demo 11 default ES_DATA_START_TIME: 2024-11-11T13:03:30.146Z"
+    fi
+    
+    if [ -z "$ES_DATA_END_TIME" ]; then
+        ES_DATA_END_TIME="2025-07-24T13:04:23.133Z"
+        echo "Using Demo 11 default ES_DATA_END_TIME: 2025-07-24T13:04:23.133Z"
     fi
 fi
 
@@ -215,6 +240,10 @@ elif [ "$DEMO" = "10" ]; then
     elif [ -n "$DEMO_MODE" ]; then
         echo "Warning: Unknown demo_mode '$DEMO_MODE'. Valid options are: api_exposure, ddos"
     fi
+elif [ "$DEMO" = "11" ]; then
+    echo "Configuring for Demo 11..."
+    update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo_11.json"
+    update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_11_DDOS_values.json"
 fi
 
 # Update static mode if provided
