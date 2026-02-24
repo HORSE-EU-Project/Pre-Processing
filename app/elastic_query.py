@@ -102,8 +102,8 @@ class ElasticQuery:
                     # Get IP request counts
                     requests_per_ip = results['aggregations'].get('requests_per_ip', {}).get('buckets', [])
 
-                    logging.info("From time: %s", self.previous_last_run)
-                    logging.info("To time: %s", self.last_run)
+                    #logging.info("From time: %s", self.previous_last_run)
+                    #logging.info("To time: %s", self.last_run)
                     logging.info("Requests per IP:")
 
                     for bucket in requests_per_ip:
@@ -168,7 +168,7 @@ class ElasticQuery:
             
             logging.info("=========================== Reading st. data (row %d/%d) ===========================", 
                         self.static_data_index + 1, len(data_rows))
-            logging.info("Timestamp: %s", current_row.get('timestamp'))
+            #logging.info("Timestamp: %s", current_row.get('timestamp'))
             
             # Convert the row data to Elasticsearch aggregation format
             buckets = []
