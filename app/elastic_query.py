@@ -7,8 +7,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Set up logging without timestamps for cleaner container logs
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 # Default values in case .env is missing some variables
 ES_username = os.getenv('ES_USERNAME', 'elastic')
@@ -139,7 +139,7 @@ class ElasticQuery:
             # Load the file if not already cached
             if self.static_data_cache is None:
                 logging.info("=========================== Loading st. data file ===========================")
-                logging.info("Reading from file: %s", demo_file_path)
+                #logging.info("Reading from file: %s", demo_file_path)
                 
                 with open(demo_file_path, 'r') as f:
                     self.static_data_cache = json.load(f)
@@ -155,7 +155,7 @@ class ElasticQuery:
                     'timestamp_format': 'unix'
                 })
                 logging.info("Loaded metadata: %s", self.static_data_metadata)
-                logging.info("Loaded %d data rows from demo_10_apiEXP_values.json", len(self.static_data_cache['data']))
+                #logging.info("Loaded %d data rows from demo_10_apiEXP_values.json", len(self.static_data_cache['data']))
             
             # Get the current row
             data_rows = self.static_data_cache['data']
@@ -166,8 +166,7 @@ class ElasticQuery:
             # Get current row (with wraparound)
             current_row = data_rows[self.static_data_index % len(data_rows)]
             
-            logging.info("=========================== Reading st. data (row %d/%d) ===========================", 
-                        self.static_data_index + 1, len(data_rows))
+            logging.info("=========================== Reading st. data ===========================")
             #logging.info("Timestamp: %s", current_row.get('timestamp'))
             
             # Convert the row data to Elasticsearch aggregation format
@@ -293,7 +292,7 @@ class ElasticQuery:
 
                 return response.status_code
             except Exception as e:
-                logging.error("=========Error posting results=========")
+                logging.warning("=========posting results=========")
                 return None
         else:
             logging.info("No results available to post.")

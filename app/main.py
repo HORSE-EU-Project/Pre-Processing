@@ -12,8 +12,8 @@ import os
 # Load environment variables
 load_dotenv()
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Set up logging without timestamps for cleaner container logs
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 # Load polling interval from environment or use default
 POLLING_INTERVAL = int(os.getenv('POLLING_INTERVAL', 10))  # in seconds
@@ -49,8 +49,8 @@ def main():
             current_time = datetime.fromisoformat(start_time_str)
             end_time = datetime.fromisoformat(end_time_str)
             iteration_mode = True
-            logging.info(f"Time-range iteration mode enabled: {start_time_str} to {end_time_str}")
-            logging.info(f"Iteration interval: {POLLING_INTERVAL} seconds")
+            #logging.info(f"Time-range iteration mode enabled: {start_time_str} to {end_time_str}")
+            #logging.info(f"Iteration interval: {POLLING_INTERVAL} seconds")
         except ValueError as e:
             logging.warning(f"Invalid ES_DATA_START_TIME or ES_DATA_END_TIME format: {e}. Falling back to continuous polling mode.")
             iteration_mode = False
@@ -91,7 +91,7 @@ def main():
                     if status_code == 200:
                         logging.info("Query results successfully posted.")
                     else:
-                        logging.warning(f"Failed to post results: HTTP {status_code}")
+                        logging.warning(f"HTTP {status_code}")
                         
                 except Timeout:
                     logging.error("The request timed out")
@@ -105,7 +105,7 @@ def main():
         # Calculate elapsed time and sleep to maintain consistent interval
         elapsed = time.time() - loop_start
         sleep_time = max(0, POLLING_INTERVAL - elapsed)
-        logging.info(f"Loop execution took {elapsed:.2f} seconds. Sleeping for {sleep_time:.2f} seconds before next poll")
+        logging.info(f"Loop execution took {elapsed:.2f} seconds. Thread going idle before next poll")
         time.sleep(sleep_time)
         
         if iteration_mode:
