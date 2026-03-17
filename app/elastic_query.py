@@ -354,7 +354,8 @@ class ElasticQuery:
             raise ValueError("Invalid results format. Expected 'aggregations' key in response.")
         
         # Load demo file to get metadata and IPs dynamically
-        demo_filename = os.getenv('STATIC_DATA_FILE_PATH', 'static_data_config/demo_10_apiEXP_values.json')
+        default_demo_file = 'static_data_config/demo_10_DDOS_values.json' if self.index == 'holo_demo_data_ddos' else 'static_data_config/demo_10_apiEXP_values.json'
+        demo_filename = os.getenv('STATIC_DATA_FILE_PATH', default_demo_file)
         demo_file_path = os.path.join(os.path.dirname(__file__), demo_filename)
         
         # Default metadata if not found

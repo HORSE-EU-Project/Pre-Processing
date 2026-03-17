@@ -19,7 +19,7 @@
           "requests_per_ip": {
             "terms": {
               "script": {
-                "source": "if (doc.containsKey('layers.ip.ip_ip_addr.keyword') && !doc['layers.ip.ip_ip_addr.keyword'].empty) { return doc['layers.ip.ip_ip_addr.keyword']; } return 'unknown';",
+                "source": "if (doc.containsKey('layers.ip.ip_ip_addr.keyword') && !doc['layers.ip.ip_ip_addr.keyword'].empty) { return doc['layers.ip.ip_ip_addr.keyword'].value; } if (doc.containsKey('layers.ip.ip_ip_addr') && !doc['layers.ip.ip_ip_addr'].empty) { return doc['layers.ip.ip_ip_addr'].value.toString(); } return 'unknown';",
                 "lang": "painless"
               },
               "size": 1000
