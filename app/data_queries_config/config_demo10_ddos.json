@@ -4,7 +4,7 @@
       "subscription_id": "DMVSLGF1YD1W0Q7Z2SVC",
       "user_id": "7ff48070-7bb9-401f-bd32-8ab11df4cfda",
       "subscription_type": "ES",
-      "index": "holo_demo_data_api",
+      "index": "holo_demo_data_ddos",
       "query": {
         "size": 0,
         "query": {
