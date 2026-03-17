@@ -2,11 +2,7 @@
     "metadata": {
         "feature_name": "NTP",
         "value_type": "float",
-        "timestamp_format": "unix",
-        "counters_of_interest": [
-            "10.201.1.1",
-            "10.201.1.2"
-        ]
+        "timestamp_format": "unix"
     },
     "data": [
         {

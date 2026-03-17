@@ -2,19 +2,7 @@
     "metadata": {
         "feature_name": "NEF",
         "value_type": "float",
-        "timestamp_format": "unix",
-        "counters_of_interest": [
-            "10.1.0.71",
-            "10.1.0.72",
-            "10.1.0.73",
-            "10.1.0.74",
-            "10.1.0.75",
-            "10.1.0.76",
-            "10.1.0.77",
-            "10.1.0.78",
-            "10.1.0.79",
-            "10.1.0.80"
-        ]
+        "timestamp_format": "unix"
     },
     "data": [
         {
