@@ -3,6 +3,10 @@
         "feature_name": "DNS",
         "value_type": "int",
         "timestamp_format": "unix",
+        "counters_of_interest": [
+            "node1:CNIT",
+            "node1:UPC"
+        ],
         "description": "Multi-domain DNS traffic monitoring (CNIT and UPC testbeds)"
     },
     "data": [

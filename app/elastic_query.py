@@ -375,6 +375,13 @@ class ElasticQuery:
                 logging.info("Using metadata from JSON: %s", metadata)
             else:
                 logging.warning("No metadata found in JSON, using defaults: %s", metadata)
+
+            # Prefer explicitly configured counters of interest from metadata.
+            counters_of_interest = metadata.get('counters_of_interest', [])
+            if not isinstance(counters_of_interest, list):
+                logging.warning("Invalid 'counters_of_interest' in metadata, expected list. Falling back to values keys.")
+                counters_of_interest = []
+            counters_of_interest = [str(counter) for counter in counters_of_interest if counter]
             
             # Extract all unique IPs from the demo data
             unique_ips = set()
@@ -383,8 +390,11 @@ class ElasticQuery:
                     if 'values' in row and isinstance(row['values'], dict):
                         unique_ips.update(row['values'].keys())
             
-            # Sort IPs for consistent ordering
-            sorted_ips = sorted(unique_ips)
+            # If no explicit counters are configured, fallback to detected keys from static values.
+            if counters_of_interest:
+                selected_counters = counters_of_interest
+            else:
+                selected_counters = sorted(unique_ips)
             
             # Build instances array dynamically using metadata
             feature_name = metadata.get('feature_name', 'NTP')
@@ -399,7 +409,7 @@ class ElasticQuery:
                 initial_value = 0.0
             
             instances = []
-            for ip in sorted_ips:
+            for ip in selected_counters:
                 instances.append({
                     "instance": ip,
                     "features": [{"feature": feature_name, "value": initial_value}]

@@ -2,7 +2,13 @@
     "metadata": {
         "feature_name": "COUNT",
         "value_type": "int",
-        "timestamp_format": "unix"
+        "timestamp_format": "unix",
+        "counters_of_interest": [
+            "10.45.0.2",
+            "10.45.0.3",
+            "10.45.0.4",
+            "10.45.0.5"
+        ]
     },
     "data": [
         {
