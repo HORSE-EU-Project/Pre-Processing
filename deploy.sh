@@ -235,7 +235,11 @@ elif [ "$DEMO" = "10" ]; then
         update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_10_apiEXP_values.json"
     elif [ "$DEMO_MODE" = "ddos" ]; then
         echo "Demo mode: DDoS"
-        update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo10.json"
+        if [ "$LIVE_DATA" = "true" ]; then
+            update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo10_ddos.json"
+        else
+            update_env_file "CONFIG_FILE_PATH" "./data_queries_config/config_demo10.json"
+        fi
         update_env_file "STATIC_DATA_FILE_PATH" "static_data_config/demo_10_DDOS_values.json"
     elif [ -n "$DEMO_MODE" ]; then
         echo "Warning: Unknown demo_mode '$DEMO_MODE'. Valid options are: api_exposure, ddos"
